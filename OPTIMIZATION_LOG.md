@@ -2,7 +2,11 @@
 
 ## 优化路线重构（当前执行版；更新至 2026-10-19）
 
-### 目标与已知边界
+### 阶段位置、目标与已知边界
+
+优化阶段是递进关系，不是互相排斥的最终目标：Phase 1 优化/理解单请求执行路径；Phase 2 在稳定模型路径上优化多请求调度和 128 题 makespan；Phase 3 再做面向设备的通用 kernel、内存与 launch 优化。Phase 1 的 batch=1 指标用于判断基础执行路径，Phase 2 的 batch 指标衡量调度，Phase 3 的局部算子指标用于验证机制；任何 Phase 3 改动要成为项目收益，最终仍须改善 Phase 2 的端到端任务且守住质量。
+
+当前已完成 Phase 1 的基线与主要执行路径探索，并完成 Phase 2 的离线批处理优化。E100 是当前 128 题工作流中已验收的最好配置，但其中 final-turn cap 12 是任务协议预算调整，收益有限且依赖当前工作负载，不作为底层优化的主要技术贡献。当前工作的重心应进入 Phase 3：寻找能在正确性、显存和兼容性约束下改善模型执行成本的通用优化；hybrid cache/continuous batching 是候选系统方向之一，不预设为唯一答案。
 
 目标是缩短固定 128 题离线 GSM8K 工作流的未插桩 makespan，并保持 scorer v3 至少 `122/128`。当前最佳自有实现冻结为 E100：`265.030128 s / 122/128 / 15,961 tokens`；对照 E047 为 vLLM-Ascend `239.194 s / 122/128 / 16,629 tokens`。差距为 `25.836 s`（自有实现需缩短约 9.75% 才追平该 makespan）。两次 token 轨迹不同，E047/E100 是端到端系统结果，不是执行效率对比。超过 E047 的声明仍须在同一 128 题、未插桩运行中低于 `239.194 s`，同时通过相同评分护栏并报告 token 数、失败 ID 与归因。
 
@@ -10,17 +14,15 @@ E100 配置与结果作为冻结参考，不为刷新基线重跑。HF batch run
 
 E100 相比 E047 少生成 668 tokens，质量分相同；所以 25.836 秒端到端差距混合了 token 数、模型执行路径与调度差异。任何“执行效率更高/更低”的结论须基于相同 prompt 与输出 token 轨迹的 replay。现有 replay 资产主要验证 HF 局部路径和候选正确性，尚无完整的 HF-vs-vLLM 固定轨迹耗时对照；固定轨迹结果只能回答执行成本，不能替代 128 题端到端验收。
 
-### 当前路线：先审计，按证据分支
+### Phase 3 当前路线：补齐归因，再验证底层候选
 
 | 阶段 | 工作与产物 | 继续条件 | 停止/转向条件 |
 |---|---|---|---|
-| 0. 冻结参考 | 固定 E100 配置、数据 hash、scorer v3 失败集合 `[1161,423,952,1035,552,1048]`、15,961 token、265.030 s；保留 E047 作为历史系统对照。 | 只在环境/依赖变化、结果完整性问题或新候选 A/B 时复测必要对照。 | 不重复全量基准，不把静态长度排序、已淘汰融合、compaction、Python cache admission 或当前 graph capture 重新列为候选。 |
-| 1. 生成成本审计 | 先离线整理现有 HF JSONL 的逐批 generation、prompt 长度、有效输出 token、工具和轮次数；明确“已有事实/缺失字段”。如下一决策仍取决于 runtime 的阶段成本，再给 vLLM runner 加逐轮 call wall time、活跃请求数、prompt/generated tokens、工具时间，并选 16–32 道覆盖长输出和失败题的诊断样本。 | 诊断能区分 prefill、decode、批尾等待或 Agent 轮间成本，并能改变候选排序。对 Python runner wall time 与 NPU 同步边界定义清楚；该次运行只用于归因。 | 若结果仍只能说明 generation 占主耗时、却不能区分可优化项，则不扩展 profiling；不把设备 idle 直接归因给 Python。单纯 E047 重测、无字段增量的离线汇总均不做。 |
-| 2. Runtime 能力审计 | 只核对本机现存 vLLM-Ascend/CANN/Transformers 版本、Qwen3.5 模型支持、Gated DeltaNet recurrent state 与 attention KV 的 cache API、固定容量 admission/slot 生命周期、已知 OOM/capture 限制；输出兼容性矩阵和最小可运行能力证据，不安装/扫描一堆框架。 | 找到当前环境可执行的 hybrid cache/continuous batching 路径，且不需 Python 层复制整批 cache；或依赖/运行时已有实质变化。 | 若只有 attention KV 管理而不支持 recurrent/conv state，或必须复制 full-width cache/workspace，则停止自研 Python runtime。E096 OOM、E049 API 不兼容、E098/E103 capture 失败作为既有淘汰证据。 |
-| 3A. 若调度/尾等待占主导 | 只在阶段审计证明可消除的 batch tail 足以影响 makespan、且第 2 阶段存在固定容量 hybrid cache 接口后，做 16-slot 生命周期 correctness probe，再做多槽成组 admission，最后做固定 32 题未插桩 A/B。 | 完整 greedy/tool 轨迹正确、无 OOM、显存有余量、32 题收益超过重复测量噪声，才扩展 128 题；128 题通过 `122/128` 与端到端门槛才接纳。 | 任何临时 cache 复制导致容量越界、单槽逐个 prefill 抵消收益、轨迹不稳定或小样本无净收益，立即停止该实现，不扩大题数。理论 22.8% row-step 不能代替这几关。 |
-| 3B. 若单步执行/算子占主导 | 按审计得到的关键路径和 Amdahl 上界选一个现有可执行方向；本机 graph/recurrent、INT8/FP8 和 GDN adapter 的失败/负收益不重复探测。新候选先做真实形状能力 probe，再做固定 token replay，最后 16–32 题未插桩 A/B。 | 候选位于实测关键路径，理想上界足以影响总 makespan；固定轨迹 correctness 通过，smoke 收益高于测量噪声且无明显 HBM/质量代价。 | 只提升孤立 kernel、违反长上下文/轨迹正确性、内存峰值超限或 smoke 收益落在噪声内时淘汰。 |
-| 3C. 若 prefill/轮间重复工作占主导 | 量化真实新增 prompt 与重算 token，评估增量 prefill/cache 保留是否覆盖 cache 驻留、状态更新和同步成本；E027 的 1.065x 短前缀结果不外推至 128-agent。 | 真实 prompt 轨迹上复用语义正确、内存不超限，且固定轨迹/任务 smoke 显示净收益。 | 若状态生命周期不能跨工具调用安全延续，或保留 cache 挤压有效并发，则停止。 |
-| 4. 端到端验收 | 只给阶段 3 smoke 胜者跑完整 128 题；未插桩、单 NPU、同一数据与环境口径，运行 audit/scorer v3，报告 makespan、准确率/失败 ID、输出 tokens、峰值显存、冷启动口径。 | 更新自有最佳需 `>=122/128` 且快于 E100；宣称超过 E047 还需 `<239.194 s`。 | 分数低于护栏、新增失败无解释、结果不完整、收益不超过测量波动或 OOM 均不接纳。 |
+| 0. 冻结 Phase 2 参考 | 固定 E100 配置、数据 hash、scorer v3 失败集合 `[1161,423,952,1035,552,1048]`、15,961 token、265.030 s；E084 cap32 保留作更宽 final-turn budget 的对照，E047 保留作系统参考。 | 只在环境/依赖变化、结果完整性问题或新候选 A/B 时复测必要对照。 | 不因 Phase 3 开始而重跑全量基线；不把 E100 cap12 当作底层 kernel 收益。 |
+| 1. 建立 Phase 3 诊断基线 | 离线整理 E100/HF 已有逐批 generation、prompt 长度、有效输出 token、工具轮和已有 profile；指出 prefill/decode/launch/scheduler 哪些已知、哪些未知。只有缺失项会改变候选排序时，才做代表性插桩或给 vLLM runner 加阶段字段。 | 有证据把工作量映射到 prefill、decode、NPU launch/算子、batch tail 或 Agent 轮间成本；局部 profile 不作为收益结论。 | 不把 E007 idle、row-step 理论上界或单算子峰值直接当可实现收益；不能影响决策的 profile 不采。 |
+| 2. 选择 Phase 3 候选 | 按诊断和收益预算选择一个通用算子/内存/执行机制候选。近期可核实 E106 的 GDN B16 kernel 语义能否与 HF reference 对齐；也可只读审计 hybrid-cache runtime 能力。二者均需确认当前依赖和接口，不直接扩展为主 runner。 | 候选命中关键路径，理想总收益足以改变决策，且当前环境有可执行实现。 | GDN adapter 既有 E052 慢约10.5%、发生过设备异常；runtime admission 有 E096 OOM。除非找到新的可测实现条件，不重复原形状/原 wrapper 试验。 |
+| 3. 分层验证候选 | 单算子/真实模型形状 reference 对照 → 固定输入及 token replay → 16–32 题 batch smoke。算子速度必须连同转换、cache、workspace 和 launch 开销一起量。 | 数值/状态正确，轨迹风险可解释，无 OOM，重复 smoke 收益高于运行波动。 | 局部快但调用路径总成本不降、正确性失败、显存无余量或收益在噪声内则停止，不做全量。 |
+| 4. 回到 Phase 2 目标验收 | 只给 smoke 胜者跑完整 128 题；未插桩、单 NPU、同数据和环境口径，运行 audit/scorer v3，报告 makespan、分数/失败 ID、token、峰值显存。 | 更新自有最佳需 `>=122/128` 且快于 E100；声称超过 E047 还需 `<239.194 s`。 | 未改善 128 题 makespan 的 Phase 3 候选可作为算子研究结果记录，但不能宣称项目端到端优化成功。 |
 
 ### 候选收益预算
 
@@ -28,10 +30,10 @@ E100 相比 E047 少生成 668 tokens，质量分相同；所以 25.836 秒端�
 
 ### 当前待办
 
-1. 冻结 E100/E047 文件与配置，不重新跑 128 题基线。
-2. 离线整理已有 HF JSONL：按同步 generation call 汇总真实 batch wall time、输入/输出 token 和工具轮；不要把按题分摊时间误当服务时间。
-3. 检查现有 vLLM 日志和 runner 是否能在不改变调度/模型配置的前提下补齐逐 call 时间。如果必须运行 NPU 诊断，只跑固定 16–32 题，不与其他 NPU 任务并发；记录其为 instrumentation run，不作为性能比较。
-4. 同步做 runtime 兼容性盘点。阶段审计确认调度可优化且 runtime 有可行接口时，进入 3A；确认单步/算子或 prefill 主导时进入 3B/3C；证据仍不足则停止高成本工程投入，保留 E100。
+1. 将 E100 冻结为 Phase 2 端到端参考；报告时把 cap12 标为当前任务配置收益，与底层执行优化分开。
+2. 以已有 E100/E084 数据和 profile 建立 Phase 3 成本视图，避免重测已知部分；按证据选定一个可执行的通用底层候选。
+3. 对选中候选执行真实形状正确性、固定轨迹和 16–32 题 smoke。当前可先审查 E106 GDN B16 结果能否接到 HF reference；若需重建兼容环境，先验证其是否可能消除 E052 adapter 的转换/调度损失。
+4. hybrid-cache/continuous batching 作为系统级候选并行做能力审计，Python cache 合并不重开。任一候选只有通过完整 128 题 Phase 2 指标后才更新最佳。
 
 ### 已知停止项
 
