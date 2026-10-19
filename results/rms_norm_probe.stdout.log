@@ -1,0 +1,10 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/latest owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/8.0.RC3/aarch64-linux/ascend_toolkit_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/latest owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/8.0.RC3/aarch64-linux/ascend_toolkit_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+[W1015 11:52:09.353993469 TensorFactories.cpp:340] Warning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (function operator())
+{"shape": [16, 5120], "ref_seconds": 0.0002524629235267639, "fused_seconds": 8.979719132184982e-05, "speedup": 2.8114790653294475, "max_abs_error": 0.0625, "mean_abs_error": 0.0015510732773691416, "argmax_equal": true}

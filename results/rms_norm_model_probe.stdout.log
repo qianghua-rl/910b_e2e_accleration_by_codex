@@ -1,0 +1,14 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/latest owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/8.0.RC3/aarch64-linux/ascend_toolkit_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/latest owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/8.0.RC3/aarch64-linux/ascend_toolkit_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/storage.py:56: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/cache_utils.py:744: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  self.conv_states = torch.zeros_like(conv_states, dtype=self.dtype, device=self.device)
+{"norms": 11, "ref_seconds": 0.8262688750401139, "fused_seconds": 0.6796351140365005, "speedup": 1.2157536565948215, "max_logit_error": 0.0, "mean_logit_error": 0.0, "argmax_equal": true, "finite": true}

@@ -1,0 +1,59 @@
+[
+  {
+    "m": 1,
+    "exact": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "max_error": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "medians": {
+      "reference": 0.00011939494870603085,
+      "packed_small": 9.570368565618992e-05
+    }
+  },
+  {
+    "m": 16,
+    "exact": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "max_error": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "medians": {
+      "reference": 0.00011636940762400627,
+      "packed_small": 8.452706970274448e-05
+    }
+  },
+  {
+    "m": 512,
+    "exact": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "max_error": [
+      0.0,
+      0.015625,
+      0.00390625,
+      0.00390625
+    ],
+    "medians": {
+      "reference": 0.00040430589579045775,
+      "packed_small": 0.00035391724668443203
+    }
+  }
+]

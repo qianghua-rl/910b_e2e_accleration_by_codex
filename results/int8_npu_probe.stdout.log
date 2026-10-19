@@ -1,0 +1,29 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/latest owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/8.0.RC3/aarch64-linux/ascend_toolkit_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/latest owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/8.0.RC3/aarch64-linux/ascend_toolkit_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+{
+  "device": "Ascend910B3",
+  "shapes": [
+    {
+      "m": 1,
+      "error": "RuntimeError('Get aclnnQuantMatmulV5 or aclnnQuantMatmulV5 failed, only aclnnQuantMatmulV5 support A8W4, please upgrade CANN.\\n[ERROR] 2026-10-15-06:23:13 (PID:799837, Device:0, RankID:-1) ERR01002 OPS invalid type')"
+    },
+    {
+      "m": 8,
+      "error": "RuntimeError('Get aclnnQuantMatmulV5 or aclnnQuantMatmulV5 failed, only aclnnQuantMatmulV5 support A8W4, please upgrade CANN.\\n[ERROR] 2026-10-15-06:23:13 (PID:799837, Device:0, RankID:-1) ERR01002 OPS invalid type')"
+    },
+    {
+      "m": 32,
+      "error": "RuntimeError('Get aclnnQuantMatmulV5 or aclnnQuantMatmulV5 failed, only aclnnQuantMatmulV5 support A8W4, please upgrade CANN.\\n[ERROR] 2026-10-15-06:23:13 (PID:799837, Device:0, RankID:-1) ERR01002 OPS invalid type')"
+    },
+    {
+      "m": 128,
+      "error": "RuntimeError('Get aclnnQuantMatmulV5 or aclnnQuantMatmulV5 failed, only aclnnQuantMatmulV5 support A8W4, please upgrade CANN.\\n[ERROR] 2026-10-15-06:23:13 (PID:799837, Device:0, RankID:-1) ERR01002 OPS invalid type')"
+    }
+  ]
+}

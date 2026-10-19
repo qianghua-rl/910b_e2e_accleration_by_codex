@@ -1,0 +1,28 @@
+{
+  "layers": 4,
+  "layer_types": [
+    "linear_attention",
+    "linear_attention",
+    "linear_attention",
+    "full_attention"
+  ],
+  "old_prompt_len": 48,
+  "new_prompt_len": 11,
+  "replaced_slot_index": 0,
+  "cache_bytes_before": 10321920,
+  "cache_bytes_after": 10412032,
+  "cache_bytes_after_rebase": 10330112,
+  "cache_bytes_added": 90112,
+  "cache_sequence_length_before": 48,
+  "cache_sequence_length_after_replacement": 59,
+  "cache_sequence_length_after_rebase": 49,
+  "replacement_seconds": 0.12000029999762774,
+  "logits_max_abs_error": 0.046875,
+  "logits_mean_abs_error": 0.009862825274467468,
+  "argmax_equal": true,
+  "next_logits_max_abs_error": 0.0390625,
+  "next_logits_mean_abs_error": 0.009657874703407288,
+  "next_argmax_equal": true,
+  "finite": true,
+  "peak_bytes": 3152948224
+}

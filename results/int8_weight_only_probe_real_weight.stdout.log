@@ -1,0 +1,96 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+{
+  "device": "Ascend910B3",
+  "operator": "torch_npu.npu_weight_quant_batchmatmul",
+  "quantization": "symmetric per-output-channel INT8, BF16 antiquant scales",
+  "input_distribution": "fixed-seed standard-normal BF16 synthetic activations",
+  "records": [
+    {
+      "m": 1,
+      "k": 5120,
+      "n": 17408,
+      "weight_key": "model.language_model.layers.8.mlp.gate_proj.weight",
+      "activation_dtype": "torch.bfloat16",
+      "weight_format": "symmetric_int8_per_output_channel",
+      "scale_shape": [
+        17408
+      ],
+      "reference_median_s": 0.00013187574222683907,
+      "reference_samples_s": [
+        0.0002734726294875145,
+        0.0001485813409090042,
+        0.0001348508521914482,
+        0.0001378823071718216,
+        0.00012797024101018906,
+        0.00012890063226222992,
+        0.0001277923583984375,
+        0.0001251501962542534
+      ],
+      "quantized_median_s": 0.00014291098341345787,
+      "quantized_samples_s": [
+        0.0002257833257317543,
+        0.00015136133879423141,
+        0.0001443624496459961,
+        0.00014037080109119415,
+        0.00014421064406633377,
+        0.0001385323703289032,
+        0.00014161132276058197,
+        0.0001373523846268654
+      ],
+      "relative_rms": 0.009395148605108261,
+      "cosine": 0.999956488609314,
+      "max_abs_error": 0.046875,
+      "argmax_equal": true,
+      "top1_match_fraction": 1.0,
+      "quantized_weight_bytes": 89128960,
+      "bf16_weight_bytes": 178257920
+    },
+    {
+      "m": 16,
+      "k": 5120,
+      "n": 17408,
+      "weight_key": "model.language_model.layers.8.mlp.gate_proj.weight",
+      "activation_dtype": "torch.bfloat16",
+      "weight_format": "symmetric_int8_per_output_channel",
+      "scale_shape": [
+        17408
+      ],
+      "reference_median_s": 0.00013212114572525024,
+      "reference_samples_s": [
+        0.0001360708847641945,
+        0.00013094209134578705,
+        0.00013363081961870193,
+        0.0001330813392996788,
+        0.0001306617632508278,
+        0.00012927036732435226,
+        0.00013116095215082169,
+        0.00013397075235843658
+      ],
+      "quantized_median_s": 0.00013635633513331413,
+      "quantized_samples_s": [
+        0.00014099199324846268,
+        0.0002423720434308052,
+        0.00013986136764287949,
+        0.00013605225831270218,
+        0.0001344708725810051,
+        0.00013618171215057373,
+        0.00013240240514278412,
+        0.00013653095811605453
+      ],
+      "relative_rms": 0.00946809258311987,
+      "cosine": 0.9999557733535767,
+      "max_abs_error": 0.06640625,
+      "argmax_equal": false,
+      "top1_match_fraction": 0.9375,
+      "quantized_weight_bytes": 89128960,
+      "bf16_weight_bytes": 178257920
+    }
+  ]
+}

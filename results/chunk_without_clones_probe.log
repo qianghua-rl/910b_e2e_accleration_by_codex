@@ -1,0 +1,11 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py:290: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  core_attn_out = torch.zeros_like(value)
+[{"batch": 1, "exact": [true, true], "max_error": [0.0, 0.0], "medians": {"reference": 0.016134630888700485, "candidate": 0.013162421993911266}, "samples": {"reference": [0.016138166189193726, 0.016529029235243797, 0.016131095588207245, 0.015173317864537239], "candidate": [0.013344538398087025, 0.013373289257287979, 0.012980305589735508, 0.01229533739387989]}}, {"batch": 16, "exact": [true, true], "max_error": [0.0, 0.0], "medians": {"reference": 0.05993727780878544, "candidate": 0.06183090666308999}, "samples": {"reference": [0.05983378645032644, 0.05988744739443064, 0.06019951030611992, 0.05998710822314024], "candidate": [0.06214919965714216, 0.06164746545255184, 0.061622824519872665, 0.06201434787362814]}}]

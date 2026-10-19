@@ -1,0 +1,1 @@
+{"mlp": 4, "ref_seconds": 0.7266840189695358, "fused_seconds": 0.6851129923015833, "speedup": 1.0606776212611264, "max_logit_error": 0.06005859375, "mean_logit_error": 0.0124913789331913, "argmax_equal": true, "finite": true}

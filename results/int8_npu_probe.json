@@ -1,0 +1,21 @@
+{
+  "device": "Ascend910B3",
+  "shapes": [
+    {
+      "m": 1,
+      "error": "RuntimeError('Get aclnnQuantMatmulV5 or aclnnQuantMatmulV5 failed, only aclnnQuantMatmulV5 support A8W4, please upgrade CANN.\\n[ERROR] 2026-10-15-06:23:13 (PID:799837, Device:0, RankID:-1) ERR01002 OPS invalid type')"
+    },
+    {
+      "m": 8,
+      "error": "RuntimeError('Get aclnnQuantMatmulV5 or aclnnQuantMatmulV5 failed, only aclnnQuantMatmulV5 support A8W4, please upgrade CANN.\\n[ERROR] 2026-10-15-06:23:13 (PID:799837, Device:0, RankID:-1) ERR01002 OPS invalid type')"
+    },
+    {
+      "m": 32,
+      "error": "RuntimeError('Get aclnnQuantMatmulV5 or aclnnQuantMatmulV5 failed, only aclnnQuantMatmulV5 support A8W4, please upgrade CANN.\\n[ERROR] 2026-10-15-06:23:13 (PID:799837, Device:0, RankID:-1) ERR01002 OPS invalid type')"
+    },
+    {
+      "m": 128,
+      "error": "RuntimeError('Get aclnnQuantMatmulV5 or aclnnQuantMatmulV5 failed, only aclnnQuantMatmulV5 support A8W4, please upgrade CANN.\\n[ERROR] 2026-10-15-06:23:13 (PID:799837, Device:0, RankID:-1) ERR01002 OPS invalid type')"
+    }
+  ]
+}

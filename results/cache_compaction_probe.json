@@ -1,0 +1,1 @@
+{"kind": "cache_compaction_probe", "layers": 4, "selected_rows": [1], "selected_state_tensors": 8, "selected_state_exact": true, "compact_seconds": 0.009437412023544312, "output_finite": true, "output_shape": [1, 1, 1024], "peak_bytes": 3146357760}

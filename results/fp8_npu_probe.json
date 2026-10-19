@@ -1,0 +1,11 @@
+{
+  "device": "Ascend910B3",
+  "shape": [
+    4,
+    128,
+    256
+  ],
+  "torch_mm": false,
+  "torch_mm_error": "Traceback (most recent call last):\n  File \"/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/fp8_npu_probe.py\", line 18, in <module>\n    y=torch.mm(qx,qw.t())\n      ^^^^^^^^^^^^^^^^^^^\nRuntimeError: mm:../third_party/op-plugin/op_plugin/ops/opapi/MmKernelNpuOpApi.cpp:43 NPU function error: call aclnnMm failed, error code is 161002\n[ERROR] 2026-10-15-06:08:07 (PID:797897, Device:0, RankID:-1) ERR00100 PTA call acl api failed.\nEZ1001: [PID: 797897] 2026-10-15-06:08:07.797.429 self not implemented for UNDEFINED, should be in dtype support list [DT_FLOAT,DT_FLOAT16,DT_BFLOAT16,].\n        TraceBack (most recent call last):\n        DataTypeToSerialString: datatype not support 36[FUNC:DataTypeToSerialString][FILE:type_utils.cc][LINE:288]\n        data_type not support [UNDEFINED][FUNC:GetDataTypeLength][FILE:type_utils.cc][LINE:366]\n        self not implemented for UNDEFINED, should be in dtype support list [DT_FLOAT,DT_FLOAT16,DT_BFLOAT16,].\n\n",
+  "npu_quant_matmul_float8_error": "Traceback (most recent call last):\n  File \"/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/fp8_npu_probe.py\", line 24, in <module>\n    row[\"npu_quant_matmul_float8\"] = str(torch_npu.npu_quant_matmul(qx,qw,torch.tensor([sx*sw],device='npu'),output_dtype=torch.bfloat16).dtype)\n                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/_ops.py\", line 1255, in __call__\n    return self._op(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: Get aclnnQuantMatmulV5 or aclnnQuantMatmulV5 failed, only aclnnQuantMatmulV5 support A8W4, please upgrade CANN.\n[ERROR] 2026-10-15-06:08:07 (PID:797897, Device:0, RankID:-1) ERR01002 OPS invalid type\n"
+}

@@ -1,0 +1,14 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/latest owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/8.0.RC3/aarch64-linux/ascend_toolkit_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/latest owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/ascend-toolkit/8.0.RC3/aarch64-linux/ascend_toolkit_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/cache_utils.py:744: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  self.conv_states = torch.zeros_like(conv_states, dtype=self.dtype, device=self.device)
+{"batch": 1, "length": 16, "random_weights": true, "prefill_seconds": 0.7188502801582217, "finite": true, "decode_seconds": 0.021120074205100536, "decode_finite": true}
+{"batch": 1, "length": 128, "random_weights": true, "prefill_seconds": 0.06916155852377415, "finite": true, "decode_seconds": 0.01355801522731781, "decode_finite": true}
+{"batch": 4, "length": 128, "random_weights": true, "prefill_seconds": 0.07703413814306259, "finite": true, "decode_seconds": 0.017722826451063156, "decode_finite": true}

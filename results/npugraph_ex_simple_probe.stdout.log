@@ -1,0 +1,11 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/acl_graph.py:1166: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  args_list[input_idx] = torch.empty_like(args_list[input_idx], memory_format=torch.contiguous_format)
+{"backend": "npugraph_ex", "shape": [16, 1024, 1024], "compile_first_call_seconds": 0.993208022788167, "output_bit_equal": true, "max_error": 0.0, "reference_samples": [0.00036225374788045883, 0.00014145206660032272, 0.00013710279017686844, 0.00013782083988189697, 0.00013771094381809235, 0.0001364508643746376, 0.00013661198318004608, 0.00014024227857589722], "compiled_samples": [0.0006856871768832207, 0.0005392357707023621, 0.0005279155448079109, 0.0005287257954478264, 0.0005219364538788795, 0.0005211541429162025, 0.0005331849679350853, 0.0005176644772291183]}

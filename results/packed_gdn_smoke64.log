@@ -1,0 +1,96 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/1184 [00:00<?, ?it/s]Loading weights:   0%|          | 1/1184 [00:00<02:27,  8.02it/s]Loading weights:   5%|▍         | 54/1184 [00:00<00:04, 269.20it/s]Loading weights:   8%|▊         | 100/1184 [00:00<00:03, 343.91it/s]Loading weights:  12%|█▎        | 148/1184 [00:00<00:02, 389.44it/s]Loading weights:  16%|█▌        | 188/1184 [00:00<00:02, 371.32it/s]Loading weights:  20%|██        | 239/1184 [00:00<00:02, 411.89it/s]Loading weights:  24%|██▎       | 281/1184 [00:00<00:02, 408.61it/s]Loading weights:  28%|██▊       | 330/1184 [00:00<00:02, 426.64it/s]Loading weights:  32%|███▏      | 373/1184 [00:01<00:02, 395.62it/s]Loading weights:  35%|███▍      | 414/1184 [00:01<00:01, 392.84it/s]Loading weights:  39%|███▉      | 465/1184 [00:01<00:01, 414.65it/s]Loading weights:  43%|████▎     | 514/1184 [00:01<00:01, 432.13it/s]Loading weights:  47%|████▋     | 558/1184 [00:01<00:01, 409.93it/s]Loading weights:  51%|█████     | 600/1184 [00:01<00:01, 410.56it/s]Loading weights:  55%|█████▍    | 649/1184 [00:01<00:01, 428.56it/s]Loading weights:  59%|█████▊    | 693/1184 [00:01<00:01, 421.69it/s]Loading weights:  62%|██████▏   | 736/1184 [00:01<00:01, 396.55it/s]Loading weights:  66%|██████▌   | 783/1184 [00:01<00:00, 412.66it/s]Loading weights:  71%|███████   | 836/1184 [00:02<00:00, 426.66it/s]Loading weights:  95%|█████████▍| 1120/1184 [00:02<00:00, 1096.04it/s]Loading weights: 100%|██████████| 1184/1184 [00:02<00:00, 533.68it/s] 
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py:806: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  init.copy_(module.A_log, torch.empty_like(module.A_log).uniform_(0, 16).log_())
+{"kind": "metadata", "load_seconds": 12.049375294707716, "tasks": 64, "batch_size": 16, "attention": "sdpa", "protocol": "concise", "system_prompt": "Solve the math problem using the python tool. First respond with only a python tool call containing a short program that prints the answer. Do not explain before the tool call. After seeing the tool output, reply with only the numeric answer in \\boxed{N}.", "schedule": "generation_length", "order_file": "results/phase2_concise_sdpa_batch16_final32_128.jsonl", "data_sha256": "8ad965a8bea67b7a06454324427cebc1233a48624187dcb519eb0190b471fae4", "max_new_tokens": 512, "final_max_new_tokens": 32, "fused_rmsnorm": true, "fused_rmsnorm_count": 161, "fused_gated_rmsnorm": true, "fused_gated_rmsnorm_count": 48, "packed_gdn_projections": true, "packed_gdn_layer_count": 48, "single_step_recurrent": true, "max_rounds": 6, "do_sample": false, "enable_thinking": false}
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[195024] [2026-10-17 15:38:07:204] torch_npu.memory: [ERROR] [195024] NPU out of memory. Tried to allocate 174.00 MiB (NPU 0; 60.96 GiB total capacity; 53.43 GiB already allocated; 53.43 GiB current active; 8.71 MiB free; 60.30 GiB reserved in total by PyTorch).If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.
+Traceback (most recent call last):
+  File "/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/agent_batch_bench.py", line 149, in <module>
+    generated = model.generate(**inputs,max_new_tokens=max_new_tokens,do_sample=False,use_cache=True)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py", line 2543, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py", line 2736, in _sample
+    outputs = self._prefill(
+              ^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py", line 3768, in _prefill
+    return self(**model_inputs, return_dict=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/generic.py", line 876, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1916, in forward
+    outputs = self.model(
+              ^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/generic.py", line 876, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1672, in forward
+    outputs = self.language_model(
+              ^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/generic.py", line 952, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/output_capturing.py", line 248, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1275, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/modeling_layers.py", line 93, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 759, in forward
+    hidden_states = self.linear_attn(
+                    ^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 499, in forward
+    core_attn_out, last_recurrent_state = self.chunk_gated_delta_rule(
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 310, in torch_chunk_gated_delta_rule
+    core_attn_out = core_attn_out.transpose(1, 2).contiguous().to(initial_dtype)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: NPU out of memory. Tried to allocate 174.00 MiB (NPU 0; 60.96 GiB total capacity; 53.43 GiB already allocated; 53.43 GiB current active; 8.71 MiB free; 60.30 GiB reserved in total by PyTorch).If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.
+[ERROR] 2026-10-17-15:38:08 (PID:195024, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception

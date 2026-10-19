@@ -1,0 +1,44 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/1184 [00:00<?, ?it/s]Loading weights:   0%|          | 1/1184 [00:00<02:16,  8.67it/s]Loading weights:   6%|▌         | 66/1184 [00:00<00:03, 362.62it/s]Loading weights:   9%|▉         | 105/1184 [00:00<00:02, 373.80it/s]Loading weights:  13%|█▎        | 152/1184 [00:00<00:02, 394.72it/s]Loading weights:  17%|█▋        | 200/1184 [00:00<00:02, 421.11it/s]Loading weights:  21%|██        | 243/1184 [00:00<00:02, 414.93it/s]Loading weights:  24%|██▍       | 289/1184 [00:00<00:02, 424.93it/s]Loading weights:  28%|██▊       | 332/1184 [00:00<00:02, 385.96it/s]Loading weights:  31%|███▏      | 372/1184 [00:00<00:02, 387.04it/s]Loading weights:  35%|███▍      | 412/1184 [00:01<00:01, 386.53it/s]Loading weights:  39%|███▉      | 465/1184 [00:01<00:01, 409.26it/s]Loading weights:  43%|████▎     | 507/1184 [00:01<00:01, 410.17it/s]Loading weights:  46%|████▋     | 549/1184 [00:01<00:01, 403.46it/s]Loading weights:  50%|█████     | 596/1184 [00:01<00:01, 421.40it/s]Loading weights:  54%|█████▍    | 639/1184 [00:01<00:01, 419.71it/s]Loading weights:  58%|█████▊    | 683/1184 [00:01<00:01, 408.57it/s]Loading weights:  62%|██████▏   | 730/1184 [00:01<00:01, 425.25it/s]Loading weights:  65%|██████▌   | 773/1184 [00:01<00:00, 418.82it/s]Loading weights:  69%|██████▉   | 816/1184 [00:02<00:00, 409.17it/s]Loading weights:  72%|███████▏  | 858/1184 [00:02<00:00, 399.01it/s]Loading weights: 100%|██████████| 1184/1184 [00:02<00:00, 530.16it/s]
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py:806: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  init.copy_(module.A_log, torch.empty_like(module.A_log).uniform_(0, 16).log_())
+{"kind": "metadata", "load_seconds": 12.161115810275078, "tasks": 16, "batch_size": 16, "attention": "sdpa", "protocol": "concise", "system_prompt": "Solve the math problem using the python tool. First respond with only a python tool call containing a short program that prints the answer. Do not explain before the tool call. After seeing the tool output, reply with only the numeric answer in \\boxed{N}.", "schedule": "generation_length", "order_file": "results/phase2_concise_sdpa_batch16_final32_128.jsonl", "data_sha256": "8ad965a8bea67b7a06454324427cebc1233a48624187dcb519eb0190b471fae4", "max_new_tokens": 512, "final_max_new_tokens": 32, "fused_rmsnorm": true, "fused_rmsnorm_count": 161, "explicit_greedy_loop": true, "max_rounds": 6, "do_sample": false, "enable_thinking": false}
+[161884] [2026-10-17 13:30:45:156] torch_npu.memory: [ERROR] [161884] NPU out of memory. Tried to allocate 6.93 GiB (NPU 0; 60.96 GiB total capacity; 53.20 GiB already allocated; 53.20 GiB current active; 6.06 GiB free; 54.39 GiB reserved in total by PyTorch).If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.
+Traceback (most recent call last):
+  File "/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/agent_batch_bench.py", line 161, in <module>
+    rows = explicit_greedy_generate(inputs, max_new_tokens)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/agent_batch_bench.py", line 115, in explicit_greedy_generate
+    outputs = model(**model_inputs, return_dict=True)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/generic.py", line 876, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1934, in forward
+    logits = self.lm_head(hidden_states[:, slice_indices, :])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 134, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: NPU out of memory. Tried to allocate 6.93 GiB (NPU 0; 60.96 GiB total capacity; 53.20 GiB already allocated; 53.20 GiB current active; 6.06 GiB free; 54.39 GiB reserved in total by PyTorch).If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.
+[ERROR] 2026-10-17-13:30:46 (PID:161884, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception

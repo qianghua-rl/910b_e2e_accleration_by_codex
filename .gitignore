@@ -1,0 +1,17 @@
+# Model checkpoint shards exceed GitHub's regular Git file limit.
+model/**/*.safetensors
+
+# Large generated profiler trace; summarized findings remain in the logs.
+results/profile_baseline/
+
+# Local Python and compiler caches.
+**/__pycache__/
+*.py[cod]
+torchinductor_*/
+
+# Local secrets and credentials.
+.env
+.env.*
+*.pem
+*.key
+

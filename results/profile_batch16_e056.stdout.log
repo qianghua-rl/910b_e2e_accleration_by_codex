@@ -1,0 +1,57 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/1184 [00:00<?, ?it/s]Loading weights:   0%|          | 1/1184 [00:00<02:00,  9.81it/s]Loading weights:   0%|          | 2/1184 [00:00<02:14,  8.81it/s]Loading weights:   8%|▊         | 100/1184 [00:00<00:02, 416.73it/s]Loading weights:  12%|█▎        | 148/1184 [00:00<00:02, 437.24it/s]Loading weights:  16%|█▋        | 194/1184 [00:00<00:02, 430.03it/s]Loading weights:  20%|██        | 239/1184 [00:00<00:02, 429.01it/s]Loading weights:  24%|██▍       | 283/1184 [00:00<00:02, 429.07it/s]Loading weights:  28%|██▊       | 327/1184 [00:00<00:01, 429.22it/s]Loading weights:  31%|███▏      | 371/1184 [00:00<00:02, 386.20it/s]Loading weights:  35%|███▍      | 413/1184 [00:01<00:01, 393.46it/s]Loading weights:  39%|███▉      | 464/1184 [00:01<00:01, 420.98it/s]Loading weights:  43%|████▎     | 507/1184 [00:01<00:01, 386.12it/s]Loading weights:  46%|████▌     | 547/1184 [00:01<00:01, 383.18it/s]Loading weights:  50%|█████     | 596/1184 [00:01<00:01, 409.75it/s]Loading weights:  54%|█████▍    | 638/1184 [00:01<00:01, 399.75it/s]Loading weights:  58%|█████▊    | 683/1184 [00:01<00:01, 408.52it/s]Loading weights:  62%|██████▏   | 731/1184 [00:01<00:01, 426.74it/s]Loading weights:  66%|██████▌   | 779/1184 [00:01<00:00, 435.59it/s]Loading weights:  70%|██████▉   | 823/1184 [00:02<00:00, 422.65it/s]Loading weights:  85%|████████▌ | 1007/1184 [00:02<00:00, 825.95it/s]Loading weights: 100%|██████████| 1184/1184 [00:02<00:00, 528.56it/s]
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py:806: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  init.copy_(module.A_log, torch.empty_like(module.A_log).uniform_(0, 16).log_())
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[2026-10-17 02:21:16] [WARNING] [140859] profiler.py: Please use level1 or level2 if you want to collect aic metrics, reset aic metrics to None!
+[2026-10-17 02:21:16] [WARNING] [140859] profiler.py: Please use level1 or level2 if you want to collect aic metrics, reset aic metrics to None!
+[2026-10-17 02:21:32] [WARNING] [140859] profiler.py: Incorrect schedule: Stop profiler while current state is RECORD which may result in incomplete parsed data.
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+[2026-10-17 02:21:32] [INFO] [141875] profiler.py: Start parsing profiling data in sync mode at: /remote-home/S45160/work/910b_e2e_accleration_by_codex/results/profile_batch16_e056/c6586bdcf480_140859_20261017022116526_ascend_pt
+|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/[2026-10-17 02:22:21] [WARNING] [141875] profiler.py: 8 memory record(s) are incomplete.
+-\|/-\|/-\|/-\|/-[2026-10-17 02:22:38] [INFO] [141884] profiler.py: CANN profiling data parsed in a total time of 0:01:06.035755
+--- Logging error ---
+Traceback (most recent call last):
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/logging/__init__.py", line 1164, in emit
+    self.flush()
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/logging/__init__.py", line 1144, in flush
+    self.stream.flush()
+OSError: [Errno 28] No space left on device
+Call stack:
+  File "/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/profile_batch16_decode.py", line 62, in <module>
+    with torch_npu.profiler.profile(
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/profiler/analysis/prof_common_func/_utils.py", line 27, in wrapper
+    result = func(*args, **kwargs)
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/profiler/profiler.py", line 252, in __exit__
+    self.stop()
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/profiler/analysis/prof_common_func/_utils.py", line 27, in wrapper
+    result = func(*args, **kwargs)
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/profiler/profiler.py", line 277, in stop
+    self.action_controller.transit_action(self.current_action, None)
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/profiler/_profiler_action_controller.py", line 27, in transit_action
+    action()
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/profiler/_profiler_action_controller.py", line 31, in _trace_ready
+    self.on_trace_ready(self.prof)
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/profiler/profiler.py", line 183, in handler_fn
+    prof_inst.prof_if.analyse(async_mode=async_mode)
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/profiler/profiler_interface.py", line 144, in analyse
+    NpuProfiler.analyse(self.prof_path, analysis_type, output_path, **kwargs)
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/profiler/analysis/_npu_profiler.py", line 39, in analyse
+    MultiProcessPool().submit_task(profiling_parser.analyse_profiling_data)
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/profiler/analysis/prof_common_func/_multi_process_pool.py", line 26, in submit_task
+    self._pool.submit(func, *args, **kwargs)
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/concurrent/futures/process.py", line 823, in submit
+    self._start_executor_manager_thread()
+  File "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/concurrent/futures/process.py", line 762, in _start_executor_manager_thread
+    self._la

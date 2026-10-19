@@ -1,0 +1,15 @@
+/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/lib/python3.10/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/lib/python3.10/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/lib/python3.10/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/lib/python3.10/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+INFO 10-18 08:29:04 [__init__.py:44] Available plugins for group vllm.platform_plugins:
+INFO 10-18 08:29:04 [__init__.py:46] - ascend -> vllm_ascend:register
+INFO 10-18 08:29:04 [__init__.py:49] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 10-18 08:29:04 [__init__.py:239] Platform plugin ascend is activated
+[WARNING] Please DO NOT tune args ['num_warps', 'num_stages']!
+[WARNING] Please DO NOT tune args ['num_warps', 'num_stages']!
+{"batch": 16, "heads": 48, "key_dim": 128, "value_dim": 128, "samples_seconds": [0.0004759320057928562, 0.00037544136866927145, 0.00036450126208364964, 0.00037113483995199203, 0.0003713497892022133, 0.00035669812932610513, 0.0003743323031812906, 0.000355164660140872], "median_seconds": 0.0003713497892022133, "finite": true, "output_shape": [16, 1, 48, 128], "state_shape": [16, 48, 128, 128], "state_changed_rows": 16, "state_distinct_rows": 16, "batched_vs_single_rows_output_equal": true, "batched_vs_single_rows_state_equal": true, "batched_vs_single_rows_output_max_error": 0.0, "batched_vs_single_rows_state_max_error": 0.0, "kernel_vs_reference_output_max_error": 3.59375, "kernel_vs_reference_state_max_error": 1.2109375}

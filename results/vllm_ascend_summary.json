@@ -1,0 +1,18 @@
+{
+  "expected_tasks": 128,
+  "completed_tasks": 128,
+  "complete": true,
+  "correct": 121,
+  "accuracy": 0.9453125,
+  "accuracy_scope": "complete_run",
+  "makespan_seconds": 338.4262824319303,
+  "service_median": 34.30407438194379,
+  "completion_p50": 214.52036740910262,
+  "completion_p95": 338.4245134163648,
+  "generated_tokens": 17172,
+  "parts": {
+    "prepare_seconds": 0.0,
+    "generation_seconds": 0.0,
+    "tool_seconds": 2.8013099040836096
+  }
+}

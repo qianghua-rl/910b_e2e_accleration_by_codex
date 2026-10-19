@@ -1,0 +1,1 @@
+{"shape": [16, 5120], "ref_seconds": 0.0002524629235267639, "fused_seconds": 8.979719132184982e-05, "speedup": 2.8114790653294475, "max_abs_error": 0.0625, "mean_abs_error": 0.0015510732773691416, "argmax_equal": true}

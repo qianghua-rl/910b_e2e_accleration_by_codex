@@ -1,0 +1,17 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+usage: agent_batch_bench.py [-h] --output OUTPUT --batch-size BATCH_SIZE
+                            [--limit LIMIT] [--task-ids TASK_IDS]
+                            [--final-max-new-tokens FINAL_MAX_NEW_TOKENS]
+                            [--fused-rmsnorm] [--fused-gated-rmsnorm]
+                            [--single-step-recurrent] [--attention ATTENTION]
+                            [--protocol {original,concise,minimal}]
+                            [--schedule {fifo,length,decode_length,generation_length}]
+                            [--order-file ORDER_FILE]
+agent_batch_bench.py: error: unrecognized arguments: --packed-gdn-decode-zba

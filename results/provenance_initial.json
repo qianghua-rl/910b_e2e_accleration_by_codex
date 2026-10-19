@@ -1,0 +1,28 @@
+{
+  "recorded_at": "2026-10-14T13:33:40.714407+00:00",
+  "platform": "Linux-5.15.0-171-generic-aarch64-with-glibc2.31",
+  "note": "Snapshot after baseline launch; checkpoint tensor payload hashes not computed during timed run",
+  "sha256": {
+    "scripts/fp8_reference.py": "734e8abb1d5c8c2bb4a4dbe48e2c1d1a96959f623163d30c8bf094b47b2717aa",
+    "scripts/summarize_bench.py": "60aac02e765c971e3c1c1c48a519acf95dda040cbeac09c10d31a2ad72996103",
+    "scripts/compare_runs.py": "5f47a5ae333aadaf4322eb52ef39022f0e0b7ebef680623515728ef22321f314",
+    "scripts/hardware_control.py": "ac6623234123afc4c80ce5fca34c1969725f13704b5118f2b2a0a482c3dc3bc1",
+    "scripts/analyze_trace.py": "794a0813399aa52d7cc420f66118ace5baec86e07f478cfcb533acd1ab2fd10c",
+    "scripts/model_parameters.py": "9baf2af54825d3d57aa7ebe1a4680f7db0561168656b60d1256d10b16dfc859d",
+    "scripts/audit_run.py": "4758dcfbdb843f8d29667364317f550fe3be60ec3026220130d6767ca244e484",
+    "scripts/agent_batch_bench.py": "5a5d28abd508d4b8a2cf4e39f7ed524889363cbf83009e988efd1b24eadabfdb",
+    "scripts/profile_inference.py": "306fe40b55ba0c8fa54df786166baed9d0161663b849bc485ec433409c60bcef",
+    "scripts/after_baseline.py": "c14ec530229c5dd4d3f8e63946f10f9dee21bd03ebc5045048457bfb16b24443",
+    "scripts/model_compatibility.py": "6ca12b460e13dbfeb26d4a45d55942b803fada40047d9a064ff625533d739ead",
+    "scripts/model_memory.py": "4061f6c248eb49fe2c4ac22b098d94cdf5989b3eece0a20acc693234a672a30d",
+    "scripts/agent_bench.py": "2db273cc691ebace74d0d3ed4c601e39d9bae7ed10fbf12412a28f9576012804",
+    "scripts/hardware_probe.py": "b93e36a586ee135cfc86985a8f7416d155aee45032bc2111059e828e0df88bc5",
+    "scripts/agent_protocol.py": "240103007dc8c1569bc4a04f686bae3bade7e2d0351425e19ef01065ae931414",
+    "scripts/env.sh": "3f7bff8d9a758035a9a08d0bbd042986c1e08f49d06bdef5da6ebb00c31bdd43",
+    "readme.md": "256ddbe98252a800bed54fd23c167b4d23cb695f1c80503f39f3ca6660465bdb",
+    "data/gsm8k_128.jsonl": "8ad965a8bea67b7a06454324427cebc1233a48624187dcb519eb0190b471fae4",
+    "model/qwen3.5-27b/config.json": "f8d190c5b89c1521220f935d2567a587d6e291ed69066a45a106560b05a2174c",
+    "model/qwen3.5-27b/generation_config.json": "303aba891d66ab63908a7b3cc9163bcb835fdf8b9f6301c73216f3f1eb3992dd",
+    "model/qwen3.5-27b/chat_template.jinja": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715"
+  }
+}

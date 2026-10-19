@@ -1,0 +1,1 @@
+{"norms": 11, "ref_seconds": 0.8262688750401139, "fused_seconds": 0.6796351140365005, "speedup": 1.2157536565948215, "max_logit_error": 0.0, "mean_logit_error": 0.0, "argmax_equal": true, "finite": true}

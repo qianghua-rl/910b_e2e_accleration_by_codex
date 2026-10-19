@@ -1,0 +1,10 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+{"m": 1, "k": 5120, "n": 17408, "ok": true, "shape": [1, 17408], "dtype": "torch.bfloat16", "median_s": 8.740625344216824e-05, "samples": [8.946121670305729e-05, 8.806120604276657e-05, 9.05988272279501e-05, 8.705374784767628e-05, 8.764374069869518e-05, 8.634384721517563e-05, 8.575641550123692e-05, 8.716876618564129e-05], "relative_rms": 0.009475350379943848, "cosine": 0.9999551773071289, "max_error": 0.03125}
+{"m": 16, "k": 5120, "n": 17408, "ok": true, "shape": [16, 17408], "dtype": "torch.bfloat16", "median_s": 8.141354192048311e-05, "samples": [8.178106509149075e-05, 8.333125151693821e-05, 8.122390136122704e-05, 8.052587509155273e-05, 8.142087608575821e-05, 8.172588422894478e-05, 8.140620775520802e-05, 8.139875717461109e-05], "relative_rms": 0.009453658945858479, "cosine": 0.9999553561210632, "max_error": 0.0390625}

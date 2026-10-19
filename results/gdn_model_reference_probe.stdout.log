@@ -1,0 +1,16 @@
+/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/lib/python3.10/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/lib/python3.10/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/lib/python3.10/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/lib/python3.10/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+INFO 10-16 14:26:17 [__init__.py:44] Available plugins for group vllm.platform_plugins:
+INFO 10-16 14:26:17 [__init__.py:46] - ascend -> vllm_ascend:register
+INFO 10-16 14:26:17 [__init__.py:49] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 10-16 14:26:17 [__init__.py:239] Platform plugin ascend is activated
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/1184 [00:00<?, ?it/s]Loading weights:  22%|██▏       | 265/1184 [00:00<00:00, 2643.89it/s]Loading weights:  45%|████▍     | 530/1184 [00:00<00:00, 2575.81it/s]Loading weights: 100%|██████████| 1184/1184 [00:00<00:00, 4396.55it/s]
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+{"kind": "gdn_kernel_model_probe", "kernel": false, "load_seconds": 61.27231207396835, "generation_seconds": 42.243432874791324, "tokens": 109, "tool_call": true, "tool_output": "8\n", "text": "<tool_call>\n<function=python>\n<parameter=code>\nmelting_rate = 2  # cm per hour\nstart_hour = 13  # 1:00 PM in 24-hour format\nend_hour = 17    # 5:00 PM in 24-hour format\nhours_burned = end_hour - start_hour\ntotal_melted = melting_rate * hours_burned\nprint(total_melted)\n</parameter>\n</function>\n</tool_call>", "finite": true}

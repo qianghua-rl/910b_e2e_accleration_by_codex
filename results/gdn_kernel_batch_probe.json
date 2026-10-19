@@ -1,0 +1,38 @@
+{
+  "batch": 16,
+  "heads": 48,
+  "key_dim": 128,
+  "value_dim": 128,
+  "samples_seconds": [
+    0.0004759320057928562,
+    0.00037544136866927145,
+    0.00036450126208364964,
+    0.00037113483995199203,
+    0.0003713497892022133,
+    0.00035669812932610513,
+    0.0003743323031812906,
+    0.000355164660140872
+  ],
+  "median_seconds": 0.0003713497892022133,
+  "finite": true,
+  "output_shape": [
+    16,
+    1,
+    48,
+    128
+  ],
+  "state_shape": [
+    16,
+    48,
+    128,
+    128
+  ],
+  "state_changed_rows": 16,
+  "state_distinct_rows": 16,
+  "batched_vs_single_rows_output_equal": true,
+  "batched_vs_single_rows_state_equal": true,
+  "batched_vs_single_rows_output_max_error": 0.0,
+  "batched_vs_single_rows_state_max_error": 0.0,
+  "kernel_vs_reference_output_max_error": 3.59375,
+  "kernel_vs_reference_state_max_error": 1.2109375
+}

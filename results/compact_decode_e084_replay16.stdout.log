@@ -1,0 +1,41 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/1184 [00:00<?, ?it/s]Loading weights:   0%|          | 1/1184 [00:00<02:07,  9.28it/s]Loading weights:   5%|▍         | 54/1184 [00:00<00:03, 283.45it/s]Loading weights:   9%|▊         | 101/1184 [00:00<00:03, 356.36it/s]Loading weights:  12%|█▎        | 148/1184 [00:00<00:02, 397.07it/s]Loading weights:  16%|█▌        | 188/1184 [00:00<00:02, 394.19it/s]Loading weights:  20%|██        | 239/1184 [00:00<00:02, 413.72it/s]Loading weights:  24%|██▎       | 281/1184 [00:00<00:02, 414.44it/s]Loading weights:  27%|██▋       | 323/1184 [00:00<00:02, 415.29it/s]Loading weights:  31%|███       | 365/1184 [00:00<00:02, 390.44it/s]Loading weights:  35%|███▍      | 412/1184 [00:01<00:01, 401.80it/s]Loading weights:  39%|███▉      | 461/1184 [00:01<00:01, 423.16it/s]Loading weights:  43%|████▎     | 504/1184 [00:01<00:01, 397.69it/s]Loading weights:  46%|████▌     | 545/1184 [00:01<00:01, 356.68it/s]Loading weights:  51%|█████▏    | 607/1184 [00:01<00:01, 424.60it/s]Loading weights:  55%|█████▌    | 652/1184 [00:01<00:01, 410.39it/s]Loading weights:  59%|█████▉    | 702/1184 [00:01<00:01, 413.33it/s]Loading weights:  63%|██████▎   | 745/1184 [00:01<00:01, 394.65it/s]Loading weights:  67%|██████▋   | 789/1184 [00:02<00:01, 392.01it/s]Loading weights:  71%|███████   | 838/1184 [00:02<00:00, 412.41it/s]Loading weights:  91%|█████████ | 1073/1184 [00:02<00:00, 943.05it/s]Loading weights: 100%|██████████| 1184/1184 [00:02<00:00, 523.19it/s]
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py:806: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  init.copy_(module.A_log, torch.empty_like(module.A_log).uniform_(0, 16).log_())
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+{
+  "tasks": 16,
+  "task_ids": [
+    "640",
+    "1137",
+    "214",
+    "1030",
+    "950",
+    "428",
+    "866",
+    "175",
+    "1130",
+    "445",
+    "1161",
+    "611",
+    "108",
+    "1288",
+    "554",
+    "249"
+  ],
+  "order_file": "results/phase2_concise_sdpa_batch16_final32_128.jsonl",
+  "reference_run": "results/gated_rmsnorm_128.jsonl",
+  "data_sha256": "8ad965a8bea67b7a06454324427cebc1233a48624187dcb519eb0190b471fae4",
+  "reference_seconds": 71.85185482446104,
+  "compact_seconds": 74.29580307845026,
+  "speedup": 0.9671051640506717,
+  "all_tokens_exact": true
+}
