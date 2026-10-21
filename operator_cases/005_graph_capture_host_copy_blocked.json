@@ -1,0 +1,13 @@
+{
+  "name": "recurrent_graph_capture_host_copy",
+  "operator": "gdn_recurrent",
+  "mode": "decode",
+  "device": "Ascend910B3",
+  "dtype": "bfloat16",
+  "status": "blocked_environment",
+  "contract": {"stateful": true, "graph_inputs": "tensor-only"},
+  "mechanism": ["npugraph_ex capture", "constant wrapper arguments"],
+  "evidence": ["results/npugraph_ex_const_wrapper_probe.json", "results/npugraph_ex_const_wrapper_probe.stdout.log"],
+  "gates": {"capture": "failed", "reason": "unsupported host-device copy"},
+  "lesson": "Do not keep changing wrappers after the runtime reports an unsupported copy path; reopen only after the dependency changes."
+}

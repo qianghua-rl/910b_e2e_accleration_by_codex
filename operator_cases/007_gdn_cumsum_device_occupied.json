@@ -1,0 +1,28 @@
+{
+  "name": "gdn_prefill_chunk_cumsum_device_occupied",
+  "operator": "gdn_prefill.chunk_cumsum",
+  "mode": "prefill",
+  "device": "Ascend910B3",
+  "dtype": "bfloat16_input_float32_accumulator",
+  "status": "blocked_environment",
+  "contract": {
+    "input": "HF [B,T,H] gate logits, model-side FP32 conversion",
+    "output": "[B,T,H] FP32 inclusive cumsum reset at each 64-token chunk",
+    "state": "stateless",
+    "cu_seqlens": "PTO packed [0,T,...,B*T] contiguous int32",
+    "layout": "dense HF batch and packed PTO BSND stage",
+    "candidate": "single C=64 PTO Vec kernel"
+  },
+  "mechanism": ["replace one cumsum stage only", "retain all downstream GDN stages"],
+  "evidence": ["scripts/gdn_cumsum_capture.py", "scripts/gdn_cumsum_probe.py"],
+  "gates": {
+    "python_fp32": "not run",
+    "hf_reference": "not run",
+    "npu_reference": "not run",
+    "stage_output": "not run",
+    "e100_token_trajectory": "not run",
+    "device": "npu-smi reported ~61.8GiB/64GiB used and active AICore with no visible process IDs",
+    "expand": "stop until exclusive device is available"
+  },
+  "lesson": "A reference and kernel probe cannot be trusted while the device has unexplained active allocation/compute; do not load the 27B or compile a candidate into shared state."
+}

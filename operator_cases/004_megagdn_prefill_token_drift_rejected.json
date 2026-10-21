@@ -1,0 +1,45 @@
+{
+  "name": "megagdn_prefill_batch16_token_drift",
+  "operator": "gdn_prefill",
+  "mode": "prefill",
+  "device": "Ascend910B3",
+  "dtype": "bfloat16",
+  "status": "rejected",
+  "contract": {
+    "public_inputs": {
+      "q": "[packed_batch, T, Hq, D]",
+      "k": "[packed_batch, T, Hq, D]",
+      "v": "[packed_batch, T, Hv, D]",
+      "g": "[packed_batch, T, Hv]",
+      "beta": "[packed_batch, T, Hv]",
+      "dtype": "BF16 at vLLM call boundary"
+    },
+    "internal_layout": {
+      "qkv_beta": "FP16",
+      "g": "FP32",
+      "layout": "head-last sequence tensors; no explicit stride capture in E109",
+      "chunk_size": 128,
+      "launches": 1
+    },
+    "state": "E109 prefill path requires zero/absent initial state; nonzero state falls back to Triton; final state was not independently compared",
+    "cu_seqlens": "required, converted to contiguous int32; packed sequence boundaries; exact runtime values not captured",
+    "batch": 16,
+    "output": "GDN output/token generation; only greedy token IDs were checked, not output tensors or next-token logits",
+    "extra_workspace": "not measured",
+    "numerics": "PTO fused path performs internal BF16-to-FP16 and g-to-FP32 conversions"
+  },
+  "mechanism": ["PTO MegaGDN fused six-stage prefill", "single fused kernel launch"],
+  "evidence": ["results/megagdn_pto_mega_e100_batch16_prefill1_spawn.json", "results/megagdn_triton_e100_batch16_prefill1.json"],
+  "gates": {
+    "workload": "E100 first 16 task IDs and concise prompts, replayed through vLLM-Ascend 0.18.0 eager on one NPU",
+    "wall_seconds": {"baseline": 6.6977741196751595, "candidate": 5.848548300564289},
+    "speedup": 1.1452,
+    "token_trajectory": "failed_16_of_16",
+    "next_token_logits": "not captured for candidate",
+    "model_time": "not isolated",
+    "128_task_e2e": "not run after token failure",
+    "peak_memory": "not measured; candidate logs report weight residency and KV cache capacity only",
+    "expand": "stop"
+  },
+  "lesson": "A 14.5% batch prefill speedup is unusable when every first token changes. Correctness is a hard gate before scaling."
+}

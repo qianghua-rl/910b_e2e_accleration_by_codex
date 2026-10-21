@@ -1,0 +1,13 @@
+{
+  "name": "gdn_batch_kernel_semantic_mismatch",
+  "operator": "gdn_recurrent",
+  "mode": "decode",
+  "device": "Ascend910B3",
+  "dtype": "bfloat16",
+  "status": "rejected",
+  "contract": {"qkv": "[B,1,H,D]", "gate_beta": "[B,1,H]", "state": "[B,H,D,D]", "output": "[B,1,H,D]", "stateful": true},
+  "mechanism": ["vLLM Ascend fused recurrent GDN kernel", "batch16 state update"],
+  "evidence": ["results/gdn_real_batch_compare.json", "results/gdn_kernel_batch_probe.json"],
+  "gates": {"state_error": "failed", "output_top1": "failed", "trajectory": "not run"},
+  "lesson": "Batch-vs-single self-consistency does not prove HF semantic equivalence; verify gate preprocessing, layout, and state orientation."
+}

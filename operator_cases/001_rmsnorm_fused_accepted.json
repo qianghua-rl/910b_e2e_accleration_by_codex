@@ -1,0 +1,13 @@
+{
+  "name": "rmsnorm_fused_npu",
+  "operator": "rmsnorm",
+  "mode": "prefill_decode",
+  "device": "Ascend910B3",
+  "dtype": "bfloat16",
+  "status": "accepted_component",
+  "contract": {"input": "[..., hidden]", "weight": "[hidden]", "output": "same shape", "stateful": false},
+  "mechanism": ["replace framework reduction with torch_npu.npu_rms_norm", "preserve weight and epsilon semantics"],
+  "evidence": ["results/fused_rmsnorm_smoke8.jsonl", "results/fused_rmsnorm_audit.stdout.log"],
+  "gates": {"token_trajectory": "must match reference", "accuracy": "must not regress", "memory": "no material increase"},
+  "lesson": "A fused primitive is reusable only after model-level token and scorer checks; component speed alone is insufficient."
+}

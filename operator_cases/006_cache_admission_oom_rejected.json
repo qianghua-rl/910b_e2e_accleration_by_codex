@@ -1,0 +1,13 @@
+{
+  "name": "python_cache_admission",
+  "operator": "cache_runtime",
+  "mode": "multi_request",
+  "device": "Ascend910B3",
+  "dtype": "bfloat16",
+  "status": "rejected",
+  "contract": {"stateful": true, "capacity": "single 64GiB NPU"},
+  "mechanism": ["Python cache admission and slot merge"],
+  "evidence": ["results/cache_slot_reset_model_probe_timed.json", "results/cache_slot_reset_model_probe_timed.stdout.log"],
+  "gates": {"peak_memory": "failed_oom", "expand": "stop"},
+  "lesson": "A scheduler idea is not viable if its cache copies exceed the remaining HBM budget. Measure peak allocation before quality tests."
+}

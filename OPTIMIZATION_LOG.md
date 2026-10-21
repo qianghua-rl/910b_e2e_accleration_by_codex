@@ -16,6 +16,21 @@ E100 相比 E047 少生成 668 tokens，质量分相同；所以 25.836 秒端�
 
 ### Phase 3 当前路线：补齐归因，再验证底层候选
 
+#### Phase 3 执行细化与 few-shot 案例库（当前执行版）
+
+Phase 3 不再把“优化算子”视为单一步骤。每个候选必须依次经过：
+
+1. **算子契约**：记录输入/输出 shape、stride、dtype、layout、`cu_seqlens`、state 语义、原位更新和精度要求。
+2. **三方 reference**：同一输入分别运行 Python/FP32 reference、HF reference 和当前 vLLM/NPU 实现，比较 output、final state、下一层 hidden、logits 与 greedy top-1。
+3. **单阶段替换**：GDN 的 `chunk_cumsum`、`scaled_dot_kkt`、`solve_tril`、`wy_fast`、`chunk_h`、`chunk_o` 必须逐个替换；每次只改变一个阶段。
+4. **边界成本测量**：同时测纯 kernel、wrapper、transpose/contiguous、metadata、workspace、launch 和完整 model layer，不能用 microbenchmark 代替调用路径成本。
+5. **融合验证**：只有六个阶段逐项对齐后才允许启用 MegaGDN fused kernel；先单序列，再多序列，最后 E100 batch16。
+6. **分层验收**：单层数值 → 固定 prompt logits/top-1 → E100 首批 16 题 token 轨迹 → 32 题 smoke → 128 题 makespan/scorer v3。
+
+每个候选必须满足：E100 batch16 token 轨迹不变、峰值显存不超过预算、墙钟收益超过基线波动且至少 2%；任一 task 轨迹改变、OOM、设备异常或 128 题未达到 `122/128`，立即停止。
+
+新增 `operator_cases/` few-shot 案例库和 `scripts/operator_case.py` 检索/证据检查工具。案例同时包含已接纳组件、MegaGDN token drift、GDN state 语义不匹配、graph capture host copy 和 cache OOM 等失败样例。模型生成新候选前先按 operator/mode/device/dtype/layout 检索相似案例；案例不能替代 reference 和真实 workload 验收，失败案例必须保留以约束错误迁移。
+
 | 阶段 | 工作与产物 | 继续条件 | 停止/转向条件 |
 |---|---|---|---|
 | 0. 冻结 Phase 2 参考 | 固定 E100 配置、数据 hash、scorer v3 失败集合 `[1161,423,952,1035,552,1048]`、15,961 token、265.030 s；E084 cap32 保留作更宽 final-turn budget 的对照，E047 保留作系统参考。 | 只在环境/依赖变化、结果完整性问题或新候选 A/B 时复测必要对照。 | 不因 Phase 3 开始而重跑全量基线；不把 E100 cap12 当作底层 kernel 收益。 |
@@ -866,3 +881,31 @@ E092 finished-row compaction 比参考慢约 3.4%；E096 Python cache admission 
 - B16 的 16 行 state 全部更新；batch16 与逐行 batch1 的 output 和 state 均 bit-equal，最大误差均为0。输出 shape `[16,1,48,128]`，state shape `[16,48,128,128]`。B16 原位 kernel median `0.363 ms/call`，仅说明该通用接口形状数值正确且可执行，不含 HF 的 transpose/contiguous、权重投影或完整 GDN 调用成本。
 - 结果 `results/gdn_kernel_batch_probe.json`；脚本 `scripts/gdn_kernel_batch_probe.py` 语法检查通过。修正后 vLLM kernel 的 batch 语义不再是 blocker，但 E052 真实 HF batch16 adapter 曾触发 vector core exception，且单请求 adapter 比 reference 慢10.5%。下一步须在兼容的 vLLM/Transformers overlay 下重测 HF batch16 token轨迹与端到端前向成本；未完成前不接入主 runner。E100 保持当前最佳。
 - 追加独立 FP32 reference recurrence 对照后，kernel 与公式 reference 的 output 最大误差为`3.59375`、state 最大误差为`1.2109375`。虽然 kernel batch-vs-single 自洽，但当前随机输入的 kernel 参数语义（尤其 g/beta 预处理或 layout）尚未与 HF reference 对齐；不能把该 kernel 的微基准时间用于性能推断。需要按 Qwen3.5/vLLM 完整投影后的 q/k/v/g/beta 语义做对照，当前不继续扩大适配。
+
+## E107 真实 Qwen3.5 batch16 GDN 跨环境 replay（正确性未通过）
+
+- 将验证拆为三个脚本：`scripts/gdn_real_batch_capture.py` 在 `ascend-e2e` 加载真实 Qwen3.5-27B 并从真实 B=16、T=1 decode 调用点抓取 CPU `q/k/v/g/beta/state` 和 HF output/final state/logits；`scripts/gdn_real_batch_kernel.py` 在 `vllm-ascend-py310` 只读取相同 artifact 并执行 Ascend kernel；`scripts/gdn_real_batch_compare.py` 做 CPU 数值比较。artifact=`results/gdn_real_batch_artifact.pt`（88 MiB），kernel 输出=`results/gdn_real_batch_kernel.pt`，比较=`results/gdn_real_batch_compare.json`。
+- 真实张量形状为 q/k/v `[16,1,48,128]`、g/beta `[16,1,48]`、HF state `[16,48,128,128]`。同一输入下 kernel 输出与 HF reference 不一致：output max abs error=`2.3125`、state max abs error=`24.2083`、output argmax 不一致；kernel 输出均 finite。跨环境 kernel 调用含 state transpose/contiguous，20 次中位数约`0.569 ms`，但正确性未通过，不能将其视为净收益。
+- 当前 artifact 保存了 HF 下一 token logits，但 kernel replay 仅替换 GDN recurrence 输出，未把候选输出重新注入完整模型后续 norm/projection/layers，因此尚无候选模型 logits/top-1 对照。也不能用 GDN output tensor 的 argmax 冒充模型 logits top-1。需先解释并修复真实输入下的 output/state 语义差异，再做候选输出注入后的 logits/top-1 与完整调用重复计时。
+- E107 暂停在语义对齐门槛：不接入 Agent runner、不做固定轨迹或 128 题验收。此结果是 kernel 当前参数/layout 适配与 HF 不匹配的实证，不足以断言所有迁移实现均无效。E100 cap12 继续作为批处理参考，单独归因为任务预算调整，不作为底层优化收益。
+
+## E108 MegaGDN PTO prefill capability probe（单请求通过，E100 验收未完成）
+
+- 当前 `vllm-ascend-py310` 实际已安装 editable `megagdn-pto`（源码 `/tmp/megagdn-pto`），通过 `VLLM_PTO_PATCH_DIR=/tmp/megagdn-pto/vllm_patch` 注入；该 checkout 使用 `VLLM_PTO_MEGAKERNEL=1`，不是 `VLLM_ASCEND_PTO_CHUNK_GDN`。首次真实运行暴露 wrapper 向 `run_mega_kernel()` 传入已删除的 `stream` 参数；做了最小兼容修补并保留失败日志 `results/megagdn_pto_mega_probe.log`。
+- 在本地完整 `model/qwen3.5-27b`、单 NPU、vLLM `0.18.0`、eager、同一 128-token prompt、warmup=1/repeat=2 下，MegaGDN `pto_mega` median TTFT=`335.27 ms`（mean=`335.27 ms`），默认 Triton median TTFT=`399.43 ms`（mean=`399.43 ms`），局部 TTFT 减少约 `16.1%`。结果分别保存于 `results/megagdn_pto_mega_probe_rerun.jsonl` 和 `results/megagdn_triton_probe.jsonl`。
+- 两次 probe 都成功加载完整 27B 并生成 1 token；这是单请求、短 prompt 的 prefill capability/局部性能证据，不包含 E100 首批 16 题、concise 协议、固定 greedy token 轨迹，也没有 batch16 的真实题目输入。因此不能据此宣称端到端收益或扩展到 32/128 题。下一步仍需在兼容的 vLLM runner 中复现 E100 首轮 batch16，并同时记录 prefill 墙钟与 token IDs；若收益低于 2% 或轨迹改变则淘汰。
+
+## E109 MegaGDN E100 首批 batch16 首 token 对照（淘汰）
+
+- 新增 `scripts/megagdn_prefill_batch16.py`，复用 E100 首批固定顺序 `[640,1137,214,1030,950,428,866,175,1130,445,1161,611,108,1288,554,249]`、concise system/tool schema 和本地完整 Qwen3.5-27B；warmup 后只生成 1 个 greedy token，不执行工具轮，记录 batch `generate()` 墙钟和每题 token ID。结果保存于 `results/megagdn_triton_e100_batch16_prefill1.json` 与 `results/megagdn_pto_mega_e100_batch16_prefill1_spawn.json`。
+- 同一 vLLM-Ascend 0.18.0/eager/单 NPU 条件下，默认 Triton 墙钟 `6.6978 s`，MegaGDN `5.8485 s`，局部 batch16 首轮调用约快 `14.5%`。但 16/16 任务首 token 轨迹均改变：Triton 为 token `248058`，MegaGDN 为 token `0`。MegaGDN 真实 batch16 prefill 输出语义未对齐，速度收益不可采用。
+- 按停止条件（任一 task token 轨迹改变即淘汰）停止该候选：不扩展 32/128 题、不接入 Agent runner。该结果证明当前 PTO wrapper/kernel 适配不能用于这组 E100 prompts，不能推广为所有 GDN 实现无效。wrapper 契约为 packed sequence、要求 `cu_seqlens`、零/无 initial state，内部 q/k/v/beta 转 FP16、g 转 FP32、C=128 单 fused launch；具体 stride、`cu_seqlens` 数值、输出/state 张量差异及 candidate logits 均未保存。E109 的计时是在 vLLM Triton 与 vLLM PTO 的 matched runtime 首轮生成对照，不是 E100 HF runner 的 model/e2e A/B；candidate model-only 时间、128题 makespan 和 peak memory 都未测，日志中的 0.90 GiB 是可用 KV cache 预算，不是峰值显存。case 004 已明确这些证据边界。E100 继续保持当前自有参考。
+
+## E110 GDN `chunk_cumsum` 单阶段探针（设备占用，未执行）
+
+- 本轮只研究 GDN prefill 的 `chunk_cumsum`，不改 decode recurrent、scheduler、prompt 协议或其它五个阶段。契约：HF 输入 `g` 为 `[B,T,H]`、原始 BF16 gate logits在模型内先转 FP32，输出同 shape FP32，按每个序列每个64-token chunk独立沿 T 做 inclusive cumsum；无 recurrent state。PTO packed 适配将输入视为 `[1,B*T,H]`，以 contiguous int32 `cu_seqlens=[0,T,...,B*T]` 定义序列边界，输出仍为 FP32 `[1,B*T,H]`，不应跨序列累加。
+- 收益预算：这是 GDN prefill 的一个 Vec-only阶段；候选必须同时计 kernel+launch、wrapper、pack/layout、workspace 和 peak allocation。只有在 E100 16题首轮固定 token 全部一致后才可扩展。即使把当前阶段在所有48层、16个prefill调用、每序列4096 token的测量时间全部视为可消除工作，才可作为2%端到端上限信号；实际 E100 prompt 更短，真实上限会更低。
+- 新增 `scripts/gdn_cumsum_capture.py`：复用 E100 首批 task IDs、concise protocol、SDPA、BF16、fused RMSNorm/Gated RMSNorm，在真实 HF GDN prefill 调用点保存 `g`、shape/stride/dtype、prompt lengths 和首 token。新增 `scripts/gdn_cumsum_probe.py`：比较 Python/FP32 reference、HF chunk reference、当前 vLLM/NPU `chunk_local_cumsum` 与 PTO C=64 kernel，分层记录 device/host stage、wrapper、peak delta 和理论上限；任一 output mismatch 在计时和扩展前停止。
+- 预定命令：`source scripts/env.sh && python scripts/gdn_cumsum_capture.py --output results/gdn_cumsum_e100_batch16.pt`；随后在兼容的 vLLM/CANN 环境执行 `python scripts/gdn_cumsum_probe.py --artifact results/gdn_cumsum_e100_batch16.pt --output results/gdn_cumsum_probe.json`。本次 `npu-smi info` 显示两张910B3各约61.8GiB/64GiB已用且AICore约30%，虽然没有可见进程ID，无法证明独占设备，因此未启动27B加载或kernel编译。候选状态为 blocked_environment，不能据此宣称性能或正确性。
+- 复查时设备状态未变化；host `ps` 没有可归属的 Python/vLLM/Ascend 进程，且该设备报告“不支持查询 proc info”，因此无法安全释放或归因这约61.8GiB分配。已在 `ascend-e2e` CPU路径用随机 `B=3,T=130,H=5,C=64` 验证 Python chunk-local cumsum 与 padded HF 语义逐元素相等，并验证 packed `[1,B*T,H]` 按 `cu_seqlens=[0,130,260,390]` 分段不会跨序列累加；这只证明参考公式，不替代NPU kernel或真实E100结果。继续条件仍是获得独占且有足够空闲HBM后执行两条预定命令。
+- 第三次连续轮询仍显示两卡约61.8GiB/64GiB占用，AICore非零，且无法从主机或 `npu-smi` 取得归属进程；因此本候选在当前外部设备状态下阻断。恢复条件：设备重置或外部作业释放分配后，重新确认独占状态，再运行 capture → reference/NPU/PTO cumsum 分层验证；在此之前不扩大到32/128题。

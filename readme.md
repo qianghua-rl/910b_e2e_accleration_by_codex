@@ -61,3 +61,109 @@
 6. 区分内存带宽、计算吞吐、启动延迟和功耗上限。 达到带宽或算力上限后，继续调 kernel 往往收益很小；功耗受限时，缩短一个低功耗阶段甚至可能让整体收益消失。优化目标应是模型运行时的端到端关键路径，而非孤立 kernel 的最好成绩。
 7. 验证正确性和测量可信度。 日志强调了病态输入、长上下文测试、固定轨迹 replay、同设备交替 A/B，以及区分数值导致的轨迹变化与实际速度变化。这些方法与硬件无关，迁移时尤其重要。
 
+
+
+你是本项目的算子优化工程师。请继续优化当前仓库中的 Qwen3.5-27B 单卡 Ascend910B3 推理路径。
+
+必须遵守以下实验规则：
+
+1. 先阅读：
+   - OPTIMIZATION_LOG.md
+   - readme.md
+   - operator_cases/README.md
+   - 与当前候选相关的 operator_cases/*.json
+2. 当前参考是 E100：
+   - batch16
+   - concise protocol
+   - BF16
+   - greedy
+   - 单 NPU
+   - 128 题 makespan 265.030128 秒
+   - scorer v3 为 122/128
+3. 每次只修改一个变量，不同时改变模型、协议、调度和算子。
+4. 新候选必须先写出：
+   - 算子契约
+   - 输入输出 shape、stride、dtype、layout
+   - state 和 cu_seqlens 语义
+   - 当前瓶颈和理论收益上限
+   - 额外显存和数值风险
+   - 验证命令
+   - 停止条件
+5. 按以下顺序执行：
+   a. Python/FP32 reference 对照
+   b. HF reference 对照
+   c. 当前 NPU/vLLM 实现对照
+   d. 单阶段候选实现
+   e. kernel、wrapper、layout conversion、workspace、launch 分层计时
+   f. 固定 prompt 的 logits 和 greedy top-1 对照
+   g. E100 首批 16 题首轮 token 轨迹对照
+   h. 只有通过后才做 32 题 smoke
+   i. 只有 32 题通过后才做 128 题
+6. 任意一个 task 的 token 轨迹改变、state 语义不一致、OOM、设备异常，立即淘汰该候选，不扩大测试。
+7. 局部 kernel 加速不能作为最终结论。候选必须满足：
+   - batch16 token 轨迹不变
+   - 稳定收益至少 2%，并超过基线波动
+   - peak memory 不超过 E100 预算
+   - 128 题 scorer v3 至少 122/128
+   - makespan 快于 E100
+8. 必须使用 operator_cases/ 中的相似成功和失败案例作为参考，并说明哪些条件可以迁移、哪些不能迁移。
+9. 不要重开日志中已经明确淘汰的方向，除非软件栈、硬件接口或实现前提已经发生变化。
+10. 完成后更新：
+    - 实现代码
+    - 验证脚本
+    - operator_cases/ 新案例
+    - OPTIMIZATION_LOG.md
+11. 最终报告必须包含：
+    - 修改文件
+    - 使用的参考案例
+    - 实际命令
+    - correctness 结果
+    - token 轨迹结果
+    - kernel/model/e2e 时间
+    - peak memory
+    - 是否接纳、淘汰或阻断
+    - 下一步建议
+
+先检查当前工作区和已有结果，再决定本轮最值得执行的一个候选。不要只给计划，必须完成能执行的验证。
+
+针对 GDN prefill，可以追加这个候选限定：
+
+本轮只研究 GDN prefill，不改 decode recurrent、不改 Agent scheduler、不改 prompt 协议。
+
+优先顺序：
+1. 确认 Qwen3.5 的 q/k/v/g/beta/state layout 和 HF reference 语义；
+2. 逐个验证 chunk_cumsum、scaled_dot_kkt、solve_tril、wy_fast、chunk_h、chunk_o；
+3. 先做单阶段替换，再考虑 MegaGDN fused kernel；
+4. 任何阶段 output、final_state 或下一 token logits 不一致，都停止该阶段；
+5. 只有 E100 batch16 首 token 全部一致，才允许继续性能测试。
+
+针对其他算子，可以使用这个更短的单候选模板：
+
+本轮只优化 [算子名称]。
+
+参考案例：
+- [case 文件名]
+
+当前实现：
+- 文件：
+- 调用位置：
+- 输入 shape：
+- 输出 shape：
+
+请完成：
+1. 读取参考案例和已有 benchmark；
+2. 写出当前算子契约和收益预算；
+3. 实现一个可回退的候选；
+4. 编写或复用 reference correctness 检查；
+5. 比较 output、state、logits、top-1、kernel 时间、wrapper 时间和 peak memory；
+6. 在固定 E100 batch16 首轮上比较 token IDs；
+7. 根据门槛将候选标记为 accepted、rejected 或 blocked；
+8. 更新 operator_cases/ 和 OPTIMIZATION_LOG.md。
+
+停止条件：
+- 任意 token 轨迹改变；
+- 数值语义无法解释；
+- OOM 或设备异常；
+- batch16 稳定收益低于 2%。
+
+请根据 Phase 1 成本归因和 operator_cases 检索结果选择候选。若没有足够证据证明某个算子具有至少 2% 的端到端收益上限，先补齐诊断，不要盲目实现 kernel。

@@ -1,0 +1,13 @@
+{
+  "name": "gated_rmsnorm_swiglu_fused",
+  "operator": "gated_rmsnorm_swiglu",
+  "mode": "prefill_decode",
+  "device": "Ascend910B3",
+  "dtype": "bfloat16",
+  "status": "accepted_component",
+  "contract": {"hidden": "[..., hidden]", "gate": "[..., hidden]", "output": "[..., hidden]", "stateful": false},
+  "mechanism": ["fuse RMS normalization and SwiGLU", "avoid intermediate host-visible tensors"],
+  "evidence": ["results/gated_rmsnorm_swiglu_probe.json", "results/gated_rmsnorm_128.scoring_v3.jsonl"],
+  "gates": {"top1": "must match reference on fixed prompts", "accuracy": ">=122/128", "peak_memory": "within E100 budget"},
+  "lesson": "Fusion must be tested in both prefill and decode shapes because a prefill-only win can be hidden by later calls."
+}
