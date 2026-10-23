@@ -1,0 +1,341 @@
+{
+  "configuration": "E100 HF BF16 SDPA batch16, fused RMSNorm/gated RMSNorm, single-step recurrent",
+  "tasks": [
+    640,
+    1137,
+    214,
+    1030,
+    950,
+    428,
+    866,
+    175,
+    1130,
+    445,
+    1161,
+    611,
+    108,
+    1288,
+    554,
+    249
+  ],
+  "profile_steps": [
+    "2",
+    "3",
+    "4",
+    "5"
+  ],
+  "decode_steps": 4,
+  "device_compute_us": 493910.1999999999,
+  "device_stage_us": 710294.5,
+  "operators": [
+    [
+      "aclnnMatmul",
+      {
+        "launches": 1996,
+        "duration_us": 237045.67999999996
+      }
+    ],
+    [
+      "aclnnConvolution",
+      {
+        "launches": 1344,
+        "duration_us": 116230.99999999978
+      }
+    ],
+    [
+      "aclnnMul",
+      {
+        "launches": 2632,
+        "duration_us": 49617.33999999995
+      }
+    ],
+    [
+      "aclnnInplaceCopy",
+      {
+        "launches": 2348,
+        "duration_us": 22529.219999999943
+      }
+    ],
+    [
+      "aclnnReduceSum",
+      {
+        "launches": 768,
+        "duration_us": 14146.719999999998
+      }
+    ],
+    [
+      "aclnnAdd",
+      {
+        "launches": 1036,
+        "duration_us": 9831.340000000002
+      }
+    ],
+    [
+      "aclnnFlashAttentionScore",
+      {
+        "launches": 64,
+        "duration_us": 9340.719999999998
+      }
+    ],
+    [
+      "RmsNorm",
+      {
+        "launches": 836,
+        "duration_us": 8179.56
+      }
+    ],
+    [
+      "aclnnCat",
+      {
+        "launches": 1040,
+        "duration_us": 6364.259999999997
+      }
+    ],
+    [
+      "aclnnSilu",
+      {
+        "launches": 640,
+        "duration_us": 5045.28
+      }
+    ],
+    [
+      "aclnnRepeatInterleaveIntWithDim",
+      {
+        "launches": 1152,
+        "duration_us": 4314.19999999999
+      }
+    ],
+    [
+      "aclnnAdds",
+      {
+        "launches": 1040,
+        "duration_us": 1578.8599999999992
+      }
+    ],
+    [
+      "aclnnSub",
+      {
+        "launches": 192,
+        "duration_us": 1546.9600000000005
+      }
+    ],
+    [
+      "aclnnMuls",
+      {
+        "launches": 200,
+        "duration_us": 1415.9999999999984
+      }
+    ],
+    [
+      "aclnnIndex",
+      {
+        "launches": 4,
+        "duration_us": 1308.7
+      }
+    ],
+    [
+      "SwiGlu",
+      {
+        "launches": 192,
+        "duration_us": 1191.5599999999997
+      }
+    ],
+    [
+      "aclnnArgMax",
+      {
+        "launches": 8,
+        "duration_us": 907.22
+      }
+    ],
+    [
+      "aclnnNeg",
+      {
+        "launches": 448,
+        "duration_us": 743.66
+      }
+    ],
+    [
+      "aclnnSigmoid",
+      {
+        "launches": 256,
+        "duration_us": 699.4400000000004
+      }
+    ],
+    [
+      "aclnnRsqrt",
+      {
+        "launches": 384,
+        "duration_us": 419.1200000000003
+      }
+    ],
+    [
+      "aclnnExp",
+      {
+        "launches": 384,
+        "duration_us": 412.2799999999997
+      }
+    ],
+    [
+      "aclnnSoftplus",
+      {
+        "launches": 192,
+        "duration_us": 381.38000000000034
+      }
+    ],
+    [
+      "aclnnContiguous",
+      {
+        "launches": 64,
+        "duration_us": 187.10000000000005
+      }
+    ],
+    [
+      "aclnnLogicalNot",
+      {
+        "launches": 64,
+        "duration_us": 121.26
+      }
+    ],
+    [
+      "aclnnArange",
+      {
+        "launches": 20,
+        "duration_us": 99.03999999999998
+      }
+    ],
+    [
+      "aclnnEqTensor",
+      {
+        "launches": 8,
+        "duration_us": 56.52
+      }
+    ],
+    [
+      "aclnnBitwiseAndTensor",
+      {
+        "launches": 16,
+        "duration_us": 37.36
+      }
+    ],
+    [
+      "aclnnInplaceFillScalar",
+      {
+        "launches": 20,
+        "duration_us": 28.539999999999996
+      }
+    ],
+    [
+      "aclnnAny",
+      {
+        "launches": 4,
+        "duration_us": 21.939999999999998
+      }
+    ],
+    [
+      "aclnnEmbedding",
+      {
+        "launches": 4,
+        "duration_us": 18.52
+      }
+    ],
+    [
+      "aclnnLeTensor",
+      {
+        "launches": 4,
+        "duration_us": 12.0
+      }
+    ],
+    [
+      "aclnnBitwiseOrTensor",
+      {
+        "launches": 8,
+        "duration_us": 11.94
+      }
+    ],
+    [
+      "aclnnAll",
+      {
+        "launches": 4,
+        "duration_us": 11.900000000000002
+      }
+    ],
+    [
+      "aclnnRsubs",
+      {
+        "launches": 4,
+        "duration_us": 11.600000000000001
+      }
+    ],
+    [
+      "aclnnMax",
+      {
+        "launches": 4,
+        "duration_us": 10.34
+      }
+    ],
+    [
+      "aclnnCos",
+      {
+        "launches": 4,
+        "duration_us": 9.600000000000001
+      }
+    ],
+    [
+      "aclnnSin",
+      {
+        "launches": 4,
+        "duration_us": 9.52
+      }
+    ],
+    [
+      "aclnnEqScalar",
+      {
+        "launches": 4,
+        "duration_us": 8.0
+      }
+    ],
+    [
+      "aclnnBitwiseNot",
+      {
+        "launches": 4,
+        "duration_us": 4.52
+      }
+    ]
+  ],
+  "candidate": {
+    "name": "single-token causal depthwise convolution update",
+    "source": "transformers.models.qwen3_5.modeling_qwen3_5.torch_causal_conv1d_update",
+    "scope": "only T=1 decode; retain prefill and cache layout",
+    "conv_device_us_per_decode_step": 29057.749999999945,
+    "fraction_of_profile_compute": 0.23532820338595925,
+    "fraction_of_profile_stage": 0.16363775870431177,
+    "screening_target": "50% local convolution reduction implies about 8.2% of profiled stage; conditional projection only, not measured E100 gain",
+    "stop_threshold": "Require measured wrapper savings exceeding the workload-weighted 2% budget; no E100 gain inferred from profiler extrapolation",
+    "risk": "BF16 convolution accumulation/rounding and in-place cache aliasing; raw token matches do not prove logits equivalence",
+    "prior_rejection": "E066 unavailable aclnnFusedCausalConv1d symbols; do not retry that API",
+    "validation": [
+      "local output and updated cache vs original on real inputs",
+      "model logits and greedy multi-step trajectory vs E100",
+      "fixed workload audit/quality and unprofiled makespan"
+    ],
+    "conditional_50_percent_saving_seconds_all_steps_at_batch16": 18.277324749999966,
+    "required_ms_saved_per_step_for_2percent_e100": 4.213515548489666
+  },
+  "limitations": [
+    "4 early decode steps in first batch, not whole workload",
+    "profiler adds overhead; busy gaps are not all removable",
+    "operator sums can overlap; step computing reports union",
+    "no candidate implementation or speedup claimed"
+  ],
+  "kernel_csv": "results/profile_e100_decode_only/06f2b62264eb_146457_20261022120439762_ascend_pt/ASCEND_PROFILER_OUTPUT/kernel_details.csv",
+  "step_csv": "results/profile_e100_decode_only/06f2b62264eb_146457_20261022120439762_ascend_pt/ASCEND_PROFILER_OUTPUT/step_trace_time.csv",
+  "workload_reconstruction": {
+    "method": "group round records by (turn,batch_generation_seconds), max generated length minus one prefill forward; verify against runner",
+    "generation_calls": 16,
+    "decode_steps": 1258,
+    "batch16_decode_steps": 1258,
+    "batch_sizes": {
+      "16": 16
+    }
+  }
+}

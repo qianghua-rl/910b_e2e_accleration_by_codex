@@ -1,0 +1,16 @@
+{
+  "pairs": [
+    {
+      "trial": 1,
+      "relative_wall_saving": -0.008189643705264649,
+      "control_drift": 0.02625084092761468
+    },
+    {
+      "trial": 3,
+      "relative_wall_saving": 0.06940479036040081,
+      "control_drift": 0.00427113032819903
+    }
+  ],
+  "all_logits_exact": true,
+  "decision": "no stable benefit; fixed-padding replay diagnostic only, do not deploy"
+}

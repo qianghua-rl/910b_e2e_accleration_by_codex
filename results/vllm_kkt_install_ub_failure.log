@@ -1,0 +1,47 @@
+KKT installation/reference failure archive
+Thu Oct 22 07:48:19 UTC 2026
+command: source conda.sh; conda activate ascend-e2e; source scripts/env.sh; python scripts/gdn_scaled_dot_kkt_probe.py --input results/gdn_kkt_e100_batch16.pt
+artifact: results/gdn_kkt_e100_batch16.pt
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+g: shape=(16, 459, 48) dtype=torch.float32 stride=(22032, 48, 1)
+key: shape=(16, 459, 48, 128) dtype=torch.bfloat16 stride=(2820096, 6144, 128, 1)
+beta: shape=(16, 459, 48) dtype=torch.bfloat16 stride=(22032, 48, 1)
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+torch 2.9.1+cpu
+torch_npu 2.9.1
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+Traceback (most recent call last):
+  File "/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/gdn_scaled_dot_kkt_probe.py", line 294, in <module>
+    main()
+  File "/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/gdn_scaled_dot_kkt_probe.py", line 204, in main
+    current_fn = current_kkt_fn(key, beta, g_sum)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/gdn_scaled_dot_kkt_probe.py", line 96, in current_kkt_fn
+    from fla_vendor.chunk_scaled_dot_kkt import chunk_scaled_dot_kkt_fwd
+  File "/tmp/megagdn-pto/kernels/triton_baseline/fla_vendor/chunk_scaled_dot_kkt.py", line 13, in <module>
+    from vllm.triton_utils import tl, triton
+ModuleNotFoundError: No module named 'vllm'
+[ERROR] 2026-10-22-07:48:46 (PID:63568, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+
+exit_status=1

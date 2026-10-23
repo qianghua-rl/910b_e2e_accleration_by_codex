@@ -1,0 +1,1482 @@
+{
+  "rows": [
+    {
+      "tag": "8a",
+      "threads": 8,
+      "steps": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "kernel_count": 17416,
+      "computing_union_us": 494270.0199999999,
+      "stage_us": 712701.25,
+      "free_us": 218430.91999999253,
+      "families": {
+        "aclnnArange": {
+          "count": 20,
+          "sum_us": 99.94
+        },
+        "aclnnAdd": {
+          "count": 1036,
+          "sum_us": 10352.220000000001
+        },
+        "aclnnAdds": {
+          "count": 1040,
+          "sum_us": 1604.3799999999992
+        },
+        "aclnnCat": {
+          "count": 1040,
+          "sum_us": 6227.000000000001
+        },
+        "aclnnInplaceFillScalar": {
+          "count": 24,
+          "sum_us": 71.64
+        },
+        "aclnnInplaceCopy": {
+          "count": 2348,
+          "sum_us": 22998.159999999887
+        },
+        "aclnnInplaceScatterValue": {
+          "count": 16,
+          "sum_us": 98.24
+        },
+        "aclnnArgMax": {
+          "count": 8,
+          "sum_us": 905.52
+        },
+        "aclnnMul": {
+          "count": 2632,
+          "sum_us": 48986.88
+        },
+        "aclnnRsubs": {
+          "count": 4,
+          "sum_us": 11.34
+        },
+        "aclnnBitwiseOrTensor": {
+          "count": 8,
+          "sum_us": 12.360000000000001
+        },
+        "aclnnEqTensor": {
+          "count": 8,
+          "sum_us": 56.98
+        },
+        "aclnnAny": {
+          "count": 4,
+          "sum_us": 23.16
+        },
+        "aclnnBitwiseNot": {
+          "count": 4,
+          "sum_us": 4.76
+        },
+        "aclnnBitwiseAndTensor": {
+          "count": 16,
+          "sum_us": 40.06
+        },
+        "aclnnMax": {
+          "count": 4,
+          "sum_us": 10.68
+        },
+        "aclnnEqScalar": {
+          "count": 4,
+          "sum_us": 9.18
+        },
+        "aclnnEmbedding": {
+          "count": 4,
+          "sum_us": 18.939999999999998
+        },
+        "aclnnAll": {
+          "count": 4,
+          "sum_us": 12.74
+        },
+        "aclnnLeTensor": {
+          "count": 4,
+          "sum_us": 12.22
+        },
+        "aclnnIndex": {
+          "count": 4,
+          "sum_us": 1278.6399999999999
+        },
+        "aclnnMatmul": {
+          "count": 1996,
+          "sum_us": 237306.41999999978
+        },
+        "aclnnCos": {
+          "count": 4,
+          "sum_us": 9.52
+        },
+        "aclnnMuls": {
+          "count": 200,
+          "sum_us": 1280.8599999999976
+        },
+        "aclnnSin": {
+          "count": 4,
+          "sum_us": 9.08
+        },
+        "RmsNorm": {
+          "count": 836,
+          "sum_us": 7788.019999999997
+        },
+        "aclnnConvolution": {
+          "count": 1344,
+          "sum_us": 116668.63999999993
+        },
+        "aclnnSilu": {
+          "count": 640,
+          "sum_us": 5427.440000000003
+        },
+        "aclnnSigmoid": {
+          "count": 256,
+          "sum_us": 735.8400000000003
+        },
+        "aclnnExp": {
+          "count": 384,
+          "sum_us": 414.8600000000002
+        },
+        "aclnnNeg": {
+          "count": 448,
+          "sum_us": 756.8399999999996
+        },
+        "aclnnSoftplus": {
+          "count": 192,
+          "sum_us": 378.81999999999977
+        },
+        "aclnnRepeatInterleaveIntWithDim": {
+          "count": 1152,
+          "sum_us": 4284.079999999982
+        },
+        "aclnnReduceSum": {
+          "count": 768,
+          "sum_us": 14206.840000000002
+        },
+        "aclnnRsqrt": {
+          "count": 384,
+          "sum_us": 421.6800000000003
+        },
+        "aclnnSub": {
+          "count": 192,
+          "sum_us": 1356.4000000000005
+        },
+        "SwiGlu": {
+          "count": 192,
+          "sum_us": 1144.3599999999994
+        },
+        "aclnnContiguous": {
+          "count": 64,
+          "sum_us": 155.87999999999997
+        },
+        "aclnnLogicalNot": {
+          "count": 64,
+          "sum_us": 123.08000000000001
+        },
+        "aclnnFlashAttentionScore": {
+          "count": 64,
+          "sum_us": 8966.320000000002
+        }
+      },
+      "fixed_replay_equal": true,
+      "affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188
+      ]
+    },
+    {
+      "tag": "1",
+      "threads": 1,
+      "steps": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "kernel_count": 17416,
+      "computing_union_us": 494450.49999999953,
+      "stage_us": 731701.25,
+      "free_us": 237250.71999999075,
+      "families": {
+        "aclnnArange": {
+          "count": 20,
+          "sum_us": 98.53999999999998
+        },
+        "aclnnAdd": {
+          "count": 1036,
+          "sum_us": 9836.700000000017
+        },
+        "aclnnAdds": {
+          "count": 1040,
+          "sum_us": 1575.020000000002
+        },
+        "aclnnCat": {
+          "count": 1040,
+          "sum_us": 6354.919999999998
+        },
+        "aclnnInplaceFillScalar": {
+          "count": 24,
+          "sum_us": 76.32000000000001
+        },
+        "aclnnInplaceCopy": {
+          "count": 2348,
+          "sum_us": 22593.220000000005
+        },
+        "aclnnInplaceScatterValue": {
+          "count": 16,
+          "sum_us": 94.72
+        },
+        "aclnnArgMax": {
+          "count": 8,
+          "sum_us": 906.7800000000001
+        },
+        "aclnnMul": {
+          "count": 2632,
+          "sum_us": 49095.49999999998
+        },
+        "aclnnRsubs": {
+          "count": 4,
+          "sum_us": 11.5
+        },
+        "aclnnBitwiseOrTensor": {
+          "count": 8,
+          "sum_us": 12.839999999999998
+        },
+        "aclnnEqTensor": {
+          "count": 8,
+          "sum_us": 57.38
+        },
+        "aclnnAny": {
+          "count": 4,
+          "sum_us": 20.580000000000002
+        },
+        "aclnnBitwiseNot": {
+          "count": 4,
+          "sum_us": 4.959999999999999
+        },
+        "aclnnBitwiseAndTensor": {
+          "count": 16,
+          "sum_us": 40.86
+        },
+        "aclnnMax": {
+          "count": 4,
+          "sum_us": 10.64
+        },
+        "aclnnEqScalar": {
+          "count": 4,
+          "sum_us": 9.040000000000001
+        },
+        "aclnnEmbedding": {
+          "count": 4,
+          "sum_us": 18.84
+        },
+        "aclnnAll": {
+          "count": 4,
+          "sum_us": 12.219999999999999
+        },
+        "aclnnLeTensor": {
+          "count": 4,
+          "sum_us": 12.0
+        },
+        "aclnnIndex": {
+          "count": 4,
+          "sum_us": 1315.76
+        },
+        "aclnnMatmul": {
+          "count": 1996,
+          "sum_us": 238295.7599999999
+        },
+        "aclnnCos": {
+          "count": 4,
+          "sum_us": 9.719999999999999
+        },
+        "aclnnMuls": {
+          "count": 200,
+          "sum_us": 1357.0400000000025
+        },
+        "aclnnSin": {
+          "count": 4,
+          "sum_us": 9.28
+        },
+        "RmsNorm": {
+          "count": 836,
+          "sum_us": 8003.619999999998
+        },
+        "aclnnConvolution": {
+          "count": 1344,
+          "sum_us": 115944.23999999996
+        },
+        "aclnnSilu": {
+          "count": 640,
+          "sum_us": 5104.5199999999995
+        },
+        "aclnnSigmoid": {
+          "count": 256,
+          "sum_us": 709.2399999999996
+        },
+        "aclnnExp": {
+          "count": 384,
+          "sum_us": 415.3200000000004
+        },
+        "aclnnNeg": {
+          "count": 448,
+          "sum_us": 747.1400000000002
+        },
+        "aclnnSoftplus": {
+          "count": 192,
+          "sum_us": 378.79999999999956
+        },
+        "aclnnRepeatInterleaveIntWithDim": {
+          "count": 1152,
+          "sum_us": 4357.01999999997
+        },
+        "aclnnReduceSum": {
+          "count": 768,
+          "sum_us": 14674.16000000001
+        },
+        "aclnnRsqrt": {
+          "count": 384,
+          "sum_us": 417.8000000000001
+        },
+        "aclnnSub": {
+          "count": 192,
+          "sum_us": 1464.4399999999996
+        },
+        "SwiGlu": {
+          "count": 192,
+          "sum_us": 1218.8799999999997
+        },
+        "aclnnContiguous": {
+          "count": 64,
+          "sum_us": 170.25999999999996
+        },
+        "aclnnLogicalNot": {
+          "count": 64,
+          "sum_us": 119.21999999999996
+        },
+        "aclnnFlashAttentionScore": {
+          "count": 64,
+          "sum_us": 8895.699999999999
+        }
+      },
+      "fixed_replay_equal": true,
+      "affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188
+      ]
+    },
+    {
+      "tag": "4",
+      "threads": 4,
+      "steps": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "kernel_count": 17416,
+      "computing_union_us": 494896.2600000003,
+      "stage_us": 696962.0,
+      "free_us": 202065.69999999323,
+      "families": {
+        "aclnnArange": {
+          "count": 20,
+          "sum_us": 106.1
+        },
+        "aclnnAdd": {
+          "count": 1036,
+          "sum_us": 9816.179999999988
+        },
+        "aclnnAdds": {
+          "count": 1040,
+          "sum_us": 1580.5599999999997
+        },
+        "aclnnCat": {
+          "count": 1040,
+          "sum_us": 6357.280000000003
+        },
+        "aclnnInplaceFillScalar": {
+          "count": 24,
+          "sum_us": 75.00000000000001
+        },
+        "aclnnInplaceCopy": {
+          "count": 2348,
+          "sum_us": 22951.139999999898
+        },
+        "aclnnInplaceScatterValue": {
+          "count": 16,
+          "sum_us": 96.80000000000001
+        },
+        "aclnnArgMax": {
+          "count": 8,
+          "sum_us": 905.8
+        },
+        "aclnnMul": {
+          "count": 2632,
+          "sum_us": 49546.97999999989
+        },
+        "aclnnRsubs": {
+          "count": 4,
+          "sum_us": 11.76
+        },
+        "aclnnBitwiseOrTensor": {
+          "count": 8,
+          "sum_us": 13.040000000000001
+        },
+        "aclnnEqTensor": {
+          "count": 8,
+          "sum_us": 58.019999999999996
+        },
+        "aclnnAny": {
+          "count": 4,
+          "sum_us": 20.64
+        },
+        "aclnnBitwiseNot": {
+          "count": 4,
+          "sum_us": 5.08
+        },
+        "aclnnBitwiseAndTensor": {
+          "count": 16,
+          "sum_us": 37.42
+        },
+        "aclnnMax": {
+          "count": 4,
+          "sum_us": 10.24
+        },
+        "aclnnEqScalar": {
+          "count": 4,
+          "sum_us": 10.18
+        },
+        "aclnnEmbedding": {
+          "count": 4,
+          "sum_us": 18.44
+        },
+        "aclnnAll": {
+          "count": 4,
+          "sum_us": 12.299999999999999
+        },
+        "aclnnLeTensor": {
+          "count": 4,
+          "sum_us": 12.399999999999999
+        },
+        "aclnnIndex": {
+          "count": 4,
+          "sum_us": 1334.44
+        },
+        "aclnnMatmul": {
+          "count": 1996,
+          "sum_us": 237623.78000000032
+        },
+        "aclnnCos": {
+          "count": 4,
+          "sum_us": 10.059999999999999
+        },
+        "aclnnMuls": {
+          "count": 200,
+          "sum_us": 1420.4799999999973
+        },
+        "aclnnSin": {
+          "count": 4,
+          "sum_us": 9.099999999999998
+        },
+        "RmsNorm": {
+          "count": 836,
+          "sum_us": 8254.959999999995
+        },
+        "aclnnConvolution": {
+          "count": 1344,
+          "sum_us": 116204.5600000001
+        },
+        "aclnnSilu": {
+          "count": 640,
+          "sum_us": 5043.679999999996
+        },
+        "aclnnSigmoid": {
+          "count": 256,
+          "sum_us": 703.1600000000008
+        },
+        "aclnnExp": {
+          "count": 384,
+          "sum_us": 413.29999999999956
+        },
+        "aclnnNeg": {
+          "count": 448,
+          "sum_us": 740.4599999999998
+        },
+        "aclnnSoftplus": {
+          "count": 192,
+          "sum_us": 383.1199999999996
+        },
+        "aclnnRepeatInterleaveIntWithDim": {
+          "count": 1152,
+          "sum_us": 4287.139999999981
+        },
+        "aclnnReduceSum": {
+          "count": 768,
+          "sum_us": 14258.439999999999
+        },
+        "aclnnRsqrt": {
+          "count": 384,
+          "sum_us": 416.5600000000003
+        },
+        "aclnnSub": {
+          "count": 192,
+          "sum_us": 1540.2599999999998
+        },
+        "SwiGlu": {
+          "count": 192,
+          "sum_us": 1192.7200000000003
+        },
+        "aclnnContiguous": {
+          "count": 64,
+          "sum_us": 175.55999999999995
+        },
+        "aclnnLogicalNot": {
+          "count": 64,
+          "sum_us": 119.64
+        },
+        "aclnnFlashAttentionScore": {
+          "count": 64,
+          "sum_us": 9119.48
+        }
+      },
+      "fixed_replay_equal": true,
+      "affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188
+      ]
+    },
+    {
+      "tag": "8b",
+      "threads": 8,
+      "steps": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "kernel_count": 17416,
+      "computing_union_us": 495585.82000000024,
+      "stage_us": 742604.5,
+      "free_us": 247019.03999999433,
+      "families": {
+        "aclnnArange": {
+          "count": 20,
+          "sum_us": 112.11999999999999
+        },
+        "aclnnAdd": {
+          "count": 1036,
+          "sum_us": 10352.779999999995
+        },
+        "aclnnAdds": {
+          "count": 1040,
+          "sum_us": 1610.699999999999
+        },
+        "aclnnCat": {
+          "count": 1040,
+          "sum_us": 6277.380000000009
+        },
+        "aclnnInplaceFillScalar": {
+          "count": 24,
+          "sum_us": 71.69999999999997
+        },
+        "aclnnInplaceCopy": {
+          "count": 2348,
+          "sum_us": 23041.339999999942
+        },
+        "aclnnInplaceScatterValue": {
+          "count": 16,
+          "sum_us": 97.6
+        },
+        "aclnnArgMax": {
+          "count": 8,
+          "sum_us": 906.7
+        },
+        "aclnnMul": {
+          "count": 2632,
+          "sum_us": 48910.28000000002
+        },
+        "aclnnRsubs": {
+          "count": 4,
+          "sum_us": 11.86
+        },
+        "aclnnBitwiseOrTensor": {
+          "count": 8,
+          "sum_us": 12.600000000000001
+        },
+        "aclnnEqTensor": {
+          "count": 8,
+          "sum_us": 57.239999999999995
+        },
+        "aclnnAny": {
+          "count": 4,
+          "sum_us": 22.28
+        },
+        "aclnnBitwiseNot": {
+          "count": 4,
+          "sum_us": 4.64
+        },
+        "aclnnBitwiseAndTensor": {
+          "count": 16,
+          "sum_us": 39.96000000000001
+        },
+        "aclnnMax": {
+          "count": 4,
+          "sum_us": 10.48
+        },
+        "aclnnEqScalar": {
+          "count": 4,
+          "sum_us": 9.379999999999999
+        },
+        "aclnnEmbedding": {
+          "count": 4,
+          "sum_us": 17.520000000000003
+        },
+        "aclnnAll": {
+          "count": 4,
+          "sum_us": 11.9
+        },
+        "aclnnLeTensor": {
+          "count": 4,
+          "sum_us": 12.22
+        },
+        "aclnnIndex": {
+          "count": 4,
+          "sum_us": 1350.9800000000002
+        },
+        "aclnnMatmul": {
+          "count": 1996,
+          "sum_us": 238304.5200000005
+        },
+        "aclnnCos": {
+          "count": 4,
+          "sum_us": 9.74
+        },
+        "aclnnMuls": {
+          "count": 200,
+          "sum_us": 1277.9799999999968
+        },
+        "aclnnSin": {
+          "count": 4,
+          "sum_us": 9.02
+        },
+        "RmsNorm": {
+          "count": 836,
+          "sum_us": 7800.380000000002
+        },
+        "aclnnConvolution": {
+          "count": 1344,
+          "sum_us": 117064.03999999998
+        },
+        "aclnnSilu": {
+          "count": 640,
+          "sum_us": 5420.9400000000005
+        },
+        "aclnnSigmoid": {
+          "count": 256,
+          "sum_us": 733.48
+        },
+        "aclnnExp": {
+          "count": 384,
+          "sum_us": 416.86
+        },
+        "aclnnNeg": {
+          "count": 448,
+          "sum_us": 757.1199999999998
+        },
+        "aclnnSoftplus": {
+          "count": 192,
+          "sum_us": 376.2399999999996
+        },
+        "aclnnRepeatInterleaveIntWithDim": {
+          "count": 1152,
+          "sum_us": 4406.939999999986
+        },
+        "aclnnReduceSum": {
+          "count": 768,
+          "sum_us": 13976.700000000019
+        },
+        "aclnnRsqrt": {
+          "count": 384,
+          "sum_us": 423.26000000000045
+        },
+        "aclnnSub": {
+          "count": 192,
+          "sum_us": 1352.5999999999997
+        },
+        "SwiGlu": {
+          "count": 192,
+          "sum_us": 1147.5000000000005
+        },
+        "aclnnContiguous": {
+          "count": 64,
+          "sum_us": 183.35999999999996
+        },
+        "aclnnLogicalNot": {
+          "count": 64,
+          "sum_us": 123.87999999999997
+        },
+        "aclnnFlashAttentionScore": {
+          "count": 64,
+          "sum_us": 8859.599999999999
+        }
+      },
+      "fixed_replay_equal": true,
+      "affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188
+      ]
+    }
+  ],
+  "limitations": [
+    "profiler perturbs host execution",
+    "kernel family sums may overlap; use computing union for total",
+    "free time is not all removable CPU overhead",
+    "no pure launch latency inferred"
+  ]
+}

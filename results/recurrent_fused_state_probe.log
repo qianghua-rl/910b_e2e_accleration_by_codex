@@ -1,0 +1,29 @@
+/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/lib/python3.10/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/lib/python3.10/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/lib/python3.10/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/lib/python3.10/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+[WARNING] Please DO NOT tune args ['enable_fp_fusion']!
+[WARNING] Please DO NOT tune args ['enable_fp_fusion']!
+{
+  "artifact": "results/gdn_real_batch_artifact.pt",
+  "scope": "captured repeated-prompt HF decode; not E100; FP32 working state",
+  "correctness": {
+    "output_max_error": 3.0517578125e-05,
+    "state_max_error": 3.814697265625e-06,
+    "output_exact": false,
+    "state_exact": false
+  },
+  "input_state_unchanged": true,
+  "segment_ms": {
+    "baseline": 0.3981618210673332,
+    "fused": 1.9875122234225273
+  },
+  "wrapper_ms": {
+    "baseline": 0.8884966373443604,
+    "fused": 2.5584856048226357
+  }
+}

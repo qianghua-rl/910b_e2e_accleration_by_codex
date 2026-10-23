@@ -1,0 +1,24 @@
+{
+  "pairs": [
+    {
+      "nd_trial": 0,
+      "nz_trial": 1,
+      "nd_s": 79.50518347509205,
+      "nz_s": 85.32814288511872,
+      "delta_pct": 7.323999713617323,
+      "tokens_equal": true,
+      "logits_equal": null
+    },
+    {
+      "nd_trial": 3,
+      "nz_trial": 2,
+      "nd_s": 78.27465665526688,
+      "nz_s": 81.18453455157578,
+      "delta_pct": 3.7175224020776354,
+      "tokens_equal": true,
+      "logits_equal": null
+    }
+  ],
+  "median_delta_pct": 5.520761057847479,
+  "stable_regression": true
+}

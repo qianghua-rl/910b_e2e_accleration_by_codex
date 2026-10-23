@@ -23,6 +23,8 @@ p.add_argument('--final-max-new-tokens', type=int, default=512,
 p.add_argument('--fused-rmsnorm', action='store_true')
 p.add_argument('--fused-gated-rmsnorm', action='store_true')
 p.add_argument('--single-step-recurrent', action='store_true')
+p.add_argument('--single-step-conv', action='store_true')
+p.add_argument('--mlp-nz', action='store_true')
 p.add_argument('--attention', default='eager')
 p.add_argument('--protocol', choices=['original','concise','minimal'], default='original')
 p.add_argument('--schedule', choices=['fifo','length','decode_length','generation_length'], default='fifo')
@@ -68,7 +70,18 @@ if args.single_step_recurrent:
     for module in model.modules():
         if isinstance(module, Qwen3_5GatedDeltaNet):
             module.recurrent_gated_delta_rule = recurrent_single_step
+nz_preparation=None
+if args.mlp_nz:
+    from mlp_nz import convert_mlp_nz
+    nz_preparation=convert_mlp_nz(model)
+    print(json.dumps({'kind':'nz_preparation',**nz_preparation}),flush=True)
 tok = AutoTokenizer.from_pretrained('model/qwen3.5-27b', padding_side='left')
+if args.single_step_conv:
+    from causal_conv_single_step import causal_conv_single_step
+    from transformers.models.qwen3_5.modeling_qwen3_5 import Qwen3_5GatedDeltaNet
+    for module in model.modules():
+        if isinstance(module, Qwen3_5GatedDeltaNet):
+            module.causal_conv1d_update = causal_conv_single_step
 torch.npu.synchronize()
 load_seconds = time.perf_counter()-t
 data = Path('data/gsm8k_128.jsonl').read_bytes()
@@ -122,6 +135,8 @@ emit(dict(kind='metadata', load_seconds=load_seconds, tasks=len(tasks), batch_si
     fused_gated_rmsnorm=args.fused_gated_rmsnorm,
     fused_gated_rmsnorm_count=fused_gated_rmsnorm_count,
     single_step_recurrent=args.single_step_recurrent,
+    single_step_conv=args.single_step_conv,
+    mlp_nz=args.mlp_nz,nz_preparation=nz_preparation,
     max_rounds=6,do_sample=False,enable_thinking=False))
 start = time.perf_counter()
 with torch.inference_mode():

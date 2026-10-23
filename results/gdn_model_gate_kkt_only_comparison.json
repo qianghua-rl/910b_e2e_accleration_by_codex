@@ -1,0 +1,11 @@
+{
+  "status": "passed_first_token_gate_no_speedup",
+  "scope": "vLLM full model, fixed E100 first batch, one greedy token; only KKT replaced; logits and decode not validated",
+  "baseline_seconds": 6.651191765442491,
+  "candidate_seconds": 7.120497046038508,
+  "slowdown_fraction": 0.070559577463152,
+  "matches": 16,
+  "total": 16,
+  "worker_patch_evidence": "results/gdn_model_gate_pto_kkt_only.log",
+  "adapter": "scripts/pto_kkt_patch/kkt_only.py"
+}

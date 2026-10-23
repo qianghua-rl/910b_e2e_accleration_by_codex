@@ -1,0 +1,3 @@
+[2026-10-23-05:21:21.435] [INFO] [AscendProfiler_IntegrateParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_e2e_accleration_by_codex/results/e125_profile_nz/06f2b62264eb_208134_20261023052111377_ascend_pt/logs/profiler_20261023052121_209266_IntegrateParser.log
+[2026-10-23-05:21:21.439] [INFO] [AscendProfiler_IntegrateParser:33] IntegrateParser start.
+[2026-10-23-05:21:21.441] [INFO] [AscendProfiler_IntegrateParser:40] IntegrateParser finish.

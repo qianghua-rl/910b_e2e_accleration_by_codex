@@ -1,0 +1,254 @@
+{
+  "layers": [
+    {
+      "layer": "model.language_model.layers.8.mlp",
+      "all_real_inputs_exact": true,
+      "checks": [
+        {
+          "output_exact": true,
+          "max_abs_error": 0.0,
+          "finite": true,
+          "baseline_stride": [
+            5120,
+            5120,
+            1
+          ],
+          "candidate_stride": [
+            5120,
+            5120,
+            1
+          ],
+          "input_stride": [
+            5120,
+            5120,
+            1
+          ]
+        },
+        {
+          "output_exact": true,
+          "max_abs_error": 0.0,
+          "finite": true,
+          "baseline_stride": [
+            5120,
+            5120,
+            1
+          ],
+          "candidate_stride": [
+            5120,
+            5120,
+            1
+          ],
+          "input_stride": [
+            5120,
+            5120,
+            1
+          ]
+        },
+        {
+          "output_exact": true,
+          "max_abs_error": 0.0,
+          "finite": true,
+          "baseline_stride": [
+            5120,
+            5120,
+            1
+          ],
+          "candidate_stride": [
+            5120,
+            5120,
+            1
+          ],
+          "input_stride": [
+            5120,
+            5120,
+            1
+          ]
+        }
+      ],
+      "paired_comparisons": [
+        {
+          "queued": false,
+          "mode": "reused",
+          "baseline_host_ms": 0.5447834264487028,
+          "candidate_host_ms": 0.5513124633580446,
+          "net_saving_ms": -0.006529036909341812
+        },
+        {
+          "queued": false,
+          "mode": "reused_owned_clone",
+          "baseline_host_ms": 0.546851777471602,
+          "candidate_host_ms": 0.5605164915323257,
+          "net_saving_ms": -0.013664714060723782
+        },
+        {
+          "queued": true,
+          "mode": "reused",
+          "baseline_host_ms": 0.4866133676841855,
+          "candidate_host_ms": 0.490391394123435,
+          "net_saving_ms": -0.0037780264392495155
+        },
+        {
+          "queued": true,
+          "mode": "reused_owned_clone",
+          "baseline_host_ms": 0.48639450687915087,
+          "candidate_host_ms": 0.4925981629639864,
+          "net_saving_ms": -0.006203656084835529
+        }
+      ],
+      "profiles": {
+        "baseline": {
+          "allocation_event_count": 20,
+          "layout_events": [],
+          "gemm_kernel_count": 12,
+          "device_kernel_sum_us": 1870.22,
+          "calls": 4
+        },
+        "reused": {
+          "allocation_event_count": 0,
+          "layout_events": [],
+          "gemm_kernel_count": 12,
+          "device_kernel_sum_us": 1894.02,
+          "calls": 4
+        },
+        "reused_owned_clone": {
+          "allocation_event_count": 4,
+          "layout_events": [],
+          "gemm_kernel_count": 12,
+          "device_kernel_sum_us": 1889.48,
+          "calls": 4
+        }
+      },
+      "persistent_buffer_bytes": 2392064
+    },
+    {
+      "layer": "model.language_model.layers.55.mlp",
+      "all_real_inputs_exact": true,
+      "checks": [
+        {
+          "output_exact": true,
+          "max_abs_error": 0.0,
+          "finite": true,
+          "baseline_stride": [
+            5120,
+            5120,
+            1
+          ],
+          "candidate_stride": [
+            5120,
+            5120,
+            1
+          ],
+          "input_stride": [
+            5120,
+            5120,
+            1
+          ]
+        },
+        {
+          "output_exact": true,
+          "max_abs_error": 0.0,
+          "finite": true,
+          "baseline_stride": [
+            5120,
+            5120,
+            1
+          ],
+          "candidate_stride": [
+            5120,
+            5120,
+            1
+          ],
+          "input_stride": [
+            5120,
+            5120,
+            1
+          ]
+        },
+        {
+          "output_exact": true,
+          "max_abs_error": 0.0,
+          "finite": true,
+          "baseline_stride": [
+            5120,
+            5120,
+            1
+          ],
+          "candidate_stride": [
+            5120,
+            5120,
+            1
+          ],
+          "input_stride": [
+            5120,
+            5120,
+            1
+          ]
+        }
+      ],
+      "paired_comparisons": [
+        {
+          "queued": false,
+          "mode": "reused",
+          "baseline_host_ms": 0.5443294066935778,
+          "candidate_host_ms": 0.5509760230779648,
+          "net_saving_ms": -0.006646616384387016
+        },
+        {
+          "queued": false,
+          "mode": "reused_owned_clone",
+          "baseline_host_ms": 0.542761292308569,
+          "candidate_host_ms": 0.559960026293993,
+          "net_saving_ms": -0.017198733985424042
+        },
+        {
+          "queued": true,
+          "mode": "reused",
+          "baseline_host_ms": 0.4864595830440521,
+          "candidate_host_ms": 0.4926864057779312,
+          "net_saving_ms": -0.006226822733879089
+        },
+        {
+          "queued": true,
+          "mode": "reused_owned_clone",
+          "baseline_host_ms": 0.48631138633936644,
+          "candidate_host_ms": 0.49310503527522087,
+          "net_saving_ms": -0.006793648935854435
+        }
+      ],
+      "profiles": {
+        "baseline": {
+          "allocation_event_count": 20,
+          "layout_events": [],
+          "gemm_kernel_count": 12,
+          "device_kernel_sum_us": 1875.98,
+          "calls": 4
+        },
+        "reused": {
+          "allocation_event_count": 0,
+          "layout_events": [],
+          "gemm_kernel_count": 12,
+          "device_kernel_sum_us": 1890.24,
+          "calls": 4
+        },
+        "reused_owned_clone": {
+          "allocation_event_count": 4,
+          "layout_events": [],
+          "gemm_kernel_count": 12,
+          "device_kernel_sum_us": 1897.4399999999998,
+          "calls": 4
+        }
+      },
+      "persistent_buffer_bytes": 2392064
+    }
+  ],
+  "status": "rejected_no_local_wrapper_gain",
+  "limitations": [
+    "weights repeated within layer, not full model residency",
+    "reused output aliases next call; owned_clone covers retention cost but not concurrency",
+    "event interval includes host gaps; no pure kernel claim",
+    "all weights remain BF16; mm out support validated by execution",
+    "F.linear lowers aclnnMatmul while mm(out=) lowers aclnnMm; this tests available buffer API, not allocator internals in isolation",
+    "kernel sums from short profiles not E100 fractions",
+    "timing is repeated within layer; full model weight residency differs"
+  ]
+}

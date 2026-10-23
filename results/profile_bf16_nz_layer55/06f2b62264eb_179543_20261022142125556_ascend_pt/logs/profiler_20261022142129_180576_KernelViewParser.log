@@ -1,0 +1,5 @@
+[2026-10-22-14:21:29.343] [INFO] [AscendProfiler_KernelViewParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_e2e_accleration_by_codex/results/profile_bf16_nz_layer55/06f2b62264eb_179543_20261022142125556_ascend_pt/logs/profiler_20261022142129_180576_KernelViewParser.log
+[2026-10-22-14:21:29.343] [INFO] [AscendProfiler_KernelViewParser:38] KernelViewParser start.
+[2026-10-22-14:21:29.344] [WARNING] [AscendProfiler_KernelViewParser:69] Get step range failed, the step node list is empty.
+[2026-10-22-14:21:29.344] [WARNING] [AscendProfiler_KernelViewParser:82] Kernel view get step range failed, the step range is empty.
+[2026-10-22-14:21:29.346] [INFO] [AscendProfiler_KernelViewParser:46] KernelViewParser finish.

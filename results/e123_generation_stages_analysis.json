@@ -1,0 +1,1795 @@
+{
+  "all_tokens_exact": true,
+  "peak_bytes": 59173664768,
+  "trials": [
+    {
+      "trial": 1,
+      "decode_steps": 31,
+      "stages": {
+        "scheduler": {
+          "host_ms": 97.00754471123219,
+          "device_ms": 13.734699979424477,
+          "host_fraction": 0.022478341174004532,
+          "host_step_median_ms": 1.6775280237197876,
+          "device_step_median_ms": 0.43422000110149384
+        },
+        "model_forward": {
+          "host_ms": 4181.63375928998,
+          "device_ms": 4245.260711669922,
+          "host_fraction": 0.9689575237251808,
+          "host_step_median_ms": 134.6742231398821,
+          "device_step_median_ms": 136.69288635253906
+        },
+        "sampling": {
+          "host_ms": 6.821576505899429,
+          "device_ms": 7.397879973053932,
+          "host_fraction": 0.0015806783328104028,
+          "host_step_median_ms": 0.2215951681137085,
+          "device_step_median_ms": 0.23827999830245972
+        },
+        "postprocess": {
+          "host_ms": 30.137810856103897,
+          "device_ms": 2.915099997073412,
+          "host_fraction": 0.0069834567680041645,
+          "host_step_median_ms": 0.9513534605503082,
+          "device_step_median_ms": 0.09488000348210335
+        }
+      },
+      "adjacent_control_drift_pct": 0.6090414846140617,
+      "instrumentation_delta_pct": 0.9137764075264343,
+      "steps": {
+        "1": {
+          "scheduler": {
+            "host_ms": 48.552386462688446,
+            "device_ms": 0.4453999996185303
+          },
+          "model_forward": {
+            "host_ms": 138.7036070227623,
+            "device_ms": 140.6378631591797
+          },
+          "postprocess": {
+            "host_ms": 1.0374467819929123,
+            "device_ms": 0.08844000101089478
+          },
+          "sampling": {
+            "host_ms": 0.23037195205688477,
+            "device_ms": 0.238319993019104
+          }
+        },
+        "2": {
+          "scheduler": {
+            "host_ms": 1.3982374221086502,
+            "device_ms": 0.441540002822876
+          },
+          "model_forward": {
+            "host_ms": 133.35284404456615,
+            "device_ms": 135.391845703125
+          },
+          "postprocess": {
+            "host_ms": 1.0075140744447708,
+            "device_ms": 0.09721999987959862
+          },
+          "sampling": {
+            "host_ms": 0.2279914915561676,
+            "device_ms": 0.2421800047159195
+          }
+        },
+        "3": {
+          "scheduler": {
+            "host_ms": 1.5646275132894516,
+            "device_ms": 0.43422000110149384
+          },
+          "model_forward": {
+            "host_ms": 132.17185251414776,
+            "device_ms": 134.28656005859375
+          },
+          "postprocess": {
+            "host_ms": 0.9347200393676758,
+            "device_ms": 0.09537999704480171
+          },
+          "sampling": {
+            "host_ms": 0.20981207489967346,
+            "device_ms": 0.23800000548362732
+          }
+        },
+        "4": {
+          "scheduler": {
+            "host_ms": 1.6906466335058212,
+            "device_ms": 0.4010400027036667
+          },
+          "model_forward": {
+            "host_ms": 132.2938371449709,
+            "device_ms": 134.36264038085938
+          },
+          "postprocess": {
+            "host_ms": 0.94573013484478,
+            "device_ms": 0.09488000348210335
+          },
+          "sampling": {
+            "host_ms": 0.21665357053279877,
+            "device_ms": 0.2393999993801117
+          }
+        },
+        "5": {
+          "scheduler": {
+            "host_ms": 1.6775280237197876,
+            "device_ms": 0.43522000312805176
+          },
+          "model_forward": {
+            "host_ms": 135.16323640942574,
+            "device_ms": 137.20448303222656
+          },
+          "postprocess": {
+            "host_ms": 1.0249968618154526,
+            "device_ms": 0.08998000249266624
+          },
+          "sampling": {
+            "host_ms": 0.22518448531627655,
+            "device_ms": 0.2367199957370758
+          }
+        },
+        "6": {
+          "scheduler": {
+            "host_ms": 1.6701370477676392,
+            "device_ms": 0.5611000061035156
+          },
+          "model_forward": {
+            "host_ms": 137.53929175436497,
+            "device_ms": 139.5235137939453
+          },
+          "postprocess": {
+            "host_ms": 0.981207937002182,
+            "device_ms": 0.0948600023984909
+          },
+          "sampling": {
+            "host_ms": 0.2281051129102707,
+            "device_ms": 0.23853999376296997
+          }
+        },
+        "7": {
+          "scheduler": {
+            "host_ms": 1.5110485255718231,
+            "device_ms": 0.4655800014734268
+          },
+          "model_forward": {
+            "host_ms": 135.73982939124107,
+            "device_ms": 137.84286499023438
+          },
+          "postprocess": {
+            "host_ms": 0.9483080357313156,
+            "device_ms": 0.09451999887824059
+          },
+          "sampling": {
+            "host_ms": 0.21387264132499695,
+            "device_ms": 0.23827999830245972
+          }
+        },
+        "8": {
+          "scheduler": {
+            "host_ms": 1.6755890101194382,
+            "device_ms": 0.42089998722076416
+          },
+          "model_forward": {
+            "host_ms": 133.6536444723606,
+            "device_ms": 135.74195861816406
+          },
+          "postprocess": {
+            "host_ms": 0.9405389428138733,
+            "device_ms": 0.09491999819874763
+          },
+          "sampling": {
+            "host_ms": 0.2154819667339325,
+            "device_ms": 0.239779993891716
+          }
+        },
+        "9": {
+          "scheduler": {
+            "host_ms": 1.6944780945777893,
+            "device_ms": 0.44888000190258026
+          },
+          "model_forward": {
+            "host_ms": 136.361850425601,
+            "device_ms": 138.3601837158203
+          },
+          "postprocess": {
+            "host_ms": 0.9839404374361038,
+            "device_ms": 0.08771999925374985
+          },
+          "sampling": {
+            "host_ms": 0.22755376994609833,
+            "device_ms": 0.23815999925136566
+          }
+        },
+        "10": {
+          "scheduler": {
+            "host_ms": 1.5116911381483078,
+            "device_ms": 0.4115400016307831
+          },
+          "model_forward": {
+            "host_ms": 132.69238360226154,
+            "device_ms": 134.77647399902344
+          },
+          "postprocess": {
+            "host_ms": 0.934600830078125,
+            "device_ms": 0.09578000009059906
+          },
+          "sampling": {
+            "host_ms": 0.2276543527841568,
+            "device_ms": 0.24040000140666962
+          }
+        },
+        "11": {
+          "scheduler": {
+            "host_ms": 1.6854554414749146,
+            "device_ms": 0.4447000026702881
+          },
+          "model_forward": {
+            "host_ms": 134.6742231398821,
+            "device_ms": 136.69288635253906
+          },
+          "postprocess": {
+            "host_ms": 1.0613985359668732,
+            "device_ms": 0.0991399995982647
+          },
+          "sampling": {
+            "host_ms": 0.22899359464645386,
+            "device_ms": 0.23783999681472778
+          }
+        },
+        "12": {
+          "scheduler": {
+            "host_ms": 1.5020053833723068,
+            "device_ms": 0.45781999826431274
+          },
+          "model_forward": {
+            "host_ms": 133.90669412910938,
+            "device_ms": 135.9987335205078
+          },
+          "postprocess": {
+            "host_ms": 0.9434353560209274,
+            "device_ms": 0.09303999692201614
+          },
+          "sampling": {
+            "host_ms": 0.2145729959011078,
+            "device_ms": 0.24120000004768372
+          }
+        },
+        "13": {
+          "scheduler": {
+            "host_ms": 1.6919057816267014,
+            "device_ms": 0.4338199943304062
+          },
+          "model_forward": {
+            "host_ms": 132.5075328350067,
+            "device_ms": 134.61964416503906
+          },
+          "postprocess": {
+            "host_ms": 0.9414348751306534,
+            "device_ms": 0.08875999972224236
+          },
+          "sampling": {
+            "host_ms": 0.21340325474739075,
+            "device_ms": 0.23707999289035797
+          }
+        },
+        "14": {
+          "scheduler": {
+            "host_ms": 1.6981475055217743,
+            "device_ms": 0.4231399893760681
+          },
+          "model_forward": {
+            "host_ms": 136.43863797187805,
+            "device_ms": 138.49290466308594
+          },
+          "postprocess": {
+            "host_ms": 1.018637791275978,
+            "device_ms": 0.09464000165462494
+          },
+          "sampling": {
+            "host_ms": 0.22474490106105804,
+            "device_ms": 0.23970000445842743
+          }
+        },
+        "15": {
+          "scheduler": {
+            "host_ms": 1.6703661531209946,
+            "device_ms": 0.5568599998950958
+          },
+          "model_forward": {
+            "host_ms": 136.43105700612068,
+            "device_ms": 138.5039825439453
+          },
+          "postprocess": {
+            "host_ms": 0.9247194975614548,
+            "device_ms": 0.0939599983394146
+          },
+          "sampling": {
+            "host_ms": 0.212792307138443,
+            "device_ms": 0.23768000304698944
+          }
+        },
+        "16": {
+          "scheduler": {
+            "host_ms": 1.6968101263046265,
+            "device_ms": 0.43267999589443207
+          },
+          "model_forward": {
+            "host_ms": 137.35463097691536,
+            "device_ms": 139.34519958496094
+          },
+          "postprocess": {
+            "host_ms": 0.978788360953331,
+            "device_ms": 0.09539999812841415
+          },
+          "sampling": {
+            "host_ms": 0.2215951681137085,
+            "device_ms": 0.23895999789237976
+          }
+        },
+        "17": {
+          "scheduler": {
+            "host_ms": 1.5034843236207962,
+            "device_ms": 0.4223199933767319
+          },
+          "model_forward": {
+            "host_ms": 137.51084357500076,
+            "device_ms": 139.47906494140625
+          },
+          "postprocess": {
+            "host_ms": 1.0550469160079956,
+            "device_ms": 0.0898200012743473
+          },
+          "sampling": {
+            "host_ms": 0.23301132023334503,
+            "device_ms": 0.2375199943780899
+          }
+        },
+        "18": {
+          "scheduler": {
+            "host_ms": 1.4172643423080444,
+            "device_ms": 0.4267600029706955
+          },
+          "model_forward": {
+            "host_ms": 134.73640009760857,
+            "device_ms": 136.8050537109375
+          },
+          "postprocess": {
+            "host_ms": 0.9513534605503082,
+            "device_ms": 0.0981999970972538
+          },
+          "sampling": {
+            "host_ms": 0.21663494408130646,
+            "device_ms": 0.2402999997138977
+          }
+        },
+        "19": {
+          "scheduler": {
+            "host_ms": 1.6919486224651337,
+            "device_ms": 0.45917999744415283
+          },
+          "model_forward": {
+            "host_ms": 133.6048413068056,
+            "device_ms": 135.69146728515625
+          },
+          "postprocess": {
+            "host_ms": 0.9421184659004211,
+            "device_ms": 0.09626000002026558
+          },
+          "sampling": {
+            "host_ms": 0.2108309417963028,
+            "device_ms": 0.23824000358581543
+          }
+        },
+        "20": {
+          "scheduler": {
+            "host_ms": 1.704515889286995,
+            "device_ms": 0.4458799958229065
+          },
+          "model_forward": {
+            "host_ms": 133.81863944232464,
+            "device_ms": 135.90646362304688
+          },
+          "postprocess": {
+            "host_ms": 0.9531285613775253,
+            "device_ms": 0.09623999893665314
+          },
+          "sampling": {
+            "host_ms": 0.2259816974401474,
+            "device_ms": 0.24009999632835388
+          }
+        },
+        "21": {
+          "scheduler": {
+            "host_ms": 1.6934778541326523,
+            "device_ms": 0.4565199911594391
+          },
+          "model_forward": {
+            "host_ms": 133.92284885048866,
+            "device_ms": 135.94395446777344
+          },
+          "postprocess": {
+            "host_ms": 1.0209083557128906,
+            "device_ms": 0.09143999963998795
+          },
+          "sampling": {
+            "host_ms": 0.22684410214424133,
+            "device_ms": 0.23841999471187592
+          }
+        },
+        "22": {
+          "scheduler": {
+            "host_ms": 1.5050917863845825,
+            "device_ms": 0.4276999980211258
+          },
+          "model_forward": {
+            "host_ms": 133.9386347681284,
+            "device_ms": 136.03729248046875
+          },
+          "postprocess": {
+            "host_ms": 0.93037448823452,
+            "device_ms": 0.09445999935269356
+          },
+          "sampling": {
+            "host_ms": 0.22194162011146545,
+            "device_ms": 0.23849999904632568
+          }
+        },
+        "23": {
+          "scheduler": {
+            "host_ms": 1.6981791704893112,
+            "device_ms": 0.42736001312732697
+          },
+          "model_forward": {
+            "host_ms": 133.27033817768097,
+            "device_ms": 135.3799591064453
+          },
+          "postprocess": {
+            "host_ms": 0.9506288915872574,
+            "device_ms": 0.09524000063538551
+          },
+          "sampling": {
+            "host_ms": 0.20938366651535034,
+            "device_ms": 0.2381799966096878
+          }
+        },
+        "24": {
+          "scheduler": {
+            "host_ms": 1.6839783638715744,
+            "device_ms": 0.40624000132083893
+          },
+          "model_forward": {
+            "host_ms": 133.27350839972496,
+            "device_ms": 135.35928344726562
+          },
+          "postprocess": {
+            "host_ms": 0.9246617555618286,
+            "device_ms": 0.09793999791145325
+          },
+          "sampling": {
+            "host_ms": 0.20771287381649017,
+            "device_ms": 0.23688000440597534
+          }
+        },
+        "25": {
+          "scheduler": {
+            "host_ms": 1.6821864992380142,
+            "device_ms": 0.41218000650405884
+          },
+          "model_forward": {
+            "host_ms": 135.35844162106514,
+            "device_ms": 137.39328002929688
+          },
+          "postprocess": {
+            "host_ms": 1.004740595817566,
+            "device_ms": 0.09008000046014786
+          },
+          "sampling": {
+            "host_ms": 0.222913920879364,
+            "device_ms": 0.23837999999523163
+          }
+        },
+        "26": {
+          "scheduler": {
+            "host_ms": 1.586630940437317,
+            "device_ms": 0.46969999372959137
+          },
+          "model_forward": {
+            "host_ms": 136.8691772222519,
+            "device_ms": 138.91433715820312
+          },
+          "postprocess": {
+            "host_ms": 0.9645484387874603,
+            "device_ms": 0.09552000090479851
+          },
+          "sampling": {
+            "host_ms": 0.2178531140089035,
+            "device_ms": 0.23826000094413757
+          }
+        },
+        "27": {
+          "scheduler": {
+            "host_ms": 1.630077138543129,
+            "device_ms": 0.4478199928998947
+          },
+          "model_forward": {
+            "host_ms": 137.76695728302002,
+            "device_ms": 139.720703125
+          },
+          "postprocess": {
+            "host_ms": 1.0259784758090973,
+            "device_ms": 0.09548000246286392
+          },
+          "sampling": {
+            "host_ms": 0.23019127547740936,
+            "device_ms": 0.2389799952507019
+          }
+        },
+        "28": {
+          "scheduler": {
+            "host_ms": 1.4331843703985214,
+            "device_ms": 0.42739999294281006
+          },
+          "model_forward": {
+            "host_ms": 134.99207235872746,
+            "device_ms": 137.1121368408203
+          },
+          "postprocess": {
+            "host_ms": 0.9374786168336868,
+            "device_ms": 0.09516000002622604
+          },
+          "sampling": {
+            "host_ms": 0.2118535339832306,
+            "device_ms": 0.23802000284194946
+          }
+        },
+        "29": {
+          "scheduler": {
+            "host_ms": 1.694830134510994,
+            "device_ms": 0.41359999775886536
+          },
+          "model_forward": {
+            "host_ms": 136.63704134523869,
+            "device_ms": 138.61395263671875
+          },
+          "postprocess": {
+            "host_ms": 1.011418178677559,
+            "device_ms": 0.09109999984502792
+          },
+          "sampling": {
+            "host_ms": 0.22176094353199005,
+            "device_ms": 0.23785999417304993
+          }
+        },
+        "30": {
+          "scheduler": {
+            "host_ms": 1.4981850981712341,
+            "device_ms": 0.4594400078058243
+          },
+          "model_forward": {
+            "host_ms": 133.4519423544407,
+            "device_ms": 135.53668212890625
+          },
+          "postprocess": {
+            "host_ms": 0.9231884032487869,
+            "device_ms": 0.09370000287890434
+          },
+          "sampling": {
+            "host_ms": 0.21662376821041107,
+            "device_ms": 0.23812000453472137
+          }
+        },
+        "31": {
+          "scheduler": {
+            "host_ms": 1.6934499144554138,
+            "device_ms": 0.41816000640392303
+          },
+          "model_forward": {
+            "host_ms": 133.49691964685917,
+            "device_ms": 135.58534240722656
+          },
+          "postprocess": {
+            "host_ms": 0.934818759560585,
+            "device_ms": 0.09581999853253365
+          },
+          "sampling": {
+            "host_ms": 0.2092551440000534,
+            "device_ms": 0.23788000643253326
+          }
+        }
+      }
+    },
+    {
+      "trial": 3,
+      "decode_steps": 31,
+      "stages": {
+        "scheduler": {
+          "host_ms": 96.05704434216022,
+          "device_ms": 14.146940097212791,
+          "host_fraction": 0.022404040483064137,
+          "host_step_median_ms": 1.6076304018497467,
+          "device_step_median_ms": 0.443340003490448
+        },
+        "model_forward": {
+          "host_ms": 4152.095604687929,
+          "device_ms": 4215.2867431640625,
+          "host_fraction": 0.9684216150314356,
+          "host_step_median_ms": 133.4669217467308,
+          "device_step_median_ms": 135.4912567138672
+        },
+        "sampling": {
+          "host_ms": 6.904853507876396,
+          "device_ms": 7.400579944252968,
+          "host_fraction": 0.0016104661410260839,
+          "host_step_median_ms": 0.2239421010017395,
+          "device_step_median_ms": 0.23837999999523163
+        },
+        "postprocess": {
+          "host_ms": 32.43003413081169,
+          "device_ms": 3.837339986115694,
+          "host_fraction": 0.0075638783444741285,
+          "host_step_median_ms": 0.9800344705581665,
+          "device_step_median_ms": 0.09504000097513199
+        }
+      },
+      "adjacent_control_drift_pct": 0.3772710200636404,
+      "instrumentation_delta_pct": 0.6293758110104353,
+      "steps": {
+        "1": {
+          "scheduler": {
+            "host_ms": 48.8056056201458,
+            "device_ms": 0.47585998475551605
+          },
+          "model_forward": {
+            "host_ms": 137.24081963300705,
+            "device_ms": 139.29168701171875
+          },
+          "postprocess": {
+            "host_ms": 1.0404568165540695,
+            "device_ms": 0.08927999809384346
+          },
+          "sampling": {
+            "host_ms": 0.23585371673107147,
+            "device_ms": 0.23819999396800995
+          }
+        },
+        "2": {
+          "scheduler": {
+            "host_ms": 1.511184498667717,
+            "device_ms": 0.4165000021457672
+          },
+          "model_forward": {
+            "host_ms": 138.4135466068983,
+            "device_ms": 140.37794494628906
+          },
+          "postprocess": {
+            "host_ms": 0.9978692978620529,
+            "device_ms": 0.09714000299572945
+          },
+          "sampling": {
+            "host_ms": 0.22436492145061493,
+            "device_ms": 0.2418999969959259
+          }
+        },
+        "3": {
+          "scheduler": {
+            "host_ms": 1.5042424201965332,
+            "device_ms": 0.4764000028371811
+          },
+          "model_forward": {
+            "host_ms": 134.88863967359066,
+            "device_ms": 136.83401489257812
+          },
+          "postprocess": {
+            "host_ms": 1.0174792259931564,
+            "device_ms": 0.09465999901294708
+          },
+          "sampling": {
+            "host_ms": 0.22949092090129852,
+            "device_ms": 0.23693999648094177
+          }
+        },
+        "4": {
+          "scheduler": {
+            "host_ms": 1.578550785779953,
+            "device_ms": 0.5574600100517273
+          },
+          "model_forward": {
+            "host_ms": 133.2891471683979,
+            "device_ms": 135.3173065185547
+          },
+          "postprocess": {
+            "host_ms": 1.033952459692955,
+            "device_ms": 0.09561999887228012
+          },
+          "sampling": {
+            "host_ms": 0.23767538368701935,
+            "device_ms": 0.24045999348163605
+          }
+        },
+        "5": {
+          "scheduler": {
+            "host_ms": 1.5023760497570038,
+            "device_ms": 0.42664000391960144
+          },
+          "model_forward": {
+            "host_ms": 132.0900209248066,
+            "device_ms": 134.19387817382812
+          },
+          "postprocess": {
+            "host_ms": 0.9217113256454468,
+            "device_ms": 0.09008000046014786
+          },
+          "sampling": {
+            "host_ms": 0.21529383957386017,
+            "device_ms": 0.2387000024318695
+          }
+        },
+        "6": {
+          "scheduler": {
+            "host_ms": 1.718774437904358,
+            "device_ms": 0.4286400079727173
+          },
+          "model_forward": {
+            "host_ms": 133.14300402998924,
+            "device_ms": 135.204345703125
+          },
+          "postprocess": {
+            "host_ms": 1.0225381702184677,
+            "device_ms": 0.09592000022530556
+          },
+          "sampling": {
+            "host_ms": 0.2342425286769867,
+            "device_ms": 0.23851999640464783
+          }
+        },
+        "7": {
+          "scheduler": {
+            "host_ms": 1.549411565065384,
+            "device_ms": 0.42142000794410706
+          },
+          "model_forward": {
+            "host_ms": 137.83877342939377,
+            "device_ms": 139.7884979248047
+          },
+          "postprocess": {
+            "host_ms": 1.035178080201149,
+            "device_ms": 0.09668000042438507
+          },
+          "sampling": {
+            "host_ms": 0.23142434656620026,
+            "device_ms": 0.23749999701976776
+          }
+        },
+        "8": {
+          "scheduler": {
+            "host_ms": 1.4317184686660767,
+            "device_ms": 0.4583999961614609
+          },
+          "model_forward": {
+            "host_ms": 134.46231186389923,
+            "device_ms": 136.5605926513672
+          },
+          "postprocess": {
+            "host_ms": 0.9322930127382278,
+            "device_ms": 0.09504000097513199
+          },
+          "sampling": {
+            "host_ms": 0.21065212786197662,
+            "device_ms": 0.24067999422550201
+          }
+        },
+        "9": {
+          "scheduler": {
+            "host_ms": 1.692742109298706,
+            "device_ms": 0.400519996881485
+          },
+          "model_forward": {
+            "host_ms": 134.77585464715958,
+            "device_ms": 136.75616455078125
+          },
+          "postprocess": {
+            "host_ms": 1.0034013539552689,
+            "device_ms": 0.0886400006711483
+          },
+          "sampling": {
+            "host_ms": 0.22998452186584473,
+            "device_ms": 0.23771999776363373
+          }
+        },
+        "10": {
+          "scheduler": {
+            "host_ms": 1.5027951449155807,
+            "device_ms": 0.4505000114440918
+          },
+          "model_forward": {
+            "host_ms": 131.67044892907143,
+            "device_ms": 133.74781799316406
+          },
+          "postprocess": {
+            "host_ms": 0.934431329369545,
+            "device_ms": 0.09552000090479851
+          },
+          "sampling": {
+            "host_ms": 0.21068379282951355,
+            "device_ms": 0.23929999768733978
+          }
+        },
+        "11": {
+          "scheduler": {
+            "host_ms": 1.7051734030246735,
+            "device_ms": 0.4494599997997284
+          },
+          "model_forward": {
+            "host_ms": 132.90473073720932,
+            "device_ms": 134.92303466796875
+          },
+          "postprocess": {
+            "host_ms": 1.015838235616684,
+            "device_ms": 0.09337999671697617
+          },
+          "sampling": {
+            "host_ms": 0.22728554904460907,
+            "device_ms": 0.23683999478816986
+          }
+        },
+        "12": {
+          "scheduler": {
+            "host_ms": 1.5072375535964966,
+            "device_ms": 0.41882000863552094
+          },
+          "model_forward": {
+            "host_ms": 132.20546208322048,
+            "device_ms": 134.297607421875
+          },
+          "postprocess": {
+            "host_ms": 0.9463317692279816,
+            "device_ms": 0.09547999873757362
+          },
+          "sampling": {
+            "host_ms": 0.22334419190883636,
+            "device_ms": 0.24094000458717346
+          }
+        },
+        "13": {
+          "scheduler": {
+            "host_ms": 1.7453208565711975,
+            "device_ms": 0.49140000343322754
+          },
+          "model_forward": {
+            "host_ms": 133.8688526302576,
+            "device_ms": 135.91015625
+          },
+          "postprocess": {
+            "host_ms": 1.0086223483085632,
+            "device_ms": 0.0894399993121624
+          },
+          "sampling": {
+            "host_ms": 0.2370234578847885,
+            "device_ms": 0.23800000548362732
+          }
+        },
+        "14": {
+          "scheduler": {
+            "host_ms": 1.664409413933754,
+            "device_ms": 0.5492799878120422
+          },
+          "model_forward": {
+            "host_ms": 135.47157309949398,
+            "device_ms": 137.5647735595703
+          },
+          "postprocess": {
+            "host_ms": 0.9578391909599304,
+            "device_ms": 0.09333999827504158
+          },
+          "sampling": {
+            "host_ms": 0.21305307745933533,
+            "device_ms": 0.24045999348163605
+          }
+        },
+        "15": {
+          "scheduler": {
+            "host_ms": 1.6844868659973145,
+            "device_ms": 0.4329800009727478
+          },
+          "model_forward": {
+            "host_ms": 138.80818337202072,
+            "device_ms": 140.783935546875
+          },
+          "postprocess": {
+            "host_ms": 0.9934194386005402,
+            "device_ms": 0.09321999922394753
+          },
+          "sampling": {
+            "host_ms": 0.2239421010017395,
+            "device_ms": 0.23759999871253967
+          }
+        },
+        "16": {
+          "scheduler": {
+            "host_ms": 1.5002936124801636,
+            "device_ms": 0.4594999998807907
+          },
+          "model_forward": {
+            "host_ms": 131.46639242768288,
+            "device_ms": 133.5600128173828
+          },
+          "postprocess": {
+            "host_ms": 3.1080953776836395,
+            "device_ms": 1.007439985871315
+          },
+          "sampling": {
+            "host_ms": 0.21771155297756195,
+            "device_ms": 0.24065999686717987
+          }
+        },
+        "17": {
+          "scheduler": {
+            "host_ms": 0.6418302655220032,
+            "device_ms": 0.5414200127124786
+          },
+          "model_forward": {
+            "host_ms": 131.8584717810154,
+            "device_ms": 133.922607421875
+          },
+          "postprocess": {
+            "host_ms": 0.9800344705581665,
+            "device_ms": 0.08955999836325645
+          },
+          "sampling": {
+            "host_ms": 0.2232138067483902,
+            "device_ms": 0.23792000114917755
+          }
+        },
+        "18": {
+          "scheduler": {
+            "host_ms": 1.6076304018497467,
+            "device_ms": 0.43526001274585724
+          },
+          "model_forward": {
+            "host_ms": 131.37032464146614,
+            "device_ms": 133.38882446289062
+          },
+          "postprocess": {
+            "host_ms": 0.9758397936820984,
+            "device_ms": 0.09838000312447548
+          },
+          "sampling": {
+            "host_ms": 0.22567249834537506,
+            "device_ms": 0.24087999761104584
+          }
+        },
+        "19": {
+          "scheduler": {
+            "host_ms": 1.612463966012001,
+            "device_ms": 0.44812001287937164
+          },
+          "model_forward": {
+            "host_ms": 131.05747662484646,
+            "device_ms": 133.13587951660156
+          },
+          "postprocess": {
+            "host_ms": 0.9318403899669647,
+            "device_ms": 0.09752000123262405
+          },
+          "sampling": {
+            "host_ms": 0.21503306925296783,
+            "device_ms": 0.23819999396800995
+          }
+        },
+        "20": {
+          "scheduler": {
+            "host_ms": 1.6933083534240723,
+            "device_ms": 0.4401800036430359
+          },
+          "model_forward": {
+            "host_ms": 134.87199880182743,
+            "device_ms": 136.9387969970703
+          },
+          "postprocess": {
+            "host_ms": 1.01504847407341,
+            "device_ms": 0.1032400019466877
+          },
+          "sampling": {
+            "host_ms": 0.22722221910953522,
+            "device_ms": 0.23985999822616577
+          }
+        },
+        "21": {
+          "scheduler": {
+            "host_ms": 1.6372185200452805,
+            "device_ms": 0.4875800162553787
+          },
+          "model_forward": {
+            "host_ms": 136.57712005078793,
+            "device_ms": 138.56561279296875
+          },
+          "postprocess": {
+            "host_ms": 0.9555332362651825,
+            "device_ms": 0.0907600000500679
+          },
+          "sampling": {
+            "host_ms": 0.2228710800409317,
+            "device_ms": 0.23839999735355377
+          }
+        },
+        "22": {
+          "scheduler": {
+            "host_ms": 1.6699116677045822,
+            "device_ms": 0.5747599899768829
+          },
+          "model_forward": {
+            "host_ms": 135.89365035295486,
+            "device_ms": 137.89207458496094
+          },
+          "postprocess": {
+            "host_ms": 1.0017286986112595,
+            "device_ms": 0.09531999751925468
+          },
+          "sampling": {
+            "host_ms": 0.22618286311626434,
+            "device_ms": 0.23837999999523163
+          }
+        },
+        "23": {
+          "scheduler": {
+            "host_ms": 1.5432219952344894,
+            "device_ms": 0.44210000336170197
+          },
+          "model_forward": {
+            "host_ms": 130.98392635583878,
+            "device_ms": 133.0841064453125
+          },
+          "postprocess": {
+            "host_ms": 0.9238123893737793,
+            "device_ms": 0.09414000064134598
+          },
+          "sampling": {
+            "host_ms": 0.21102279424667358,
+            "device_ms": 0.23669999837875366
+          }
+        },
+        "24": {
+          "scheduler": {
+            "host_ms": 1.698378473520279,
+            "device_ms": 0.42720000445842743
+          },
+          "model_forward": {
+            "host_ms": 131.3725057989359,
+            "device_ms": 133.39576721191406
+          },
+          "postprocess": {
+            "host_ms": 0.9720325469970703,
+            "device_ms": 0.09411999955773354
+          },
+          "sampling": {
+            "host_ms": 0.2165045589208603,
+            "device_ms": 0.23749999701976776
+          }
+        },
+        "25": {
+          "scheduler": {
+            "host_ms": 1.5867054462432861,
+            "device_ms": 0.435479998588562
+          },
+          "model_forward": {
+            "host_ms": 128.5060327500105,
+            "device_ms": 130.60601806640625
+          },
+          "postprocess": {
+            "host_ms": 0.9207893162965775,
+            "device_ms": 0.09422000125050545
+          },
+          "sampling": {
+            "host_ms": 0.2061855047941208,
+            "device_ms": 0.23829999566078186
+          }
+        },
+        "26": {
+          "scheduler": {
+            "host_ms": 1.7001386731863022,
+            "device_ms": 0.4142400026321411
+          },
+          "model_forward": {
+            "host_ms": 128.705944865942,
+            "device_ms": 130.83163452148438
+          },
+          "postprocess": {
+            "host_ms": 0.935310497879982,
+            "device_ms": 0.09638000279664993
+          },
+          "sampling": {
+            "host_ms": 0.21273642778396606,
+            "device_ms": 0.23868000507354736
+          }
+        },
+        "27": {
+          "scheduler": {
+            "host_ms": 1.6947705298662186,
+            "device_ms": 0.4050399959087372
+          },
+          "model_forward": {
+            "host_ms": 133.521793410182,
+            "device_ms": 135.57211303710938
+          },
+          "postprocess": {
+            "host_ms": 0.9978264570236206,
+            "device_ms": 0.09601999819278717
+          },
+          "sampling": {
+            "host_ms": 0.23661181330680847,
+            "device_ms": 0.23815999925136566
+          }
+        },
+        "28": {
+          "scheduler": {
+            "host_ms": 1.5833918005228043,
+            "device_ms": 0.44148001074790955
+          },
+          "model_forward": {
+            "host_ms": 135.42231358587742,
+            "device_ms": 137.39688110351562
+          },
+          "postprocess": {
+            "host_ms": 0.9618084877729416,
+            "device_ms": 0.09402000159025192
+          },
+          "sampling": {
+            "host_ms": 0.22686272859573364,
+            "device_ms": 0.23747999966144562
+          }
+        },
+        "29": {
+          "scheduler": {
+            "host_ms": 1.505143940448761,
+            "device_ms": 0.443900004029274
+          },
+          "model_forward": {
+            "host_ms": 132.78567045927048,
+            "device_ms": 134.86578369140625
+          },
+          "postprocess": {
+            "host_ms": 0.9222719818353653,
+            "device_ms": 0.08907999843358994
+          },
+          "sampling": {
+            "host_ms": 0.2072323113679886,
+            "device_ms": 0.23812000453472137
+          }
+        },
+        "30": {
+          "scheduler": {
+            "host_ms": 1.7084479331970215,
+            "device_ms": 0.443340003490448
+          },
+          "model_forward": {
+            "host_ms": 133.4669217467308,
+            "device_ms": 135.4912567138672
+          },
+          "postprocess": {
+            "host_ms": 0.9931605309247971,
+            "device_ms": 0.09775999933481216
+          },
+          "sampling": {
+            "host_ms": 0.22025220096111298,
+            "device_ms": 0.23865999281406403
+          }
+        },
+        "31": {
+          "scheduler": {
+            "host_ms": 1.5701595693826675,
+            "device_ms": 0.45306000113487244
+          },
+          "model_forward": {
+            "host_ms": 143.16369220614433,
+            "device_ms": 145.08761596679688
+          },
+          "postprocess": {
+            "host_ms": 0.9735394269227982,
+            "device_ms": 0.095940001308918
+          },
+          "sampling": {
+            "host_ms": 0.2252236008644104,
+            "device_ms": 0.23892000317573547
+          }
+        }
+      }
+    },
+    {
+      "trial": 5,
+      "decode_steps": 31,
+      "stages": {
+        "scheduler": {
+          "host_ms": 99.17398355901241,
+          "device_ms": 13.371160000562668,
+          "host_fraction": 0.02353327689438467,
+          "host_step_median_ms": 1.694394275546074,
+          "device_step_median_ms": 0.4275200068950653
+        },
+        "model_forward": {
+          "host_ms": 4078.9184905588627,
+          "device_ms": 4143.26155090332,
+          "host_fraction": 0.9678981807847747,
+          "host_step_median_ms": 131.0577690601349,
+          "device_step_median_ms": 133.11703491210938
+        },
+        "sampling": {
+          "host_ms": 6.686331704258919,
+          "device_ms": 7.400380060076714,
+          "host_fraction": 0.0015866186852361121,
+          "host_step_median_ms": 0.21315552294254303,
+          "device_step_median_ms": 0.23844000697135925
+        },
+        "postprocess": {
+          "host_ms": 29.423236846923828,
+          "device_ms": 2.911360003054142,
+          "host_fraction": 0.006981923635604493,
+          "host_step_median_ms": 0.9304862469434738,
+          "device_step_median_ms": 0.09487999975681305
+        }
+      },
+      "adjacent_control_drift_pct": 0.5661073140140997,
+      "instrumentation_delta_pct": 0.19814015708050636,
+      "steps": {
+        "1": {
+          "scheduler": {
+            "host_ms": 49.16682094335556,
+            "device_ms": 0.4424399882555008
+          },
+          "model_forward": {
+            "host_ms": 131.17016851902008,
+            "device_ms": 133.23538208007812
+          },
+          "postprocess": {
+            "host_ms": 0.944182276725769,
+            "device_ms": 0.08955999836325645
+          },
+          "sampling": {
+            "host_ms": 0.22461451590061188,
+            "device_ms": 0.23768000304698944
+          }
+        },
+        "2": {
+          "scheduler": {
+            "host_ms": 1.7517991364002228,
+            "device_ms": 0.547980010509491
+          },
+          "model_forward": {
+            "host_ms": 129.17238660156727,
+            "device_ms": 131.18801879882812
+          },
+          "postprocess": {
+            "host_ms": 0.9916443377733231,
+            "device_ms": 0.09617999941110611
+          },
+          "sampling": {
+            "host_ms": 0.2210848033428192,
+            "device_ms": 0.24233999848365784
+          }
+        },
+        "3": {
+          "scheduler": {
+            "host_ms": 1.5825536102056503,
+            "device_ms": 0.4485799968242645
+          },
+          "model_forward": {
+            "host_ms": 127.9980968683958,
+            "device_ms": 130.09071350097656
+          },
+          "postprocess": {
+            "host_ms": 0.9073410183191299,
+            "device_ms": 0.0958000011742115
+          },
+          "sampling": {
+            "host_ms": 0.20493380725383759,
+            "device_ms": 0.23844000697135925
+          }
+        },
+        "4": {
+          "scheduler": {
+            "host_ms": 1.7003212124109268,
+            "device_ms": 0.40073999762535095
+          },
+          "model_forward": {
+            "host_ms": 129.71253134310246,
+            "device_ms": 131.81619262695312
+          },
+          "postprocess": {
+            "host_ms": 0.9336341172456741,
+            "device_ms": 0.09648000076413155
+          },
+          "sampling": {
+            "host_ms": 0.21419301629066467,
+            "device_ms": 0.23984000086784363
+          }
+        },
+        "5": {
+          "scheduler": {
+            "host_ms": 1.703588292002678,
+            "device_ms": 0.407600000500679
+          },
+          "model_forward": {
+            "host_ms": 130.02181984484196,
+            "device_ms": 132.14398193359375
+          },
+          "postprocess": {
+            "host_ms": 0.9226948022842407,
+            "device_ms": 0.09078000113368034
+          },
+          "sampling": {
+            "host_ms": 0.2102833241224289,
+            "device_ms": 0.23849999904632568
+          }
+        },
+        "6": {
+          "scheduler": {
+            "host_ms": 1.7215590924024582,
+            "device_ms": 0.4173000007867813
+          },
+          "model_forward": {
+            "host_ms": 129.62497398257256,
+            "device_ms": 131.70643615722656
+          },
+          "postprocess": {
+            "host_ms": 0.9181108325719833,
+            "device_ms": 0.09423999860882759
+          },
+          "sampling": {
+            "host_ms": 0.21275319159030914,
+            "device_ms": 0.23890000581741333
+          }
+        },
+        "7": {
+          "scheduler": {
+            "host_ms": 1.6916394233703613,
+            "device_ms": 0.4294999986886978
+          },
+          "model_forward": {
+            "host_ms": 130.6881606578827,
+            "device_ms": 132.79937744140625
+          },
+          "postprocess": {
+            "host_ms": 0.9098649024963379,
+            "device_ms": 0.09343999996781349
+          },
+          "sampling": {
+            "host_ms": 0.2086348831653595,
+            "device_ms": 0.23739999532699585
+          }
+        },
+        "8": {
+          "scheduler": {
+            "host_ms": 1.7694681882858276,
+            "device_ms": 0.4404599964618683
+          },
+          "model_forward": {
+            "host_ms": 135.56895032525063,
+            "device_ms": 137.65188598632812
+          },
+          "postprocess": {
+            "host_ms": 1.0146591812372208,
+            "device_ms": 0.0951399989426136
+          },
+          "sampling": {
+            "host_ms": 0.2269148826599121,
+            "device_ms": 0.24060000479221344
+          }
+        },
+        "9": {
+          "scheduler": {
+            "host_ms": 1.6020052134990692,
+            "device_ms": 0.4488399922847748
+          },
+          "model_forward": {
+            "host_ms": 131.88663311302662,
+            "device_ms": 133.99903869628906
+          },
+          "postprocess": {
+            "host_ms": 0.926923006772995,
+            "device_ms": 0.08875999972224236
+          },
+          "sampling": {
+            "host_ms": 0.2303626388311386,
+            "device_ms": 0.2379399985074997
+          }
+        },
+        "10": {
+          "scheduler": {
+            "host_ms": 1.7230603843927383,
+            "device_ms": 0.42800000309944153
+          },
+          "model_forward": {
+            "host_ms": 130.79132325947285,
+            "device_ms": 132.8782958984375
+          },
+          "postprocess": {
+            "host_ms": 0.9382013231515884,
+            "device_ms": 0.0951399989426136
+          },
+          "sampling": {
+            "host_ms": 0.20888447761535645,
+            "device_ms": 0.23994000256061554
+          }
+        },
+        "11": {
+          "scheduler": {
+            "host_ms": 1.7088018357753754,
+            "device_ms": 0.44731999933719635
+          },
+          "model_forward": {
+            "host_ms": 137.69759610295296,
+            "device_ms": 139.65338134765625
+          },
+          "postprocess": {
+            "host_ms": 0.987909734249115,
+            "device_ms": 0.09477999806404114
+          },
+          "sampling": {
+            "host_ms": 0.22653117775917053,
+            "device_ms": 0.2371000051498413
+          }
+        },
+        "12": {
+          "scheduler": {
+            "host_ms": 1.5097558498382568,
+            "device_ms": 0.46171998977661133
+          },
+          "model_forward": {
+            "host_ms": 131.7562274634838,
+            "device_ms": 133.83482360839844
+          },
+          "postprocess": {
+            "host_ms": 0.9581930935382843,
+            "device_ms": 0.09630000218749046
+          },
+          "sampling": {
+            "host_ms": 0.21249428391456604,
+            "device_ms": 0.24140000343322754
+          }
+        },
+        "13": {
+          "scheduler": {
+            "host_ms": 1.6421731561422348,
+            "device_ms": 0.4048199951648712
+          },
+          "model_forward": {
+            "host_ms": 132.60589353740215,
+            "device_ms": 134.68182373046875
+          },
+          "postprocess": {
+            "host_ms": 0.9446721524000168,
+            "device_ms": 0.08964000269770622
+          },
+          "sampling": {
+            "host_ms": 0.2134367823600769,
+            "device_ms": 0.2387399971485138
+          }
+        },
+        "14": {
+          "scheduler": {
+            "host_ms": 1.6850586980581284,
+            "device_ms": 0.43766000866889954
+          },
+          "model_forward": {
+            "host_ms": 131.35982677340508,
+            "device_ms": 133.47018432617188
+          },
+          "postprocess": {
+            "host_ms": 0.9182095527648926,
+            "device_ms": 0.09546000137925148
+          },
+          "sampling": {
+            "host_ms": 0.2128947526216507,
+            "device_ms": 0.24036000669002533
+          }
+        },
+        "15": {
+          "scheduler": {
+            "host_ms": 1.7191693186759949,
+            "device_ms": 0.41694000363349915
+          },
+          "model_forward": {
+            "host_ms": 131.3776671886444,
+            "device_ms": 133.45608520507812
+          },
+          "postprocess": {
+            "host_ms": 0.9083617478609085,
+            "device_ms": 0.09436000138521194
+          },
+          "sampling": {
+            "host_ms": 0.20903535187244415,
+            "device_ms": 0.23722000420093536
+          }
+        },
+        "16": {
+          "scheduler": {
+            "host_ms": 1.6800109297037125,
+            "device_ms": 0.3791799992322922
+          },
+          "model_forward": {
+            "host_ms": 132.97570124268532,
+            "device_ms": 134.94363403320312
+          },
+          "postprocess": {
+            "host_ms": 0.9814519435167313,
+            "device_ms": 0.09562000259757042
+          },
+          "sampling": {
+            "host_ms": 0.22032298147678375,
+            "device_ms": 0.23995999991893768
+          }
+        },
+        "17": {
+          "scheduler": {
+            "host_ms": 1.4922190457582474,
+            "device_ms": 0.40578000247478485
+          },
+          "model_forward": {
+            "host_ms": 131.21246546506882,
+            "device_ms": 133.30999755859375
+          },
+          "postprocess": {
+            "host_ms": 0.9293444454669952,
+            "device_ms": 0.08740000054240227
+          },
+          "sampling": {
+            "host_ms": 0.21015480160713196,
+            "device_ms": 0.23836000263690948
+          }
+        },
+        "18": {
+          "scheduler": {
+            "host_ms": 1.6964022070169449,
+            "device_ms": 0.4274199903011322
+          },
+          "model_forward": {
+            "host_ms": 130.8417823165655,
+            "device_ms": 132.9553985595703
+          },
+          "postprocess": {
+            "host_ms": 0.9051747620105743,
+            "device_ms": 0.09705999866127968
+          },
+          "sampling": {
+            "host_ms": 0.2117939293384552,
+            "device_ms": 0.24007999897003174
+          }
+        },
+        "19": {
+          "scheduler": {
+            "host_ms": 1.876259222626686,
+            "device_ms": 0.5442599952220917
+          },
+          "model_forward": {
+            "host_ms": 130.88448159396648,
+            "device_ms": 133.00257873535156
+          },
+          "postprocess": {
+            "host_ms": 0.9160656481981277,
+            "device_ms": 0.09611999988555908
+          },
+          "sampling": {
+            "host_ms": 0.21370500326156616,
+            "device_ms": 0.23746000230312347
+          }
+        },
+        "20": {
+          "scheduler": {
+            "host_ms": 1.7064623534679413,
+            "device_ms": 0.3822000026702881
+          },
+          "model_forward": {
+            "host_ms": 131.36932998895645,
+            "device_ms": 133.41151428222656
+          },
+          "postprocess": {
+            "host_ms": 0.9793918579816818,
+            "device_ms": 0.0967399999499321
+          },
+          "sampling": {
+            "host_ms": 0.22900477051734924,
+            "device_ms": 0.23984000086784363
+          }
+        },
+        "21": {
+          "scheduler": {
+            "host_ms": 1.5913061797618866,
+            "device_ms": 0.44534000754356384
+          },
+          "model_forward": {
+            "host_ms": 131.0577690601349,
+            "device_ms": 133.11703491210938
+          },
+          "postprocess": {
+            "host_ms": 0.9304862469434738,
+            "device_ms": 0.09212000295519829
+          },
+          "sampling": {
+            "host_ms": 0.21308474242687225,
+            "device_ms": 0.23890000581741333
+          }
+        },
+        "22": {
+          "scheduler": {
+            "host_ms": 1.687619835138321,
+            "device_ms": 0.4317200034856796
+          },
+          "model_forward": {
+            "host_ms": 130.73845580220222,
+            "device_ms": 132.8255157470703
+          },
+          "postprocess": {
+            "host_ms": 0.9138155728578568,
+            "device_ms": 0.09484000131487846
+          },
+          "sampling": {
+            "host_ms": 0.2115946263074875,
+            "device_ms": 0.23600000143051147
+          }
+        },
+        "23": {
+          "scheduler": {
+            "host_ms": 1.694394275546074,
+            "device_ms": 0.4174000024795532
+          },
+          "model_forward": {
+            "host_ms": 131.1952844262123,
+            "device_ms": 133.2775421142578
+          },
+          "postprocess": {
+            "host_ms": 1.209435984492302,
+            "device_ms": 0.093019999563694
+          },
+          "sampling": {
+            "host_ms": 0.21846406161785126,
+            "device_ms": 0.23826000094413757
+          }
+        },
+        "24": {
+          "scheduler": {
+            "host_ms": 1.380767673254013,
+            "device_ms": 0.39180000126361847
+          },
+          "model_forward": {
+            "host_ms": 130.72365708649158,
+            "device_ms": 132.8225555419922
+          },
+          "postprocess": {
+            "host_ms": 0.9222123771905899,
+            "device_ms": 0.09487999975681305
+          },
+          "sampling": {
+            "host_ms": 0.21315552294254303,
+            "device_ms": 0.23837999999523163
+          }
+        },
+        "25": {
+          "scheduler": {
+            "host_ms": 1.6887914389371872,
+            "device_ms": 0.4018000066280365
+          },
+          "model_forward": {
+            "host_ms": 130.3025782108307,
+            "device_ms": 132.42404174804688
+          },
+          "postprocess": {
+            "host_ms": 0.9217318147420883,
+            "device_ms": 0.09016000106930733
+          },
+          "sampling": {
+            "host_ms": 0.2155844122171402,
+            "device_ms": 0.23844000697135925
+          }
+        },
+        "26": {
+          "scheduler": {
+            "host_ms": 1.697152853012085,
+            "device_ms": 0.3897400051355362
+          },
+          "model_forward": {
+            "host_ms": 130.37409633398056,
+            "device_ms": 132.45849609375
+          },
+          "postprocess": {
+            "host_ms": 0.9393021464347839,
+            "device_ms": 0.09451999887824059
+          },
+          "sampling": {
+            "host_ms": 0.2137441188097,
+            "device_ms": 0.23705999553203583
+          }
+        },
+        "27": {
+          "scheduler": {
+            "host_ms": 1.689208671450615,
+            "device_ms": 0.4275200068950653
+          },
+          "model_forward": {
+            "host_ms": 133.92804376780987,
+            "device_ms": 135.9391632080078
+          },
+          "postprocess": {
+            "host_ms": 1.0182689875364304,
+            "device_ms": 0.09533999860286713
+          },
+          "sampling": {
+            "host_ms": 0.22668391466140747,
+            "device_ms": 0.23783999681472778
+          }
+        },
+        "28": {
+          "scheduler": {
+            "host_ms": 1.5141908079385757,
+            "device_ms": 0.4234199970960617
+          },
+          "model_forward": {
+            "host_ms": 134.2774946242571,
+            "device_ms": 136.38052368164062
+          },
+          "postprocess": {
+            "host_ms": 0.9349323809146881,
+            "device_ms": 0.09531999751925468
+          },
+          "sampling": {
+            "host_ms": 0.2105366438627243,
+            "device_ms": 0.2384600043296814
+          }
+        },
+        "29": {
+          "scheduler": {
+            "host_ms": 1.6364436596632004,
+            "device_ms": 0.4519200026988983
+          },
+          "model_forward": {
+            "host_ms": 130.60553558170795,
+            "device_ms": 132.7082061767578
+          },
+          "postprocess": {
+            "host_ms": 0.9249243885278702,
+            "device_ms": 0.09095999971032143
+          },
+          "sampling": {
+            "host_ms": 0.21177344024181366,
+            "device_ms": 0.23802000284194946
+          }
+        },
+        "30": {
+          "scheduler": {
+            "host_ms": 1.7101634293794632,
+            "device_ms": 0.4262399971485138
+          },
+          "model_forward": {
+            "host_ms": 130.9343073517084,
+            "device_ms": 133.0352020263672
+          },
+          "postprocess": {
+            "host_ms": 0.9110830724239349,
+            "device_ms": 0.09552000090479851
+          },
+          "sampling": {
+            "host_ms": 0.21041370928287506,
+            "device_ms": 0.2387000024318695
+          }
+        },
+        "31": {
+          "scheduler": {
+            "host_ms": 1.754816621541977,
+            "device_ms": 0.44551999866962433
+          },
+          "model_forward": {
+            "host_ms": 136.0652521252632,
+            "device_ms": 138.04452514648438
+          },
+          "postprocess": {
+            "host_ms": 0.96101313829422,
+            "device_ms": 0.09567999839782715
+          },
+          "sampling": {
+            "host_ms": 0.21926313638687134,
+            "device_ms": 0.2382200062274933
+          }
+        }
+      }
+    }
+  ],
+  "interpretation": "Stage fractions are diagnostic upper bounds. Event intervals include host idle and queue effects. No proven removable/overlap budget; no128-task claim."
+}

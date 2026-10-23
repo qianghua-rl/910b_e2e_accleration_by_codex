@@ -1,0 +1,12 @@
+{
+  "mismatching_tasks": [],
+  "correct": 15,
+  "baseline_subset_correct": 15,
+  "summary": {
+    "kind": "summary",
+    "makespan_seconds": 82.12422545067966,
+    "peak_bytes": 62094008832
+  },
+  "status": "rejected_low_local_gain",
+  "limitation": "subset run only; baseline full-run subset generation times are not matched makespan"
+}

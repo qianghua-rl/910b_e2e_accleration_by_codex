@@ -1,0 +1,29 @@
+{
+  "status": "rejected_full_model_no_gain",
+  "baseline": {
+    "seconds": 76.97651460953057,
+    "quality": 15,
+    "tokens": 3969,
+    "peak_bytes": 62094008832,
+    "load_seconds": 11.549711141735315
+  },
+  "nz": {
+    "seconds": 80.80408265255392,
+    "quality": 15,
+    "tokens": 3969,
+    "peak_bytes": 62099070464,
+    "load_seconds": 26.503736823797226,
+    "preparation": {
+      "converted_weights": 192,
+      "seconds": 15.083644431084394,
+      "allocated_before": 54713982976,
+      "allocated_after": 54713982976,
+      "preparation_peak_bytes": 54892241408,
+      "previous_peak_bytes": 54713985024
+    }
+  },
+  "slowdown_fraction": 0.04972384190735313,
+  "token_and_tool_trajectory_equal": true,
+  "audit": "both partial16 audits have zero errors",
+  "decision": "do not expand128 or deploy; local NZ GEMM benefit does not survive full-task path"
+}

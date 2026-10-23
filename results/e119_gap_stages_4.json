@@ -1,0 +1,1291 @@
+{
+  "trace": "results/profile_e118_threads_4/06f2b62264eb_165603_20261022134320734_ascend_pt/ASCEND_PROFILER_OUTPUT/trace_view.json",
+  "totals": {
+    "gap_us": 202285.75,
+    "before_host_us": 174609.75,
+    "host_to_command_us": 25392.0,
+    "after_command_us": 2284.0
+  },
+  "by_next_host_op": {
+    "unknown": {
+      "count": 890,
+      "gap_us": 54469.75,
+      "before_host_us": 46991.75,
+      "host_to_command_us": 7407.5,
+      "after_command_us": 70.5
+    },
+    "aten::matmul": {
+      "count": 876,
+      "gap_us": 40487.5,
+      "before_host_us": 36584.0,
+      "host_to_command_us": 3840.25,
+      "after_command_us": 63.25
+    },
+    "aten::copy_": {
+      "count": 1408,
+      "gap_us": 32759.75,
+      "before_host_us": 28910.0,
+      "host_to_command_us": 3631.0,
+      "after_command_us": 218.75
+    },
+    "aten::mul": {
+      "count": 1173,
+      "gap_us": 30229.0,
+      "before_host_us": 27792.75,
+      "host_to_command_us": 2359.0,
+      "after_command_us": 77.25
+    },
+    "aten::cat": {
+      "count": 699,
+      "gap_us": 15324.25,
+      "before_host_us": 13098.0,
+      "host_to_command_us": 2216.5,
+      "after_command_us": 9.75
+    },
+    "aten::add": {
+      "count": 811,
+      "gap_us": 8778.0,
+      "before_host_us": 7101.75,
+      "host_to_command_us": 1266.25,
+      "after_command_us": 410.0
+    },
+    "aten::scaled_dot_product_attention": {
+      "count": 64,
+      "gap_us": 6957.0,
+      "before_host_us": 5998.5,
+      "host_to_command_us": 913.5,
+      "after_command_us": 45.0
+    },
+    "aten::neg": {
+      "count": 190,
+      "gap_us": 4870.0,
+      "before_host_us": 4387.75,
+      "host_to_command_us": 475.0,
+      "after_command_us": 7.25
+    },
+    "aten::sigmoid": {
+      "count": 72,
+      "gap_us": 2111.75,
+      "before_host_us": 114.75,
+      "host_to_command_us": 1930.0,
+      "after_command_us": 67.0
+    },
+    "aten::arange": {
+      "count": 17,
+      "gap_us": 1193.75,
+      "before_host_us": 895.0,
+      "host_to_command_us": 298.5,
+      "after_command_us": 0.25
+    },
+    "aten::sum": {
+      "count": 768,
+      "gap_us": 971.75,
+      "before_host_us": 38.25,
+      "host_to_command_us": 27.25,
+      "after_command_us": 906.25
+    },
+    "aten::all": {
+      "count": 4,
+      "gap_us": 894.25,
+      "before_host_us": 753.5,
+      "host_to_command_us": 128.5,
+      "after_command_us": 12.25
+    },
+    "aten::embedding": {
+      "count": 4,
+      "gap_us": 609.25,
+      "before_host_us": 562.25,
+      "host_to_command_us": 47.0,
+      "after_command_us": 0.0
+    },
+    "aten::index": {
+      "count": 4,
+      "gap_us": 486.5,
+      "before_host_us": 353.25,
+      "host_to_command_us": 114.0,
+      "after_command_us": 19.25
+    },
+    "aten::le": {
+      "count": 4,
+      "gap_us": 462.25,
+      "before_host_us": 277.75,
+      "host_to_command_us": 182.75,
+      "after_command_us": 1.75
+    },
+    "aten::bitwise_and": {
+      "count": 7,
+      "gap_us": 345.5,
+      "before_host_us": 138.75,
+      "host_to_command_us": 206.0,
+      "after_command_us": 0.75
+    },
+    "aten::logical_not": {
+      "count": 20,
+      "gap_us": 269.75,
+      "before_host_us": 49.25,
+      "host_to_command_us": 219.5,
+      "after_command_us": 1.0
+    },
+    "aten::_convolution": {
+      "count": 244,
+      "gap_us": 256.0,
+      "before_host_us": 178.25,
+      "host_to_command_us": 17.75,
+      "after_command_us": 60.0
+    },
+    "aten::fill_": {
+      "count": 7,
+      "gap_us": 244.75,
+      "before_host_us": 205.25,
+      "host_to_command_us": 38.75,
+      "after_command_us": 0.75
+    },
+    "aten::sub": {
+      "count": 192,
+      "gap_us": 184.25,
+      "before_host_us": 0.0,
+      "host_to_command_us": 2.0,
+      "after_command_us": 182.25
+    },
+    "aten::exp": {
+      "count": 83,
+      "gap_us": 134.0,
+      "before_host_us": 64.75,
+      "host_to_command_us": 63.5,
+      "after_command_us": 5.75
+    },
+    "aten::repeat_interleave": {
+      "count": 222,
+      "gap_us": 100.5,
+      "before_host_us": 39.75,
+      "host_to_command_us": 6.5,
+      "after_command_us": 54.25
+    },
+    "aten::rsqrt": {
+      "count": 62,
+      "gap_us": 63.25,
+      "before_host_us": 47.25,
+      "host_to_command_us": 1.0,
+      "after_command_us": 15.0
+    },
+    "aten::silu": {
+      "count": 121,
+      "gap_us": 30.25,
+      "before_host_us": 0.0,
+      "host_to_command_us": 0.0,
+      "after_command_us": 30.25
+    },
+    "aten::softplus": {
+      "count": 34,
+      "gap_us": 29.25,
+      "before_host_us": 21.0,
+      "host_to_command_us": 0.0,
+      "after_command_us": 8.25
+    },
+    "aten::sin": {
+      "count": 2,
+      "gap_us": 6.5,
+      "before_host_us": 6.25,
+      "host_to_command_us": 0.0,
+      "after_command_us": 0.25
+    },
+    "aten::any": {
+      "count": 4,
+      "gap_us": 5.25,
+      "before_host_us": 0.0,
+      "host_to_command_us": 0.0,
+      "after_command_us": 5.25
+    },
+    "aten::max": {
+      "count": 4,
+      "gap_us": 5.25,
+      "before_host_us": 0.0,
+      "host_to_command_us": 0.0,
+      "after_command_us": 5.25
+    },
+    "aten::eq": {
+      "count": 6,
+      "gap_us": 4.5,
+      "before_host_us": 0.0,
+      "host_to_command_us": 0.0,
+      "after_command_us": 4.5
+    },
+    "aten::scatter_": {
+      "count": 4,
+      "gap_us": 1.0,
+      "before_host_us": 0.0,
+      "host_to_command_us": 0.0,
+      "after_command_us": 1.0
+    },
+    "aten::bitwise_or": {
+      "count": 3,
+      "gap_us": 0.75,
+      "before_host_us": 0.0,
+      "host_to_command_us": 0.0,
+      "after_command_us": 0.75
+    },
+    "aten::argmax": {
+      "count": 1,
+      "gap_us": 0.25,
+      "before_host_us": 0.0,
+      "host_to_command_us": 0.0,
+      "after_command_us": 0.25
+    }
+  },
+  "largest_gaps": [
+    {
+      "gap_us": 668.75,
+      "before_host_us": 0.0,
+      "host_to_command_us": 668.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnSigmoid_SigmoidAiCore_Sigmoid",
+      "host_op": "aten::sigmoid",
+      "host_ts": 1792676600994313.5,
+      "command_ts": 1792676600995056.8,
+      "device_start": 1792676600995053.8,
+      "previous_device_end": 1792676600994385.0,
+      "cpu_chain": [
+        "aten::sigmoid",
+        "aclnnSigmoid"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 528.0,
+      "before_host_us": 476.75,
+      "host_to_command_us": 42.25,
+      "after_command_us": 9.0,
+      "next_kernel": "aclnnFlashAttentionScore_FlashAttentionScore_FlashAttentionScore",
+      "host_op": "aten::scaled_dot_product_attention",
+      "host_ts": 1792676600994191.2,
+      "command_ts": 1792676600994233.5,
+      "device_start": 1792676600994242.5,
+      "previous_device_end": 1792676600993714.5,
+      "cpu_chain": [
+        "aten::scaled_dot_product_attention",
+        "npu::npu_fusion_attention_v3",
+        "aclnnFlashAttentionScore"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 416.75,
+      "before_host_us": 0.0,
+      "host_to_command_us": 416.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnSigmoid_SigmoidAiCore_Sigmoid",
+      "host_op": "aten::sigmoid",
+      "host_ts": 1792676601168499.5,
+      "command_ts": 1792676601168982.8,
+      "device_start": 1792676601168981.2,
+      "previous_device_end": 1792676601168564.5,
+      "cpu_chain": [
+        "aten::sigmoid",
+        "aclnnSigmoid"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 406.25,
+      "before_host_us": 0.0,
+      "host_to_command_us": 406.25,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnSigmoid_SigmoidAiCore_Sigmoid",
+      "host_op": "aten::sigmoid",
+      "host_ts": 1792676601517727.2,
+      "command_ts": 1792676601518198.5,
+      "device_start": 1792676601518195.8,
+      "previous_device_end": 1792676601517789.5,
+      "cpu_chain": [
+        "aten::sigmoid",
+        "aclnnSigmoid"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 403.75,
+      "before_host_us": 0.0,
+      "host_to_command_us": 403.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnSigmoid_SigmoidAiCore_Sigmoid",
+      "host_op": "aten::sigmoid",
+      "host_ts": 1792676601343710.2,
+      "command_ts": 1792676601344182.8,
+      "device_start": 1792676601344178.0,
+      "previous_device_end": 1792676601343774.2,
+      "cpu_chain": [
+        "aten::sigmoid",
+        "aclnnSigmoid"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 377.0,
+      "before_host_us": 333.25,
+      "host_to_command_us": 36.0,
+      "after_command_us": 7.75,
+      "next_kernel": "aclnnFlashAttentionScore_FlashAttentionScore_FlashAttentionScore",
+      "host_op": "aten::scaled_dot_product_attention",
+      "host_ts": 1792676601517606.0,
+      "command_ts": 1792676601517642.0,
+      "device_start": 1792676601517649.8,
+      "previous_device_end": 1792676601517272.8,
+      "cpu_chain": [
+        "aten::scaled_dot_product_attention",
+        "npu::npu_fusion_attention_v3",
+        "aclnnFlashAttentionScore"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 376.75,
+      "before_host_us": 370.75,
+      "host_to_command_us": 6.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnAdds_AddAiCore_Add",
+      "host_op": "aten::add",
+      "host_ts": 1792676600983288.2,
+      "command_ts": 1792676600983304.8,
+      "device_start": 1792676600983294.2,
+      "previous_device_end": 1792676600982917.5,
+      "cpu_chain": [
+        "aten::add",
+        "aclnnAdds"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 358.25,
+      "before_host_us": 314.75,
+      "host_to_command_us": 36.0,
+      "after_command_us": 7.5,
+      "next_kernel": "aclnnFlashAttentionScore_FlashAttentionScore_FlashAttentionScore",
+      "host_op": "aten::scaled_dot_product_attention",
+      "host_ts": 1792676601168380.2,
+      "command_ts": 1792676601168416.2,
+      "device_start": 1792676601168423.8,
+      "previous_device_end": 1792676601168065.5,
+      "cpu_chain": [
+        "aten::scaled_dot_product_attention",
+        "npu::npu_fusion_attention_v3",
+        "aclnnFlashAttentionScore"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 356.0,
+      "before_host_us": 347.0,
+      "host_to_command_us": 9.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnAdds_AddAiCore_Add",
+      "host_op": "aten::add",
+      "host_ts": 1792676601157989.0,
+      "command_ts": 1792676601158006.5,
+      "device_start": 1792676601157998.0,
+      "previous_device_end": 1792676601157642.0,
+      "cpu_chain": [
+        "aten::add",
+        "aclnnAdds"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 347.5,
+      "before_host_us": 272.75,
+      "host_to_command_us": 74.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_CastAiCore_Cast",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676600980569.2,
+      "command_ts": 1792676600980646.2,
+      "device_start": 1792676600980644.0,
+      "previous_device_end": 1792676600980296.5,
+      "cpu_chain": [
+        "aten::to",
+        "aten::_to_copy",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 347.25,
+      "before_host_us": 305.75,
+      "host_to_command_us": 36.5,
+      "after_command_us": 5.0,
+      "next_kernel": "aclnnFlashAttentionScore_FlashAttentionScore_FlashAttentionScore",
+      "host_op": "aten::scaled_dot_product_attention",
+      "host_ts": 1792676601343590.5,
+      "command_ts": 1792676601343627.0,
+      "device_start": 1792676601343632.0,
+      "previous_device_end": 1792676601343284.8,
+      "cpu_chain": [
+        "aten::scaled_dot_product_attention",
+        "npu::npu_fusion_attention_v3",
+        "aclnnFlashAttentionScore"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 345.25,
+      "before_host_us": 332.5,
+      "host_to_command_us": 12.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnAdds_AddAiCore_Add",
+      "host_op": "aten::add",
+      "host_ts": 1792676601507337.2,
+      "command_ts": 1792676601507358.5,
+      "device_start": 1792676601507350.0,
+      "previous_device_end": 1792676601507004.8,
+      "cpu_chain": [
+        "aten::add",
+        "aclnnAdds"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 341.5,
+      "before_host_us": 334.0,
+      "host_to_command_us": 7.5,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnAdds_AddAiCore_Add",
+      "host_op": "aten::add",
+      "host_ts": 1792676601333165.0,
+      "command_ts": 1792676601333182.5,
+      "device_start": 1792676601333172.5,
+      "previous_device_end": 1792676601332831.0,
+      "cpu_chain": [
+        "aten::add",
+        "aclnnAdds"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 333.75,
+      "before_host_us": 282.75,
+      "host_to_command_us": 51.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_SliceAiCore_Slice",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676600979924.0,
+      "command_ts": 1792676600979976.8,
+      "device_start": 1792676600979975.0,
+      "previous_device_end": 1792676600979641.2,
+      "cpu_chain": [
+        "aten::clone",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 324.75,
+      "before_host_us": 287.75,
+      "host_to_command_us": 29.5,
+      "after_command_us": 7.5,
+      "next_kernel": "aclnnMul_MulAiCore_Mul",
+      "host_op": "aten::mul",
+      "host_ts": 1792676601451018.0,
+      "command_ts": 1792676601451047.5,
+      "device_start": 1792676601451055.0,
+      "previous_device_end": 1792676601450730.2,
+      "cpu_chain": [
+        "aten::mul",
+        "aclnnMul"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 319.0,
+      "before_host_us": 266.0,
+      "host_to_command_us": 53.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_CastAiCore_Cast",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676601330852.2,
+      "command_ts": 1792676601330909.2,
+      "device_start": 1792676601330905.2,
+      "previous_device_end": 1792676601330586.2,
+      "cpu_chain": [
+        "aten::to",
+        "aten::_to_copy",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 302.5,
+      "before_host_us": 235.0,
+      "host_to_command_us": 67.5,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_SliceAiCore_Slice",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676601155169.0,
+      "command_ts": 1792676601155237.2,
+      "device_start": 1792676601155236.5,
+      "previous_device_end": 1792676601154934.0,
+      "cpu_chain": [
+        "aten::clone",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 286.75,
+      "before_host_us": 242.75,
+      "host_to_command_us": 44.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_CastAiCore_Cast",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676601155719.8,
+      "command_ts": 1792676601155768.8,
+      "device_start": 1792676601155763.8,
+      "previous_device_end": 1792676601155477.0,
+      "cpu_chain": [
+        "aten::to",
+        "aten::_to_copy",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 286.75,
+      "before_host_us": 244.75,
+      "host_to_command_us": 42.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_SliceAiCore_Slice",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676601330251.2,
+      "command_ts": 1792676601330296.5,
+      "device_start": 1792676601330293.2,
+      "previous_device_end": 1792676601330006.5,
+      "cpu_chain": [
+        "aten::clone",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 286.0,
+      "before_host_us": 234.0,
+      "host_to_command_us": 52.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_CastAiCore_Cast",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676601505136.0,
+      "command_ts": 1792676601505191.8,
+      "device_start": 1792676601505188.0,
+      "previous_device_end": 1792676601504902.0,
+      "cpu_chain": [
+        "aten::to",
+        "aten::_to_copy",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 274.5,
+      "before_host_us": 230.75,
+      "host_to_command_us": 43.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_SliceAiCore_Slice",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676601504595.2,
+      "command_ts": 1792676601504641.5,
+      "device_start": 1792676601504639.0,
+      "previous_device_end": 1792676601504364.5,
+      "cpu_chain": [
+        "aten::clone",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 253.0,
+      "before_host_us": 211.75,
+      "host_to_command_us": 35.5,
+      "after_command_us": 5.75,
+      "next_kernel": "aclnnAll_ReduceAll_ReduceAll",
+      "host_op": "aten::all",
+      "host_ts": 1792676600980860.0,
+      "command_ts": 1792676600980895.5,
+      "device_start": 1792676600980901.2,
+      "previous_device_end": 1792676600980648.2,
+      "cpu_chain": [
+        "aten::all",
+        "aclnnAll"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 225.0,
+      "before_host_us": 192.75,
+      "host_to_command_us": 31.0,
+      "after_command_us": 1.25,
+      "next_kernel": "aclnnAll_ReduceAll_ReduceAll",
+      "host_op": "aten::all",
+      "host_ts": 1792676601331102.0,
+      "command_ts": 1792676601331133.0,
+      "device_start": 1792676601331134.2,
+      "previous_device_end": 1792676601330909.2,
+      "cpu_chain": [
+        "aten::all",
+        "aclnnAll"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 214.75,
+      "before_host_us": 180.75,
+      "host_to_command_us": 31.25,
+      "after_command_us": 2.75,
+      "next_kernel": "aclnnAll_ReduceAll_ReduceAll",
+      "host_op": "aten::all",
+      "host_ts": 1792676601155948.8,
+      "command_ts": 1792676601155980.0,
+      "device_start": 1792676601155982.8,
+      "previous_device_end": 1792676601155768.0,
+      "cpu_chain": [
+        "aten::all",
+        "aclnnAll"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 201.75,
+      "before_host_us": 119.0,
+      "host_to_command_us": 82.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnCat_ConcatD_ConcatD",
+      "host_op": "aten::cat",
+      "host_ts": 1792676600993176.2,
+      "command_ts": 1792676600993260.5,
+      "device_start": 1792676600993259.0,
+      "previous_device_end": 1792676600993057.2,
+      "cpu_chain": [
+        "aten::cat",
+        "aclnnCat"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 201.5,
+      "before_host_us": 168.25,
+      "host_to_command_us": 30.75,
+      "after_command_us": 2.5,
+      "next_kernel": "aclnnAll_ReduceAll_ReduceAll",
+      "host_op": "aten::all",
+      "host_ts": 1792676601505360.5,
+      "command_ts": 1792676601505391.2,
+      "device_start": 1792676601505393.8,
+      "previous_device_end": 1792676601505192.2,
+      "cpu_chain": [
+        "aten::all",
+        "aclnnAll"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 190.5,
+      "before_host_us": 179.0,
+      "host_to_command_us": 11.5,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnArange_ArangeAiCore_Range",
+      "host_op": "aten::arange",
+      "host_ts": 1792676600981083.5,
+      "command_ts": 1792676600981102.8,
+      "device_start": 1792676600981095.0,
+      "previous_device_end": 1792676600980904.5,
+      "cpu_chain": [
+        "aten::arange",
+        "aclnnArange"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 184.25,
+      "before_host_us": 174.25,
+      "host_to_command_us": 10.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnArange_ArangeAiCore_Range",
+      "host_op": "aten::arange",
+      "host_ts": 1792676601156160.0,
+      "command_ts": 1792676601156178.5,
+      "device_start": 1792676601156170.0,
+      "previous_device_end": 1792676601155985.8,
+      "cpu_chain": [
+        "aten::arange",
+        "aclnnArange"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 183.75,
+      "before_host_us": 171.75,
+      "host_to_command_us": 12.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnArange_ArangeAiCore_Range",
+      "host_op": "aten::arange",
+      "host_ts": 1792676601505568.0,
+      "command_ts": 1792676601505586.8,
+      "device_start": 1792676601505580.0,
+      "previous_device_end": 1792676601505396.2,
+      "cpu_chain": [
+        "aten::arange",
+        "aclnnArange"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 178.75,
+      "before_host_us": 167.5,
+      "host_to_command_us": 11.25,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnArange_ArangeAiCore_Range",
+      "host_op": "aten::arange",
+      "host_ts": 1792676601331305.2,
+      "command_ts": 1792676601331325.8,
+      "device_start": 1792676601331316.5,
+      "previous_device_end": 1792676601331137.8,
+      "cpu_chain": [
+        "aten::arange",
+        "aclnnArange"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 178.5,
+      "before_host_us": 120.0,
+      "host_to_command_us": 58.25,
+      "after_command_us": 0.25,
+      "next_kernel": "aclnnInplaceCopy_AsStridedAiCore_AsStrided",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676601506675.5,
+      "command_ts": 1792676601506733.8,
+      "device_start": 1792676601506734.0,
+      "previous_device_end": 1792676601506555.5,
+      "cpu_chain": [
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 178.25,
+      "before_host_us": 143.5,
+      "host_to_command_us": 34.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_AsStridedAiCore_AsStrided",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676600982508.0,
+      "command_ts": 1792676600982547.5,
+      "device_start": 1792676600982542.8,
+      "previous_device_end": 1792676600982364.5,
+      "cpu_chain": [
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 173.0,
+      "before_host_us": 160.0,
+      "host_to_command_us": 13.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnEmbedding_GatherV2AiCore_GatherV2",
+      "host_op": "aten::embedding",
+      "host_ts": 1792676600980278.8,
+      "command_ts": 1792676600980297.2,
+      "device_start": 1792676600980291.8,
+      "previous_device_end": 1792676600980118.8,
+      "cpu_chain": [
+        "aten::embedding",
+        "aclnnEmbedding"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 172.5,
+      "before_host_us": 112.75,
+      "host_to_command_us": 59.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnAdds_AddAiCore_Add",
+      "host_op": "aten::add",
+      "host_ts": 1792676600981252.8,
+      "command_ts": 1792676600981313.0,
+      "device_start": 1792676600981312.5,
+      "previous_device_end": 1792676600981140.0,
+      "cpu_chain": [
+        "aten::add",
+        "aclnnAdds"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 162.75,
+      "before_host_us": 151.25,
+      "host_to_command_us": 11.5,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnEmbedding_GatherV2AiCore_GatherV2",
+      "host_op": "aten::embedding",
+      "host_ts": 1792676601330570.0,
+      "command_ts": 1792676601330590.0,
+      "device_start": 1792676601330581.5,
+      "previous_device_end": 1792676601330418.8,
+      "cpu_chain": [
+        "aten::embedding",
+        "aclnnEmbedding"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 158.75,
+      "before_host_us": 100.0,
+      "host_to_command_us": 58.5,
+      "after_command_us": 0.25,
+      "next_kernel": "aclnnCat_ConcatD_ConcatD",
+      "host_op": "aten::cat",
+      "host_ts": 1792676601342797.0,
+      "command_ts": 1792676601342855.5,
+      "device_start": 1792676601342855.8,
+      "previous_device_end": 1792676601342697.0,
+      "cpu_chain": [
+        "aten::cat",
+        "aclnnCat"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 152.25,
+      "before_host_us": 114.75,
+      "host_to_command_us": 34.5,
+      "after_command_us": 3.0,
+      "next_kernel": "aclnnSigmoid_SigmoidAiCore_Sigmoid",
+      "host_op": "aten::sigmoid",
+      "host_ts": 1792676601191398.5,
+      "command_ts": 1792676601191433.0,
+      "device_start": 1792676601191436.0,
+      "previous_device_end": 1792676601191283.8,
+      "cpu_chain": [
+        "aten::sigmoid",
+        "aclnnSigmoid"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 152.0,
+      "before_host_us": 119.25,
+      "host_to_command_us": 29.0,
+      "after_command_us": 3.75,
+      "next_kernel": "aclnnIndex_IndexAiCpu_Index",
+      "host_op": "aten::index",
+      "host_ts": 1792676600981946.2,
+      "command_ts": 1792676600981975.2,
+      "device_start": 1792676600981979.0,
+      "previous_device_end": 1792676600981827.0,
+      "cpu_chain": [
+        "aten::index",
+        "aclnnIndex"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 150.75,
+      "before_host_us": 87.25,
+      "host_to_command_us": 63.5,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnAdds_AddAiCore_Add",
+      "host_op": "aten::add",
+      "host_ts": 1792676601505707.0,
+      "command_ts": 1792676601505771.2,
+      "device_start": 1792676601505770.5,
+      "previous_device_end": 1792676601505619.8,
+      "cpu_chain": [
+        "aten::add",
+        "aclnnAdds"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 150.5,
+      "before_host_us": 93.75,
+      "host_to_command_us": 56.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnAdds_AddAiCore_Add",
+      "host_op": "aten::add",
+      "host_ts": 1792676601156299.8,
+      "command_ts": 1792676601156359.8,
+      "device_start": 1792676601156356.5,
+      "previous_device_end": 1792676601156206.0,
+      "cpu_chain": [
+        "aten::add",
+        "aclnnAdds"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 149.25,
+      "before_host_us": 94.25,
+      "host_to_command_us": 55.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnCat_ConcatD_ConcatD",
+      "host_op": "aten::cat",
+      "host_ts": 1792676601167583.0,
+      "command_ts": 1792676601167639.0,
+      "device_start": 1792676601167638.0,
+      "previous_device_end": 1792676601167488.8,
+      "cpu_chain": [
+        "aten::cat",
+        "aclnnCat"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 146.0,
+      "before_host_us": 94.5,
+      "host_to_command_us": 50.75,
+      "after_command_us": 0.75,
+      "next_kernel": "aclnnContiguous_SliceAiCore_Slice",
+      "host_op": "unknown",
+      "host_ts": 1792676601087435.8,
+      "command_ts": 1792676601087486.5,
+      "device_start": 1792676601087487.2,
+      "previous_device_end": 1792676601087341.2,
+      "cpu_chain": [
+        "npu::npu_rms_norm",
+        "aclnnRmsNorm"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 144.0,
+      "before_host_us": 95.25,
+      "host_to_command_us": 48.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_BroadcastToAiCore_BroadcastTo",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676601343034.8,
+      "command_ts": 1792676601343088.0,
+      "device_start": 1792676601343083.5,
+      "previous_device_end": 1792676601342939.5,
+      "cpu_chain": [
+        "aten::reshape",
+        "aten::clone",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 141.25,
+      "before_host_us": 87.0,
+      "host_to_command_us": 54.25,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnLeTensor_LessEqualAiCore_LessEqual",
+      "host_op": "aten::le",
+      "host_ts": 1792676600981654.8,
+      "command_ts": 1792676600981713.0,
+      "device_start": 1792676600981709.0,
+      "previous_device_end": 1792676600981567.8,
+      "cpu_chain": [
+        "aten::le",
+        "aclnnLeTensor"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 139.75,
+      "before_host_us": 88.0,
+      "host_to_command_us": 51.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnCat_ConcatD_ConcatD",
+      "host_op": "aten::cat",
+      "host_ts": 1792676601516786.0,
+      "command_ts": 1792676601516840.5,
+      "device_start": 1792676601516837.8,
+      "previous_device_end": 1792676601516698.0,
+      "cpu_chain": [
+        "aten::cat",
+        "aclnnCat"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 138.25,
+      "before_host_us": 87.0,
+      "host_to_command_us": 51.25,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_BroadcastToAiCore_BroadcastTo",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676601167813.5,
+      "command_ts": 1792676601167866.5,
+      "device_start": 1792676601167864.8,
+      "previous_device_end": 1792676601167726.5,
+      "cpu_chain": [
+        "aten::reshape",
+        "aten::clone",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 137.25,
+      "before_host_us": 125.5,
+      "host_to_command_us": 11.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnEmbedding_GatherV2AiCore_GatherV2",
+      "host_op": "aten::embedding",
+      "host_ts": 1792676601504885.8,
+      "command_ts": 1792676601504905.0,
+      "device_start": 1792676601504897.5,
+      "previous_device_end": 1792676601504760.2,
+      "cpu_chain": [
+        "aten::embedding",
+        "aclnnEmbedding"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 136.25,
+      "before_host_us": 125.5,
+      "host_to_command_us": 10.75,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnEmbedding_GatherV2AiCore_GatherV2",
+      "host_op": "aten::embedding",
+      "host_ts": 1792676601155461.8,
+      "command_ts": 1792676601155481.5,
+      "device_start": 1792676601155472.5,
+      "previous_device_end": 1792676601155336.2,
+      "cpu_chain": [
+        "aten::embedding",
+        "aclnnEmbedding"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 135.0,
+      "before_host_us": 86.5,
+      "host_to_command_us": 48.5,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_BroadcastToAiCore_BroadcastTo",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676601517013.0,
+      "command_ts": 1792676601517064.8,
+      "device_start": 1792676601517061.5,
+      "previous_device_end": 1792676601516926.5,
+      "cpu_chain": [
+        "aten::reshape",
+        "aten::clone",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 133.25,
+      "before_host_us": 98.75,
+      "host_to_command_us": 34.5,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_AsStridedAiCore_AsStrided",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676601332481.8,
+      "command_ts": 1792676601332521.2,
+      "device_start": 1792676601332516.2,
+      "previous_device_end": 1792676601332383.0,
+      "cpu_chain": [
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 130.5,
+      "before_host_us": 88.5,
+      "host_to_command_us": 42.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_StridedSliceAiCore_StridedSlice",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676600980067.2,
+      "command_ts": 1792676600980112.8,
+      "device_start": 1792676600980109.2,
+      "previous_device_end": 1792676600979978.8,
+      "cpu_chain": [
+        "aten::clone",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 128.5,
+      "before_host_us": 116.75,
+      "host_to_command_us": 11.75,
+      "after_command_us": 0.0,
+      "next_kernel": "RmsNorm",
+      "host_op": "unknown",
+      "host_ts": 1792676601192872.2,
+      "command_ts": 1792676601192889.5,
+      "device_start": 1792676601192884.0,
+      "previous_device_end": 1792676601192755.5,
+      "cpu_chain": [
+        "npu::npu_rms_norm",
+        "aclnnRmsNorm"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 127.0,
+      "before_host_us": 68.75,
+      "host_to_command_us": 58.25,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_BroadcastToAiCore_BroadcastTo",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676600993423.2,
+      "command_ts": 1792676600993482.0,
+      "device_start": 1792676600993481.5,
+      "previous_device_end": 1792676600993354.5,
+      "cpu_chain": [
+        "aten::reshape",
+        "aten::clone",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 125.0,
+      "before_host_us": 85.0,
+      "host_to_command_us": 40.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnAdds_AddAiCore_Add",
+      "host_op": "aten::add",
+      "host_ts": 1792676601331445.8,
+      "command_ts": 1792676601331490.5,
+      "device_start": 1792676601331485.8,
+      "previous_device_end": 1792676601331360.8,
+      "cpu_chain": [
+        "aten::add",
+        "aclnnAdds"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 123.0,
+      "before_host_us": 115.0,
+      "host_to_command_us": 8.0,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnMuls_MulAiCore_Mul",
+      "host_op": "aten::mul",
+      "host_ts": 1792676601530181.5,
+      "command_ts": 1792676601530197.0,
+      "device_start": 1792676601530189.5,
+      "previous_device_end": 1792676601530066.5,
+      "cpu_chain": [
+        "aten::mul",
+        "aclnnMuls"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 122.5,
+      "before_host_us": 90.25,
+      "host_to_command_us": 27.5,
+      "after_command_us": 4.75,
+      "next_kernel": "aclnnIndex_IndexAiCpu_Index",
+      "host_op": "aten::index",
+      "host_ts": 1792676601331987.8,
+      "command_ts": 1792676601332015.2,
+      "device_start": 1792676601332020.0,
+      "previous_device_end": 1792676601331897.5,
+      "cpu_chain": [
+        "aten::index",
+        "aclnnIndex"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 121.5,
+      "before_host_us": 114.0,
+      "host_to_command_us": 7.5,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnMatmul_MatMulCommon_MatMulV2",
+      "host_op": "aten::matmul",
+      "host_ts": 1792676601165677.0,
+      "command_ts": 1792676601165692.8,
+      "device_start": 1792676601165684.5,
+      "previous_device_end": 1792676601165563.0,
+      "cpu_chain": [
+        "aten::linear",
+        "aten::matmul",
+        "aclnnMatmul"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 118.75,
+      "before_host_us": 104.75,
+      "host_to_command_us": 14.0,
+      "after_command_us": 0.0,
+      "next_kernel": "RmsNorm",
+      "host_op": "unknown",
+      "host_ts": 1792676601482767.5,
+      "command_ts": 1792676601482786.5,
+      "device_start": 1792676601482781.5,
+      "previous_device_end": 1792676601482662.8,
+      "cpu_chain": [
+        "npu::npu_rms_norm",
+        "aclnnRmsNorm"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 114.0,
+      "before_host_us": 78.75,
+      "host_to_command_us": 35.25,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnInplaceCopy_StridedSliceAiCore_StridedSlice",
+      "host_op": "aten::copy_",
+      "host_ts": 1792676601330376.0,
+      "command_ts": 1792676601330416.0,
+      "device_start": 1792676601330411.2,
+      "previous_device_end": 1792676601330297.2,
+      "cpu_chain": [
+        "aten::clone",
+        "aten::copy_",
+        "aclnnInplaceCopy"
+      ],
+      "dequeue_chain": []
+    },
+    {
+      "gap_us": 113.5,
+      "before_host_us": 40.0,
+      "host_to_command_us": 73.5,
+      "after_command_us": 0.0,
+      "next_kernel": "aclnnBitwiseAndTensor_LogicalAndAiCore_LogicalAnd",
+      "host_op": "aten::bitwise_and",
+      "host_ts": 1792676600981752.2,
+      "command_ts": 1792676600981828.5,
+      "device_start": 1792676600981825.8,
+      "previous_device_end": 1792676600981712.2,
+      "cpu_chain": [
+        "aten::__and__",
+        "aten::bitwise_and",
+        "aclnnBitwiseAndTensor"
+      ],
+      "dequeue_chain": []
+    }
+  ],
+  "limitations": [
+    "Partitions are clipped timestamp associations, not causal/removable costs",
+    "CPU flow source is not command-ready time",
+    "HostToDevice source is correlated runtime submission marker, not proven hardware acceptance",
+    "Unlinked timestamps retain unknown attribution"
+  ]
+}

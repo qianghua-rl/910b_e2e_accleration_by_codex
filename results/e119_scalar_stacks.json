@@ -1,0 +1,388 @@
+[
+  {
+    "phase": "prefill",
+    "kind": "bool",
+    "device": "npu:0",
+    "count": 1,
+    "shape": [],
+    "dtype": "torch.bool",
+    "stack": [
+      {
+        "file": "/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/diagnose_scalar_reads.py",
+        "line": 106,
+        "function": "<module>",
+        "code": "out=model.generate(**inputs,max_new_tokens=5,do_sample=False,use_cache=True)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/utils/_contextlib.py",
+        "line": 120,
+        "function": "decorate_context",
+        "code": "return func(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py",
+        "line": 2401,
+        "function": "generate",
+        "code": "self._prepare_special_tokens(generation_config, kwargs_has_attention_mask, device=device)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py",
+        "line": 1972,
+        "function": "_prepare_special_tokens",
+        "code": "if eos_token_tensor is not None and torch.isin(eos_token_tensor, pad_token_tensor).any():"
+      }
+    ]
+  },
+  {
+    "phase": "prefill",
+    "kind": "bool",
+    "device": "npu:0",
+    "count": 1,
+    "shape": [],
+    "dtype": "torch.bool",
+    "stack": [
+      {
+        "file": "/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/diagnose_scalar_reads.py",
+        "line": 106,
+        "function": "<module>",
+        "code": "out=model.generate(**inputs,max_new_tokens=5,do_sample=False,use_cache=True)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/utils/_contextlib.py",
+        "line": 120,
+        "function": "decorate_context",
+        "code": "return func(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py",
+        "line": 2401,
+        "function": "generate",
+        "code": "self._prepare_special_tokens(generation_config, kwargs_has_attention_mask, device=device)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py",
+        "line": 1980,
+        "function": "_prepare_special_tokens",
+        "code": "torch.is_floating_point(eos_token_tensor) or (eos_token_tensor < 0).any()"
+      }
+    ]
+  },
+  {
+    "phase": "prefill",
+    "kind": "item",
+    "device": "npu:0",
+    "count": 1,
+    "shape": [],
+    "dtype": "torch.bool",
+    "stack": [
+      {
+        "file": "/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/diagnose_scalar_reads.py",
+        "line": 106,
+        "function": "<module>",
+        "code": "out=model.generate(**inputs,max_new_tokens=5,do_sample=False,use_cache=True)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/utils/_contextlib.py",
+        "line": 120,
+        "function": "decorate_context",
+        "code": "return func(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py",
+        "line": 2414,
+        "function": "generate",
+        "code": "has_right_padding = torch.any(attention_mask[:, -1] == 0).item()"
+      }
+    ]
+  },
+  {
+    "phase": "prefill",
+    "kind": "bool",
+    "device": "npu:0",
+    "count": 1,
+    "shape": [],
+    "dtype": "torch.bool",
+    "stack": [
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py",
+        "line": 1672,
+        "function": "forward",
+        "code": "outputs = self.language_model("
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py",
+        "line": 1775,
+        "function": "_wrapped_call_impl",
+        "code": "return self._call_impl(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py",
+        "line": 1786,
+        "function": "_call_impl",
+        "code": "return forward_call(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/generic.py",
+        "line": 952,
+        "function": "wrapper",
+        "code": "output = func(self, *args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/output_capturing.py",
+        "line": 248,
+        "function": "wrapper",
+        "code": "outputs = func(self, *args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py",
+        "line": 1260,
+        "function": "forward",
+        "code": "causal_mask = create_causal_mask("
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/deprecation.py",
+        "line": 171,
+        "function": "wrapped_func",
+        "code": "return func(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/masking_utils.py",
+        "line": 983,
+        "function": "create_causal_mask",
+        "code": "causal_mask = mask_interface("
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/masking_utils.py",
+        "line": 500,
+        "function": "sdpa_mask",
+        "code": "if allow_is_causal_skip and _ignore_causal_mask_sdpa(padding_mask, q_length, kv_length, kv_offset, local_size):"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/masking_utils.py",
+        "line": 270,
+        "function": "_ignore_causal_mask_sdpa",
+        "code": "and (padding_mask is None or padding_mask.all())"
+      }
+    ]
+  },
+  {
+    "phase": "prefill",
+    "kind": "bool",
+    "device": "npu:0",
+    "count": 1,
+    "shape": [],
+    "dtype": "torch.bool",
+    "stack": [
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py",
+        "line": 1775,
+        "function": "_wrapped_call_impl",
+        "code": "return self._call_impl(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py",
+        "line": 1786,
+        "function": "_call_impl",
+        "code": "return forward_call(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/generic.py",
+        "line": 876,
+        "function": "wrapper",
+        "code": "output = func(self, *args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py",
+        "line": 1672,
+        "function": "forward",
+        "code": "outputs = self.language_model("
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py",
+        "line": 1775,
+        "function": "_wrapped_call_impl",
+        "code": "return self._call_impl(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py",
+        "line": 1786,
+        "function": "_call_impl",
+        "code": "return forward_call(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/generic.py",
+        "line": 952,
+        "function": "wrapper",
+        "code": "output = func(self, *args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/output_capturing.py",
+        "line": 248,
+        "function": "wrapper",
+        "code": "outputs = func(self, *args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py",
+        "line": 1267,
+        "function": "forward",
+        "code": "linear_attn_mask = self._update_linear_attn_mask(attention_mask, past_key_values)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py",
+        "line": 1301,
+        "function": "_update_linear_attn_mask",
+        "code": "attention_mask is not None and torch.all(attention_mask == 1)"
+      }
+    ]
+  },
+  {
+    "phase": "prefill",
+    "kind": "bool",
+    "device": "npu:0",
+    "count": 1,
+    "shape": [],
+    "dtype": "torch.bool",
+    "stack": [
+      {
+        "file": "/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/diagnose_scalar_reads.py",
+        "line": 106,
+        "function": "<module>",
+        "code": "out=model.generate(**inputs,max_new_tokens=5,do_sample=False,use_cache=True)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/utils/_contextlib.py",
+        "line": 120,
+        "function": "decorate_context",
+        "code": "return func(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py",
+        "line": 2543,
+        "function": "generate",
+        "code": "result = decoding_method("
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py",
+        "line": 2743,
+        "function": "_sample",
+        "code": "while self._has_unfinished_sequences(this_peer_finished, synced_gpus, device=input_ids.device):"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py",
+        "line": 2569,
+        "function": "_has_unfinished_sequences",
+        "code": "elif this_peer_finished:"
+      }
+    ]
+  },
+  {
+    "phase": "decode",
+    "kind": "bool",
+    "device": "npu:0",
+    "count": 4,
+    "shape": [],
+    "dtype": "torch.bool",
+    "stack": [
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py",
+        "line": 1672,
+        "function": "forward",
+        "code": "outputs = self.language_model("
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py",
+        "line": 1775,
+        "function": "_wrapped_call_impl",
+        "code": "return self._call_impl(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/nn/modules/module.py",
+        "line": 1786,
+        "function": "_call_impl",
+        "code": "return forward_call(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/generic.py",
+        "line": 952,
+        "function": "wrapper",
+        "code": "output = func(self, *args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/output_capturing.py",
+        "line": 248,
+        "function": "wrapper",
+        "code": "outputs = func(self, *args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py",
+        "line": 1260,
+        "function": "forward",
+        "code": "causal_mask = create_causal_mask("
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/utils/deprecation.py",
+        "line": 171,
+        "function": "wrapped_func",
+        "code": "return func(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/masking_utils.py",
+        "line": 983,
+        "function": "create_causal_mask",
+        "code": "causal_mask = mask_interface("
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/masking_utils.py",
+        "line": 500,
+        "function": "sdpa_mask",
+        "code": "if allow_is_causal_skip and _ignore_causal_mask_sdpa(padding_mask, q_length, kv_length, kv_offset, local_size):"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/masking_utils.py",
+        "line": 270,
+        "function": "_ignore_causal_mask_sdpa",
+        "code": "and (padding_mask is None or padding_mask.all())"
+      }
+    ]
+  },
+  {
+    "phase": "decode",
+    "kind": "bool",
+    "device": "npu:0",
+    "count": 4,
+    "shape": [],
+    "dtype": "torch.bool",
+    "stack": [
+      {
+        "file": "/remote-home/S45160/work/910b_e2e_accleration_by_codex/scripts/diagnose_scalar_reads.py",
+        "line": 106,
+        "function": "<module>",
+        "code": "out=model.generate(**inputs,max_new_tokens=5,do_sample=False,use_cache=True)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch/utils/_contextlib.py",
+        "line": 120,
+        "function": "decorate_context",
+        "code": "return func(*args, **kwargs)"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py",
+        "line": 2543,
+        "function": "generate",
+        "code": "result = decoding_method("
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py",
+        "line": 2743,
+        "function": "_sample",
+        "code": "while self._has_unfinished_sequences(this_peer_finished, synced_gpus, device=input_ids.device):"
+      },
+      {
+        "file": "/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/transformers/generation/utils.py",
+        "line": 2569,
+        "function": "_has_unfinished_sequences",
+        "code": "elif this_peer_finished:"
+      }
+    ]
+  }
+]

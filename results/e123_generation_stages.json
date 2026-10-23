@@ -1,0 +1,5283 @@
+{
+  "tasks": [
+    640,
+    1137,
+    214,
+    1030,
+    950,
+    428,
+    866,
+    175,
+    1130,
+    445,
+    1161,
+    611,
+    108,
+    1288,
+    554,
+    249
+  ],
+  "steps": 32,
+  "results": [
+    {
+      "trial": 0,
+      "instrumented": false,
+      "wall_ms": 9356.80085234344,
+      "tokens_exact": true,
+      "e100_tokens_exact": true,
+      "peak_bytes": 59173664768,
+      "stages": []
+    },
+    {
+      "trial": 1,
+      "instrumented": true,
+      "wall_ms": 9471.142685040832,
+      "tokens_exact": true,
+      "e100_tokens_exact": true,
+      "peak_bytes": 59173664768,
+      "stages": [
+        {
+          "step": -1,
+          "stage": "prefill",
+          "host_start": 14198738.435519254,
+          "host_ms": 5137.1648497879505,
+          "device_start_ms": 0.0,
+          "device_end_ms": 5186.5693359375,
+          "device_ms": 5186.5693359375
+        },
+        {
+          "step": 0,
+          "stage": "scheduler",
+          "host_start": 14198743.572761552,
+          "host_ms": 0.10120682418346405,
+          "device_start_ms": 5186.56982421875,
+          "device_end_ms": 5186.56982421875,
+          "device_ms": 0.00015999999595806003
+        },
+        {
+          "step": 0,
+          "stage": "postprocess",
+          "host_start": 14198743.572884098,
+          "host_ms": 0.40943920612335205,
+          "device_start_ms": 5186.56982421875,
+          "device_end_ms": 5186.60986328125,
+          "device_ms": 0.039799999445676804
+        },
+        {
+          "step": 0,
+          "stage": "sampling",
+          "host_start": 14198743.573315814,
+          "host_ms": 0.24674274027347565,
+          "device_start_ms": 5186.60986328125,
+          "device_end_ms": 5186.8505859375,
+          "device_ms": 0.2409600019454956
+        },
+        {
+          "step": 0,
+          "stage": "postprocess",
+          "host_start": 14198743.573580915,
+          "host_ms": 0.760737806558609,
+          "device_start_ms": 5186.85107421875,
+          "device_end_ms": 5186.90673828125,
+          "device_ms": 0.05558000132441521
+        },
+        {
+          "step": 1,
+          "stage": "scheduler",
+          "host_start": 14198743.57436764,
+          "host_ms": 48.26659522950649,
+          "device_start_ms": 5186.90673828125,
+          "device_end_ms": 5187.11376953125,
+          "device_ms": 0.20695999264717102
+        },
+        {
+          "step": 1,
+          "stage": "scheduler",
+          "host_start": 14198743.622654565,
+          "host_ms": 0.28579123318195343,
+          "device_start_ms": 5187.17333984375,
+          "device_end_ms": 5187.41162109375,
+          "device_ms": 0.23844000697135925
+        },
+        {
+          "step": 1,
+          "stage": "model_forward",
+          "host_start": 14198743.622977983,
+          "host_ms": 138.7036070227623,
+          "device_start_ms": 5187.49755859375,
+          "device_end_ms": 5328.1357421875,
+          "device_ms": 140.6378631591797
+        },
+        {
+          "step": 1,
+          "stage": "postprocess",
+          "host_start": 14198743.761723569,
+          "host_ms": 0.37963874638080597,
+          "device_start_ms": 5328.1357421875,
+          "device_end_ms": 5328.16943359375,
+          "device_ms": 0.033900000154972076
+        },
+        {
+          "step": 1,
+          "stage": "sampling",
+          "host_start": 14198743.762125297,
+          "host_ms": 0.23037195205688477,
+          "device_start_ms": 5328.169921875,
+          "device_end_ms": 5328.408203125,
+          "device_ms": 0.238319993019104
+        },
+        {
+          "step": 1,
+          "stage": "postprocess",
+          "host_start": 14198743.762379948,
+          "host_ms": 0.6578080356121063,
+          "device_start_ms": 5328.408203125,
+          "device_end_ms": 5328.462890625,
+          "device_ms": 0.0545400008559227
+        },
+        {
+          "step": 2,
+          "stage": "scheduler",
+          "host_start": 14198743.763066266,
+          "host_ms": 1.12825445830822,
+          "device_start_ms": 5328.462890625,
+          "device_end_ms": 5328.68017578125,
+          "device_ms": 0.21741999685764313
+        },
+        {
+          "step": 2,
+          "stage": "scheduler",
+          "host_start": 14198743.76421539,
+          "host_ms": 0.2699829638004303,
+          "device_start_ms": 5328.7421875,
+          "device_end_ms": 5328.96630859375,
+          "device_ms": 0.22412000596523285
+        },
+        {
+          "step": 2,
+          "stage": "model_forward",
+          "host_start": 14198743.764514452,
+          "host_ms": 133.35284404456615,
+          "device_start_ms": 5329.04541015625,
+          "device_end_ms": 5464.4375,
+          "device_ms": 135.391845703125
+        },
+        {
+          "step": 2,
+          "stage": "postprocess",
+          "host_start": 14198743.897897096,
+          "host_ms": 0.35811588168144226,
+          "device_start_ms": 5464.4375,
+          "device_end_ms": 5464.47705078125,
+          "device_ms": 0.039659999310970306
+        },
+        {
+          "step": 2,
+          "stage": "sampling",
+          "host_start": 14198743.898276292,
+          "host_ms": 0.2279914915561676,
+          "device_start_ms": 5464.4775390625,
+          "device_end_ms": 5464.7197265625,
+          "device_ms": 0.2421800047159195
+        },
+        {
+          "step": 2,
+          "stage": "postprocess",
+          "host_start": 14198743.898523835,
+          "host_ms": 0.6493981927633286,
+          "device_start_ms": 5464.7197265625,
+          "device_end_ms": 5464.77734375,
+          "device_ms": 0.05756000056862831
+        },
+        {
+          "step": 3,
+          "stage": "scheduler",
+          "host_start": 14198743.899205664,
+          "host_ms": 1.3056769967079163,
+          "device_start_ms": 5464.77734375,
+          "device_end_ms": 5464.99658203125,
+          "device_ms": 0.2192399948835373
+        },
+        {
+          "step": 3,
+          "stage": "scheduler",
+          "host_start": 14198743.900532093,
+          "host_ms": 0.25895051658153534,
+          "device_start_ms": 5465.0595703125,
+          "device_end_ms": 5465.27490234375,
+          "device_ms": 0.21498000621795654
+        },
+        {
+          "step": 3,
+          "stage": "model_forward",
+          "host_start": 14198743.900821202,
+          "host_ms": 132.17185251414776,
+          "device_start_ms": 5465.34912109375,
+          "device_end_ms": 5599.6357421875,
+          "device_ms": 134.28656005859375
+        },
+        {
+          "step": 3,
+          "stage": "postprocess",
+          "host_start": 14198744.033017414,
+          "host_ms": 0.3450792282819748,
+          "device_start_ms": 5599.63623046875,
+          "device_end_ms": 5599.67529296875,
+          "device_ms": 0.03943999856710434
+        },
+        {
+          "step": 3,
+          "stage": "sampling",
+          "host_start": 14198744.033382893,
+          "host_ms": 0.20981207489967346,
+          "device_start_ms": 5599.67578125,
+          "device_end_ms": 5599.91357421875,
+          "device_ms": 0.23800000548362732
+        },
+        {
+          "step": 3,
+          "stage": "postprocess",
+          "host_start": 14198744.033611985,
+          "host_ms": 0.589640811085701,
+          "device_start_ms": 5599.91357421875,
+          "device_end_ms": 5599.9697265625,
+          "device_ms": 0.05593999847769737
+        },
+        {
+          "step": 4,
+          "stage": "scheduler",
+          "host_start": 14198744.034228455,
+          "host_ms": 1.427333801984787,
+          "device_start_ms": 5599.9697265625,
+          "device_end_ms": 5600.15234375,
+          "device_ms": 0.18233999609947205
+        },
+        {
+          "step": 4,
+          "stage": "scheduler",
+          "host_start": 14198744.035675908,
+          "host_ms": 0.26331283152103424,
+          "device_start_ms": 5600.21484375,
+          "device_end_ms": 5600.43359375,
+          "device_ms": 0.21870000660419464
+        },
+        {
+          "step": 4,
+          "stage": "model_forward",
+          "host_start": 14198744.03596699,
+          "host_ms": 132.2938371449709,
+          "device_start_ms": 5600.5224609375,
+          "device_end_ms": 5734.884765625,
+          "device_ms": 134.36264038085938
+        },
+        {
+          "step": 4,
+          "stage": "postprocess",
+          "host_start": 14198744.168284819,
+          "host_ms": 0.33877789974212646,
+          "device_start_ms": 5734.88525390625,
+          "device_end_ms": 5734.923828125,
+          "device_ms": 0.03888000175356865
+        },
+        {
+          "step": 4,
+          "stage": "sampling",
+          "host_start": 14198744.168644477,
+          "host_ms": 0.21665357053279877,
+          "device_start_ms": 5734.92431640625,
+          "device_end_ms": 5735.16357421875,
+          "device_ms": 0.2393999993801117
+        },
+        {
+          "step": 4,
+          "stage": "postprocess",
+          "host_start": 14198744.168885969,
+          "host_ms": 0.6069522351026535,
+          "device_start_ms": 5735.16357421875,
+          "device_end_ms": 5735.2197265625,
+          "device_ms": 0.0560000017285347
+        },
+        {
+          "step": 5,
+          "stage": "scheduler",
+          "host_start": 14198744.169519808,
+          "host_ms": 1.4245565980672836,
+          "device_start_ms": 5735.2197265625,
+          "device_end_ms": 5735.4453125,
+          "device_ms": 0.22529999911785126
+        },
+        {
+          "step": 5,
+          "stage": "scheduler",
+          "host_start": 14198744.170965524,
+          "host_ms": 0.25297142565250397,
+          "device_start_ms": 5735.5068359375,
+          "device_end_ms": 5735.716796875,
+          "device_ms": 0.2099200040102005
+        },
+        {
+          "step": 5,
+          "stage": "model_forward",
+          "host_start": 14198744.171246525,
+          "host_ms": 135.16323640942574,
+          "device_start_ms": 5735.79150390625,
+          "device_end_ms": 5872.99609375,
+          "device_ms": 137.20448303222656
+        },
+        {
+          "step": 5,
+          "stage": "postprocess",
+          "host_start": 14198744.306437273,
+          "host_ms": 0.37317536771297455,
+          "device_start_ms": 5872.99658203125,
+          "device_end_ms": 5873.03125,
+          "device_ms": 0.035020001232624054
+        },
+        {
+          "step": 5,
+          "stage": "sampling",
+          "host_start": 14198744.306831788,
+          "host_ms": 0.22518448531627655,
+          "device_start_ms": 5873.03173828125,
+          "device_end_ms": 5873.26806640625,
+          "device_ms": 0.2367199957370758
+        },
+        {
+          "step": 5,
+          "stage": "postprocess",
+          "host_start": 14198744.30707606,
+          "host_ms": 0.651821494102478,
+          "device_start_ms": 5873.2685546875,
+          "device_end_ms": 5873.3232421875,
+          "device_ms": 0.05496000126004219
+        },
+        {
+          "step": 6,
+          "stage": "scheduler",
+          "host_start": 14198744.30775439,
+          "host_ms": 1.399494707584381,
+          "device_start_ms": 5873.32373046875,
+          "device_end_ms": 5873.6611328125,
+          "device_ms": 0.3375200033187866
+        },
+        {
+          "step": 6,
+          "stage": "scheduler",
+          "host_start": 14198744.309174843,
+          "host_ms": 0.27064234018325806,
+          "device_start_ms": 5873.72314453125,
+          "device_end_ms": 5873.94677734375,
+          "device_ms": 0.223580002784729
+        },
+        {
+          "step": 6,
+          "stage": "model_forward",
+          "host_start": 14198744.309473276,
+          "host_ms": 137.53929175436497,
+          "device_start_ms": 5874.01611328125,
+          "device_end_ms": 6013.5400390625,
+          "device_ms": 139.5235137939453
+        },
+        {
+          "step": 6,
+          "stage": "postprocess",
+          "host_start": 14198744.447054189,
+          "host_ms": 0.36083534359931946,
+          "device_start_ms": 6013.5400390625,
+          "device_end_ms": 6013.5791015625,
+          "device_ms": 0.039000000804662704
+        },
+        {
+          "step": 6,
+          "stage": "sampling",
+          "host_start": 14198744.447439604,
+          "host_ms": 0.2281051129102707,
+          "device_start_ms": 6013.5791015625,
+          "device_end_ms": 6013.81787109375,
+          "device_ms": 0.23853999376296997
+        },
+        {
+          "step": 6,
+          "stage": "postprocess",
+          "host_start": 14198744.447687715,
+          "host_ms": 0.6203725934028625,
+          "device_start_ms": 6013.81787109375,
+          "device_end_ms": 6013.87353515625,
+          "device_ms": 0.0558600015938282
+        },
+        {
+          "step": 7,
+          "stage": "scheduler",
+          "host_start": 14198744.448346807,
+          "host_ms": 1.2236889451742172,
+          "device_start_ms": 6013.8740234375,
+          "device_end_ms": 6014.08447265625,
+          "device_ms": 0.21084000170230865
+        },
+        {
+          "step": 7,
+          "stage": "scheduler",
+          "host_start": 14198744.449591348,
+          "host_ms": 0.2873595803976059,
+          "device_start_ms": 6014.13623046875,
+          "device_end_ms": 6014.39111328125,
+          "device_ms": 0.25473999977111816
+        },
+        {
+          "step": 7,
+          "stage": "model_forward",
+          "host_start": 14198744.449910816,
+          "host_ms": 135.73982939124107,
+          "device_start_ms": 6014.470703125,
+          "device_end_ms": 6152.3134765625,
+          "device_ms": 137.84286499023438
+        },
+        {
+          "step": 7,
+          "stage": "postprocess",
+          "host_start": 14198744.585674245,
+          "host_ms": 0.35118870437145233,
+          "device_start_ms": 6152.3134765625,
+          "device_end_ms": 6152.3515625,
+          "device_ms": 0.0379600003361702
+        },
+        {
+          "step": 7,
+          "stage": "sampling",
+          "host_start": 14198744.586046563,
+          "host_ms": 0.21387264132499695,
+          "device_start_ms": 6152.35205078125,
+          "device_end_ms": 6152.59033203125,
+          "device_ms": 0.23827999830245972
+        },
+        {
+          "step": 7,
+          "stage": "postprocess",
+          "host_start": 14198744.586283576,
+          "host_ms": 0.5971193313598633,
+          "device_start_ms": 6152.59033203125,
+          "device_end_ms": 6152.64697265625,
+          "device_ms": 0.05655999854207039
+        },
+        {
+          "step": 8,
+          "stage": "scheduler",
+          "host_start": 14198744.586907435,
+          "host_ms": 1.4234576374292374,
+          "device_start_ms": 6152.64697265625,
+          "device_end_ms": 6152.85107421875,
+          "device_ms": 0.20389999449253082
+        },
+        {
+          "step": 8,
+          "stage": "scheduler",
+          "host_start": 14198744.588352133,
+          "host_ms": 0.2521313726902008,
+          "device_start_ms": 6152.90283203125,
+          "device_end_ms": 6153.11962890625,
+          "device_ms": 0.21699999272823334
+        },
+        {
+          "step": 8,
+          "stage": "model_forward",
+          "host_start": 14198744.588632552,
+          "host_ms": 133.6536444723606,
+          "device_start_ms": 6153.19775390625,
+          "device_end_ms": 6288.939453125,
+          "device_ms": 135.74195861816406
+        },
+        {
+          "step": 8,
+          "stage": "postprocess",
+          "host_start": 14198744.722314967,
+          "host_ms": 0.35013630986213684,
+          "device_start_ms": 6288.93994140625,
+          "device_end_ms": 6288.97900390625,
+          "device_ms": 0.03925999999046326
+        },
+        {
+          "step": 8,
+          "stage": "sampling",
+          "host_start": 14198744.722685654,
+          "host_ms": 0.2154819667339325,
+          "device_start_ms": 6288.97900390625,
+          "device_end_ms": 6289.21875,
+          "device_ms": 0.239779993891716
+        },
+        {
+          "step": 8,
+          "stage": "postprocess",
+          "host_start": 14198744.722920476,
+          "host_ms": 0.5904026329517365,
+          "device_start_ms": 6289.21923828125,
+          "device_end_ms": 6289.27490234375,
+          "device_ms": 0.05565999820828438
+        },
+        {
+          "step": 9,
+          "stage": "scheduler",
+          "host_start": 14198744.723538356,
+          "host_ms": 1.4380868524312973,
+          "device_start_ms": 6289.27490234375,
+          "device_end_ms": 6289.50341796875,
+          "device_ms": 0.228520005941391
+        },
+        {
+          "step": 9,
+          "stage": "scheduler",
+          "host_start": 14198744.72499684,
+          "host_ms": 0.256391242146492,
+          "device_start_ms": 6289.55419921875,
+          "device_end_ms": 6289.7744140625,
+          "device_ms": 0.22035999596118927
+        },
+        {
+          "step": 9,
+          "stage": "model_forward",
+          "host_start": 14198744.725281412,
+          "host_ms": 136.361850425601,
+          "device_start_ms": 6289.85205078125,
+          "device_end_ms": 6428.21240234375,
+          "device_ms": 138.3601837158203
+        },
+        {
+          "step": 9,
+          "stage": "postprocess",
+          "host_start": 14198744.86168186,
+          "host_ms": 0.36044977605342865,
+          "device_start_ms": 6428.21240234375,
+          "device_end_ms": 6428.24658203125,
+          "device_ms": 0.03381999954581261
+        },
+        {
+          "step": 9,
+          "stage": "sampling",
+          "host_start": 14198744.862064108,
+          "host_ms": 0.22755376994609833,
+          "device_start_ms": 6428.24658203125,
+          "device_end_ms": 6428.48486328125,
+          "device_ms": 0.23815999925136566
+        },
+        {
+          "step": 9,
+          "stage": "postprocess",
+          "host_start": 14198744.86231118,
+          "host_ms": 0.6234906613826752,
+          "device_start_ms": 6428.48486328125,
+          "device_end_ms": 6428.53857421875,
+          "device_ms": 0.05389999970793724
+        },
+        {
+          "step": 10,
+          "stage": "scheduler",
+          "host_start": 14198744.862961272,
+          "host_ms": 1.241840422153473,
+          "device_start_ms": 6428.5390625,
+          "device_end_ms": 6428.72900390625,
+          "device_ms": 0.18994000554084778
+        },
+        {
+          "step": 10,
+          "stage": "scheduler",
+          "host_start": 14198744.86422366,
+          "host_ms": 0.2698507159948349,
+          "device_start_ms": 6428.794921875,
+          "device_end_ms": 6429.0166015625,
+          "device_ms": 0.2215999960899353
+        },
+        {
+          "step": 10,
+          "stage": "model_forward",
+          "host_start": 14198744.864521973,
+          "host_ms": 132.69238360226154,
+          "device_start_ms": 6429.08837890625,
+          "device_end_ms": 6563.86474609375,
+          "device_ms": 134.77647399902344
+        },
+        {
+          "step": 10,
+          "stage": "postprocess",
+          "host_start": 14198744.997237796,
+          "host_ms": 0.35034865140914917,
+          "device_start_ms": 6563.86474609375,
+          "device_end_ms": 6563.904296875,
+          "device_ms": 0.03951999917626381
+        },
+        {
+          "step": 10,
+          "stage": "sampling",
+          "host_start": 14198744.997609654,
+          "host_ms": 0.2276543527841568,
+          "device_start_ms": 6563.904296875,
+          "device_end_ms": 6564.14501953125,
+          "device_ms": 0.24040000140666962
+        },
+        {
+          "step": 10,
+          "stage": "postprocess",
+          "host_start": 14198744.997860257,
+          "host_ms": 0.5842521786689758,
+          "device_start_ms": 6564.14501953125,
+          "device_end_ms": 6564.201171875,
+          "device_ms": 0.05626000091433525
+        },
+        {
+          "step": 11,
+          "stage": "scheduler",
+          "host_start": 14198744.998476256,
+          "host_ms": 1.4167558401823044,
+          "device_start_ms": 6564.20166015625,
+          "device_end_ms": 6564.42578125,
+          "device_ms": 0.224140003323555
+        },
+        {
+          "step": 11,
+          "stage": "scheduler",
+          "host_start": 14198744.999913773,
+          "host_ms": 0.26869960129261017,
+          "device_start_ms": 6564.49365234375,
+          "device_end_ms": 6564.7138671875,
+          "device_ms": 0.2205599993467331
+        },
+        {
+          "step": 11,
+          "stage": "model_forward",
+          "host_start": 14198745.000212032,
+          "host_ms": 134.6742231398821,
+          "device_start_ms": 6564.78466796875,
+          "device_end_ms": 6701.4775390625,
+          "device_ms": 136.69288635253906
+        },
+        {
+          "step": 11,
+          "stage": "postprocess",
+          "host_start": 14198745.134916604,
+          "host_ms": 0.3899279981851578,
+          "device_start_ms": 6701.47802734375,
+          "device_end_ms": 6701.521484375,
+          "device_ms": 0.043699998408555984
+        },
+        {
+          "step": 11,
+          "stage": "sampling",
+          "host_start": 14198745.13532722,
+          "host_ms": 0.22899359464645386,
+          "device_start_ms": 6701.521484375,
+          "device_end_ms": 6701.75927734375,
+          "device_ms": 0.23783999681472778
+        },
+        {
+          "step": 11,
+          "stage": "postprocess",
+          "host_start": 14198745.135574492,
+          "host_ms": 0.6714705377817154,
+          "device_start_ms": 6701.759765625,
+          "device_end_ms": 6701.81494140625,
+          "device_ms": 0.05544000118970871
+        },
+        {
+          "step": 12,
+          "stage": "scheduler",
+          "host_start": 14198745.13627706,
+          "host_ms": 1.2427624315023422,
+          "device_start_ms": 6701.8154296875,
+          "device_end_ms": 6702.05712890625,
+          "device_ms": 0.24181999266147614
+        },
+        {
+          "step": 12,
+          "stage": "scheduler",
+          "host_start": 14198745.13754004,
+          "host_ms": 0.2592429518699646,
+          "device_start_ms": 6702.1162109375,
+          "device_end_ms": 6702.33203125,
+          "device_ms": 0.2160000056028366
+        },
+        {
+          "step": 12,
+          "stage": "model_forward",
+          "host_start": 14198745.137829563,
+          "host_ms": 133.90669412910938,
+          "device_start_ms": 6702.40869140625,
+          "device_end_ms": 6838.4072265625,
+          "device_ms": 135.9987335205078
+        },
+        {
+          "step": 12,
+          "stage": "postprocess",
+          "host_start": 14198745.271759367,
+          "host_ms": 0.352516770362854,
+          "device_start_ms": 6838.40771484375,
+          "device_end_ms": 6838.44580078125,
+          "device_ms": 0.03853999823331833
+        },
+        {
+          "step": 12,
+          "stage": "sampling",
+          "host_start": 14198745.272132795,
+          "host_ms": 0.2145729959011078,
+          "device_start_ms": 6838.4462890625,
+          "device_end_ms": 6838.6875,
+          "device_ms": 0.24120000004768372
+        },
+        {
+          "step": 12,
+          "stage": "postprocess",
+          "host_start": 14198745.272365669,
+          "host_ms": 0.5909185856580734,
+          "device_start_ms": 6838.6875,
+          "device_end_ms": 6838.7421875,
+          "device_ms": 0.054499998688697815
+        },
+        {
+          "step": 13,
+          "stage": "scheduler",
+          "host_start": 14198745.272984028,
+          "host_ms": 1.4298837631940842,
+          "device_start_ms": 6838.7421875,
+          "device_end_ms": 6838.95751953125,
+          "device_ms": 0.21541999280452728
+        },
+        {
+          "step": 13,
+          "stage": "scheduler",
+          "host_start": 14198745.274433961,
+          "host_ms": 0.2620220184326172,
+          "device_start_ms": 6839.0185546875,
+          "device_end_ms": 6839.23681640625,
+          "device_ms": 0.2184000015258789
+        },
+        {
+          "step": 13,
+          "stage": "model_forward",
+          "host_start": 14198745.274723852,
+          "host_ms": 132.5075328350067,
+          "device_start_ms": 6839.3115234375,
+          "device_end_ms": 6973.93115234375,
+          "device_ms": 134.61964416503906
+        },
+        {
+          "step": 13,
+          "stage": "postprocess",
+          "host_start": 14198745.407254651,
+          "host_ms": 0.33869221806526184,
+          "device_start_ms": 6973.93115234375,
+          "device_end_ms": 6973.9658203125,
+          "device_ms": 0.03474000096321106
+        },
+        {
+          "step": 13,
+          "stage": "sampling",
+          "host_start": 14198745.407613693,
+          "host_ms": 0.21340325474739075,
+          "device_start_ms": 6973.96630859375,
+          "device_end_ms": 6974.203125,
+          "device_ms": 0.23707999289035797
+        },
+        {
+          "step": 13,
+          "stage": "postprocess",
+          "host_start": 14198745.407851374,
+          "host_ms": 0.6027426570653915,
+          "device_start_ms": 6974.20361328125,
+          "device_end_ms": 6974.25732421875,
+          "device_ms": 0.054019998759031296
+        },
+        {
+          "step": 14,
+          "stage": "scheduler",
+          "host_start": 14198745.408480564,
+          "host_ms": 1.4352556318044662,
+          "device_start_ms": 6974.2578125,
+          "device_end_ms": 6974.4619140625,
+          "device_ms": 0.2043599933385849
+        },
+        {
+          "step": 14,
+          "stage": "scheduler",
+          "host_start": 14198745.409936087,
+          "host_ms": 0.26289187371730804,
+          "device_start_ms": 6974.52294921875,
+          "device_end_ms": 6974.74169921875,
+          "device_ms": 0.21877999603748322
+        },
+        {
+          "step": 14,
+          "stage": "model_forward",
+          "host_start": 14198745.41022689,
+          "host_ms": 136.43863797187805,
+          "device_start_ms": 6974.81494140625,
+          "device_end_ms": 7113.3076171875,
+          "device_ms": 138.49290466308594
+        },
+        {
+          "step": 14,
+          "stage": "postprocess",
+          "host_start": 14198745.546694726,
+          "host_ms": 0.3741178661584854,
+          "device_start_ms": 7113.30810546875,
+          "device_end_ms": 7113.34716796875,
+          "device_ms": 0.0391400009393692
+        },
+        {
+          "step": 14,
+          "stage": "sampling",
+          "host_start": 14198745.547089703,
+          "host_ms": 0.22474490106105804,
+          "device_start_ms": 7113.34716796875,
+          "device_end_ms": 7113.5869140625,
+          "device_ms": 0.23970000445842743
+        },
+        {
+          "step": 14,
+          "stage": "postprocess",
+          "host_start": 14198745.547333745,
+          "host_ms": 0.6445199251174927,
+          "device_start_ms": 7113.5869140625,
+          "device_end_ms": 7113.642578125,
+          "device_ms": 0.05550000071525574
+        },
+        {
+          "step": 15,
+          "stage": "scheduler",
+          "host_start": 14198745.548016584,
+          "host_ms": 1.4039669185876846,
+          "device_start_ms": 7113.642578125,
+          "device_end_ms": 7113.97705078125,
+          "device_ms": 0.33441999554634094
+        },
+        {
+          "step": 15,
+          "stage": "scheduler",
+          "host_start": 14198745.54944076,
+          "host_ms": 0.26639923453330994,
+          "device_start_ms": 7114.0380859375,
+          "device_end_ms": 7114.2607421875,
+          "device_ms": 0.22244000434875488
+        },
+        {
+          "step": 15,
+          "stage": "model_forward",
+          "host_start": 14198745.54973529,
+          "host_ms": 136.43105700612068,
+          "device_start_ms": 7114.3349609375,
+          "device_end_ms": 7252.8388671875,
+          "device_ms": 138.5039825439453
+        },
+        {
+          "step": 15,
+          "stage": "postprocess",
+          "host_start": 14198745.686189288,
+          "host_ms": 0.34339725971221924,
+          "device_start_ms": 7252.8388671875,
+          "device_end_ms": 7252.87744140625,
+          "device_ms": 0.03813999891281128
+        },
+        {
+          "step": 15,
+          "stage": "sampling",
+          "host_start": 14198745.686554017,
+          "host_ms": 0.212792307138443,
+          "device_start_ms": 7252.87744140625,
+          "device_end_ms": 7253.115234375,
+          "device_ms": 0.23768000304698944
+        },
+        {
+          "step": 15,
+          "stage": "postprocess",
+          "host_start": 14198745.686785568,
+          "host_ms": 0.5813222378492355,
+          "device_start_ms": 7253.115234375,
+          "device_end_ms": 7253.1708984375,
+          "device_ms": 0.05581999942660332
+        },
+        {
+          "step": 16,
+          "stage": "scheduler",
+          "host_start": 14198745.687392589,
+          "host_ms": 1.438625156879425,
+          "device_start_ms": 7253.17138671875,
+          "device_end_ms": 7253.392578125,
+          "device_ms": 0.22127999365329742
+        },
+        {
+          "step": 16,
+          "stage": "scheduler",
+          "host_start": 14198745.688851152,
+          "host_ms": 0.2581849694252014,
+          "device_start_ms": 7253.45458984375,
+          "device_end_ms": 7253.666015625,
+          "device_ms": 0.21140000224113464
+        },
+        {
+          "step": 16,
+          "stage": "model_forward",
+          "host_start": 14198745.689136093,
+          "host_ms": 137.35463097691536,
+          "device_start_ms": 7253.73583984375,
+          "device_end_ms": 7393.0810546875,
+          "device_ms": 139.34519958496094
+        },
+        {
+          "step": 16,
+          "stage": "postprocess",
+          "host_start": 14198745.826531792,
+          "host_ms": 0.35810843110084534,
+          "device_start_ms": 7393.0810546875,
+          "device_end_ms": 7393.1201171875,
+          "device_ms": 0.03925999999046326
+        },
+        {
+          "step": 16,
+          "stage": "sampling",
+          "host_start": 14198745.82691449,
+          "host_ms": 0.2215951681137085,
+          "device_start_ms": 7393.12060546875,
+          "device_end_ms": 7393.359375,
+          "device_ms": 0.23895999789237976
+        },
+        {
+          "step": 16,
+          "stage": "postprocess",
+          "host_start": 14198745.827162253,
+          "host_ms": 0.6206799298524857,
+          "device_start_ms": 7393.359375,
+          "device_end_ms": 7393.41552734375,
+          "device_ms": 0.0561399981379509
+        },
+        {
+          "step": 17,
+          "stage": "scheduler",
+          "host_start": 14198745.82781506,
+          "host_ms": 1.22741237282753,
+          "device_start_ms": 7393.416015625,
+          "device_end_ms": 7393.607421875,
+          "device_ms": 0.19156000018119812
+        },
+        {
+          "step": 17,
+          "stage": "scheduler",
+          "host_start": 14198745.829063132,
+          "host_ms": 0.2760719507932663,
+          "device_start_ms": 7393.66845703125,
+          "device_end_ms": 7393.89892578125,
+          "device_ms": 0.23075999319553375
+        },
+        {
+          "step": 17,
+          "stage": "model_forward",
+          "host_start": 14198745.829371512,
+          "host_ms": 137.51084357500076,
+          "device_start_ms": 7393.9794921875,
+          "device_end_ms": 7533.45849609375,
+          "device_ms": 139.47906494140625
+        },
+        {
+          "step": 17,
+          "stage": "postprocess",
+          "host_start": 14198745.966920916,
+          "host_ms": 0.3767888993024826,
+          "device_start_ms": 7533.458984375,
+          "device_end_ms": 7533.4931640625,
+          "device_ms": 0.03448000177741051
+        },
+        {
+          "step": 17,
+          "stage": "sampling",
+          "host_start": 14198745.967318352,
+          "host_ms": 0.23301132023334503,
+          "device_start_ms": 7533.49365234375,
+          "device_end_ms": 7533.73095703125,
+          "device_ms": 0.2375199943780899
+        },
+        {
+          "step": 17,
+          "stage": "postprocess",
+          "host_start": 14198745.967570314,
+          "host_ms": 0.678258016705513,
+          "device_start_ms": 7533.73095703125,
+          "device_end_ms": 7533.78662109375,
+          "device_ms": 0.0553399994969368
+        },
+        {
+          "step": 18,
+          "stage": "scheduler",
+          "host_start": 14198745.968275443,
+          "host_ms": 1.1516734957695007,
+          "device_start_ms": 7533.78662109375,
+          "device_end_ms": 7533.99560546875,
+          "device_ms": 0.20907999575138092
+        },
+        {
+          "step": 18,
+          "stage": "scheduler",
+          "host_start": 14198745.969447484,
+          "host_ms": 0.2655908465385437,
+          "device_start_ms": 7534.06103515625,
+          "device_end_ms": 7534.27880859375,
+          "device_ms": 0.21768000721931458
+        },
+        {
+          "step": 18,
+          "stage": "model_forward",
+          "host_start": 14198745.969749296,
+          "host_ms": 134.73640009760857,
+          "device_start_ms": 7534.36474609375,
+          "device_end_ms": 7671.169921875,
+          "device_ms": 136.8050537109375
+        },
+        {
+          "step": 18,
+          "stage": "postprocess",
+          "host_start": 14198746.104511665,
+          "host_ms": 0.3459714353084564,
+          "device_start_ms": 7671.169921875,
+          "device_end_ms": 7671.2109375,
+          "device_ms": 0.04115999862551689
+        },
+        {
+          "step": 18,
+          "stage": "sampling",
+          "host_start": 14198746.104877293,
+          "host_ms": 0.21663494408130646,
+          "device_start_ms": 7671.21142578125,
+          "device_end_ms": 7671.45166015625,
+          "device_ms": 0.2402999997138977
+        },
+        {
+          "step": 18,
+          "stage": "postprocess",
+          "host_start": 14198746.105112616,
+          "host_ms": 0.6053820252418518,
+          "device_start_ms": 7671.45166015625,
+          "device_end_ms": 7671.5087890625,
+          "device_ms": 0.05703999847173691
+        },
+        {
+          "step": 19,
+          "stage": "scheduler",
+          "host_start": 14198746.105744656,
+          "host_ms": 1.4364849776029587,
+          "device_start_ms": 7671.5087890625,
+          "device_end_ms": 7671.7548828125,
+          "device_ms": 0.24592000246047974
+        },
+        {
+          "step": 19,
+          "stage": "scheduler",
+          "host_start": 14198746.10720096,
+          "host_ms": 0.255463644862175,
+          "device_start_ms": 7671.81591796875,
+          "device_end_ms": 7672.02880859375,
+          "device_ms": 0.2132599949836731
+        },
+        {
+          "step": 19,
+          "stage": "model_forward",
+          "host_start": 14198746.107483782,
+          "host_ms": 133.6048413068056,
+          "device_start_ms": 7672.10498046875,
+          "device_end_ms": 7807.79638671875,
+          "device_ms": 135.69146728515625
+        },
+        {
+          "step": 19,
+          "stage": "postprocess",
+          "host_start": 14198746.241111584,
+          "host_ms": 0.35288743674755096,
+          "device_start_ms": 7807.79638671875,
+          "device_end_ms": 7807.8359375,
+          "device_ms": 0.03945999965071678
+        },
+        {
+          "step": 19,
+          "stage": "sampling",
+          "host_start": 14198746.241485013,
+          "host_ms": 0.2108309417963028,
+          "device_start_ms": 7807.83642578125,
+          "device_end_ms": 7808.07421875,
+          "device_ms": 0.23824000358581543
+        },
+        {
+          "step": 19,
+          "stage": "postprocess",
+          "host_start": 14198746.241720324,
+          "host_ms": 0.5892310291528702,
+          "device_start_ms": 7808.07470703125,
+          "device_end_ms": 7808.13134765625,
+          "device_ms": 0.0568000003695488
+        },
+        {
+          "step": 20,
+          "stage": "scheduler",
+          "host_start": 14198746.242335396,
+          "host_ms": 1.4378037303686142,
+          "device_start_ms": 7808.13134765625,
+          "device_end_ms": 7808.35302734375,
+          "device_ms": 0.22137999534606934
+        },
+        {
+          "step": 20,
+          "stage": "scheduler",
+          "host_start": 14198746.24379454,
+          "host_ms": 0.26671215891838074,
+          "device_start_ms": 7808.4150390625,
+          "device_end_ms": 7808.63916015625,
+          "device_ms": 0.22450000047683716
+        },
+        {
+          "step": 20,
+          "stage": "model_forward",
+          "host_start": 14198746.24408886,
+          "host_ms": 133.81863944232464,
+          "device_start_ms": 7808.71240234375,
+          "device_end_ms": 7944.619140625,
+          "device_ms": 135.90646362304688
+        },
+        {
+          "step": 20,
+          "stage": "postprocess",
+          "host_start": 14198746.377933377,
+          "host_ms": 0.35005807876586914,
+          "device_start_ms": 7944.619140625,
+          "device_end_ms": 7944.6591796875,
+          "device_ms": 0.03988000005483627
+        },
+        {
+          "step": 20,
+          "stage": "sampling",
+          "host_start": 14198746.378303928,
+          "host_ms": 0.2259816974401474,
+          "device_start_ms": 7944.6591796875,
+          "device_end_ms": 7944.8994140625,
+          "device_ms": 0.24009999632835388
+        },
+        {
+          "step": 20,
+          "stage": "postprocess",
+          "host_start": 14198746.3785487,
+          "host_ms": 0.6030704826116562,
+          "device_start_ms": 7944.8994140625,
+          "device_end_ms": 7944.95556640625,
+          "device_ms": 0.056359998881816864
+        },
+        {
+          "step": 21,
+          "stage": "scheduler",
+          "host_start": 14198746.37917782,
+          "host_ms": 1.4381147921085358,
+          "device_start_ms": 7944.9560546875,
+          "device_end_ms": 7945.2001953125,
+          "device_ms": 0.24449999630451202
+        },
+        {
+          "step": 21,
+          "stage": "scheduler",
+          "host_start": 14198746.380636403,
+          "host_ms": 0.2553630620241165,
+          "device_start_ms": 7945.2607421875,
+          "device_end_ms": 7945.47314453125,
+          "device_ms": 0.21201999485492706
+        },
+        {
+          "step": 21,
+          "stage": "model_forward",
+          "host_start": 14198746.380919084,
+          "host_ms": 133.92284885048866,
+          "device_start_ms": 7945.54541015625,
+          "device_end_ms": 8081.4892578125,
+          "device_ms": 135.94395446777344
+        },
+        {
+          "step": 21,
+          "stage": "postprocess",
+          "host_start": 14198746.51487058,
+          "host_ms": 0.37705712020397186,
+          "device_start_ms": 8081.48974609375,
+          "device_end_ms": 8081.52587890625,
+          "device_ms": 0.03638000041246414
+        },
+        {
+          "step": 21,
+          "stage": "sampling",
+          "host_start": 14198746.515271196,
+          "host_ms": 0.22684410214424133,
+          "device_start_ms": 8081.5263671875,
+          "device_end_ms": 8081.7646484375,
+          "device_ms": 0.23841999471187592
+        },
+        {
+          "step": 21,
+          "stage": "postprocess",
+          "host_start": 14198746.51551791,
+          "host_ms": 0.6438512355089188,
+          "device_start_ms": 8081.7646484375,
+          "device_end_ms": 8081.81982421875,
+          "device_ms": 0.055059999227523804
+        },
+        {
+          "step": 22,
+          "stage": "scheduler",
+          "host_start": 14198746.516192717,
+          "host_ms": 1.2468714267015457,
+          "device_start_ms": 8081.81982421875,
+          "device_end_ms": 8082.03125,
+          "device_ms": 0.21150000393390656
+        },
+        {
+          "step": 22,
+          "stage": "scheduler",
+          "host_start": 14198746.51745994,
+          "host_ms": 0.2582203596830368,
+          "device_start_ms": 8082.09375,
+          "device_end_ms": 8082.31005859375,
+          "device_ms": 0.21619999408721924
+        },
+        {
+          "step": 22,
+          "stage": "model_forward",
+          "host_start": 14198746.51774993,
+          "host_ms": 133.9386347681284,
+          "device_start_ms": 8082.38525390625,
+          "device_end_ms": 8218.421875,
+          "device_ms": 136.03729248046875
+        },
+        {
+          "step": 22,
+          "stage": "postprocess",
+          "host_start": 14198746.651712604,
+          "host_ms": 0.34873001277446747,
+          "device_start_ms": 8218.4228515625,
+          "device_end_ms": 8218.4609375,
+          "device_ms": 0.03886000066995621
+        },
+        {
+          "step": 22,
+          "stage": "sampling",
+          "host_start": 14198746.652081585,
+          "host_ms": 0.22194162011146545,
+          "device_start_ms": 8218.4619140625,
+          "device_end_ms": 8218.7001953125,
+          "device_ms": 0.23849999904632568
+        },
+        {
+          "step": 22,
+          "stage": "postprocess",
+          "host_start": 14198746.652324663,
+          "host_ms": 0.5816444754600525,
+          "device_start_ms": 8218.7001953125,
+          "device_end_ms": 8218.755859375,
+          "device_ms": 0.05559999868273735
+        },
+        {
+          "step": 23,
+          "stage": "scheduler",
+          "host_start": 14198746.652932256,
+          "host_ms": 1.4234762638807297,
+          "device_start_ms": 8218.755859375,
+          "device_end_ms": 8218.9541015625,
+          "device_ms": 0.19828000664710999
+        },
+        {
+          "step": 23,
+          "stage": "scheduler",
+          "host_start": 14198746.65437568,
+          "host_ms": 0.27470290660858154,
+          "device_start_ms": 8219.0166015625,
+          "device_end_ms": 8219.24609375,
+          "device_ms": 0.22908000648021698
+        },
+        {
+          "step": 23,
+          "stage": "model_forward",
+          "host_start": 14198746.65467912,
+          "host_ms": 133.27033817768097,
+          "device_start_ms": 8219.3193359375,
+          "device_end_ms": 8354.69921875,
+          "device_ms": 135.3799591064453
+        },
+        {
+          "step": 23,
+          "stage": "postprocess",
+          "host_start": 14198746.787972627,
+          "host_ms": 0.3592781722545624,
+          "device_start_ms": 8354.69921875,
+          "device_end_ms": 8354.73828125,
+          "device_ms": 0.03903999924659729
+        },
+        {
+          "step": 23,
+          "stage": "sampling",
+          "host_start": 14198746.788352815,
+          "host_ms": 0.20938366651535034,
+          "device_start_ms": 8354.73828125,
+          "device_end_ms": 8354.9765625,
+          "device_ms": 0.2381799966096878
+        },
+        {
+          "step": 23,
+          "stage": "postprocess",
+          "host_start": 14198746.788581708,
+          "host_ms": 0.591350719332695,
+          "device_start_ms": 8354.9775390625,
+          "device_end_ms": 8355.033203125,
+          "device_ms": 0.05620000138878822
+        },
+        {
+          "step": 24,
+          "stage": "scheduler",
+          "host_start": 14198746.78919924,
+          "host_ms": 1.4274343848228455,
+          "device_start_ms": 8355.033203125,
+          "device_end_ms": 8355.2265625,
+          "device_ms": 0.1934799998998642
+        },
+        {
+          "step": 24,
+          "stage": "scheduler",
+          "host_start": 14198746.790647833,
+          "host_ms": 0.25654397904872894,
+          "device_start_ms": 8355.2890625,
+          "device_end_ms": 8355.501953125,
+          "device_ms": 0.21276000142097473
+        },
+        {
+          "step": 24,
+          "stage": "model_forward",
+          "host_start": 14198746.790932424,
+          "host_ms": 133.27350839972496,
+          "device_start_ms": 8355.5732421875,
+          "device_end_ms": 8490.9326171875,
+          "device_ms": 135.35928344726562
+        },
+        {
+          "step": 24,
+          "stage": "postprocess",
+          "host_start": 14198746.9242297,
+          "host_ms": 0.33981911838054657,
+          "device_start_ms": 8490.93359375,
+          "device_end_ms": 8490.9736328125,
+          "device_ms": 0.0408799983561039
+        },
+        {
+          "step": 24,
+          "stage": "sampling",
+          "host_start": 14198746.9245894,
+          "host_ms": 0.20771287381649017,
+          "device_start_ms": 8490.974609375,
+          "device_end_ms": 8491.2109375,
+          "device_ms": 0.23688000440597534
+        },
+        {
+          "step": 24,
+          "stage": "postprocess",
+          "host_start": 14198746.924816351,
+          "host_ms": 0.584842637181282,
+          "device_start_ms": 8491.2109375,
+          "device_end_ms": 8491.2685546875,
+          "device_ms": 0.05705999955534935
+        },
+        {
+          "step": 25,
+          "stage": "scheduler",
+          "host_start": 14198746.925435612,
+          "host_ms": 1.432366669178009,
+          "device_start_ms": 8491.2685546875,
+          "device_end_ms": 8491.474609375,
+          "device_ms": 0.2060600072145462
+        },
+        {
+          "step": 25,
+          "stage": "scheduler",
+          "host_start": 14198746.926888527,
+          "host_ms": 0.2498198300600052,
+          "device_start_ms": 8491.5361328125,
+          "device_end_ms": 8491.7421875,
+          "device_ms": 0.20611999928951263
+        },
+        {
+          "step": 25,
+          "stage": "model_forward",
+          "host_start": 14198746.927165437,
+          "host_ms": 135.35844162106514,
+          "device_start_ms": 8491.8134765625,
+          "device_end_ms": 8629.20703125,
+          "device_ms": 137.39328002929688
+        },
+        {
+          "step": 25,
+          "stage": "postprocess",
+          "host_start": 14198747.062552558,
+          "host_ms": 0.36322884261608124,
+          "device_start_ms": 8629.20703125,
+          "device_end_ms": 8629.2421875,
+          "device_ms": 0.03531999886035919
+        },
+        {
+          "step": 25,
+          "stage": "sampling",
+          "host_start": 14198747.062935947,
+          "host_ms": 0.222913920879364,
+          "device_start_ms": 8629.2421875,
+          "device_end_ms": 8629.48046875,
+          "device_ms": 0.23837999999523163
+        },
+        {
+          "step": 25,
+          "stage": "postprocess",
+          "host_start": 14198747.063177908,
+          "host_ms": 0.6415117532014847,
+          "device_start_ms": 8629.48046875,
+          "device_end_ms": 8629.53515625,
+          "device_ms": 0.054760001599788666
+        },
+        {
+          "step": 26,
+          "stage": "scheduler",
+          "host_start": 14198747.063849548,
+          "host_ms": 1.32070854306221,
+          "device_start_ms": 8629.5361328125,
+          "device_end_ms": 8629.7822265625,
+          "device_ms": 0.24672000110149384
+        },
+        {
+          "step": 26,
+          "stage": "scheduler",
+          "host_start": 14198747.065191386,
+          "host_ms": 0.2659223973751068,
+          "device_start_ms": 8629.84375,
+          "device_end_ms": 8630.0673828125,
+          "device_ms": 0.22297999262809753
+        },
+        {
+          "step": 26,
+          "stage": "model_forward",
+          "host_start": 14198747.065485027,
+          "host_ms": 136.8691772222519,
+          "device_start_ms": 8630.1494140625,
+          "device_end_ms": 8769.0634765625,
+          "device_ms": 138.91433715820312
+        },
+        {
+          "step": 26,
+          "stage": "postprocess",
+          "host_start": 14198747.202379063,
+          "host_ms": 0.3556087613105774,
+          "device_start_ms": 8769.0634765625,
+          "device_end_ms": 8769.1015625,
+          "device_ms": 0.03855999931693077
+        },
+        {
+          "step": 26,
+          "stage": "sampling",
+          "host_start": 14198747.2027552,
+          "host_ms": 0.2178531140089035,
+          "device_start_ms": 8769.1025390625,
+          "device_end_ms": 8769.3408203125,
+          "device_ms": 0.23826000094413757
+        },
+        {
+          "step": 26,
+          "stage": "postprocess",
+          "host_start": 14198747.202991864,
+          "host_ms": 0.6089396774768829,
+          "device_start_ms": 8769.3408203125,
+          "device_end_ms": 8769.3974609375,
+          "device_ms": 0.05696000158786774
+        },
+        {
+          "step": 27,
+          "stage": "scheduler",
+          "host_start": 14198747.203627463,
+          "host_ms": 1.3612974435091019,
+          "device_start_ms": 8769.3974609375,
+          "device_end_ms": 8769.615234375,
+          "device_ms": 0.21743999421596527
+        },
+        {
+          "step": 27,
+          "stage": "scheduler",
+          "host_start": 14198747.20500914,
+          "host_ms": 0.2687796950340271,
+          "device_start_ms": 8769.6689453125,
+          "device_end_ms": 8769.8984375,
+          "device_ms": 0.23037999868392944
+        },
+        {
+          "step": 27,
+          "stage": "model_forward",
+          "host_start": 14198747.20530662,
+          "host_ms": 137.76695728302002,
+          "device_start_ms": 8769.974609375,
+          "device_end_ms": 8909.6953125,
+          "device_ms": 139.720703125
+        },
+        {
+          "step": 27,
+          "stage": "postprocess",
+          "host_start": 14198747.343118774,
+          "host_ms": 0.38389861583709717,
+          "device_start_ms": 8909.6953125,
+          "device_end_ms": 8909.734375,
+          "device_ms": 0.039080001413822174
+        },
+        {
+          "step": 27,
+          "stage": "sampling",
+          "host_start": 14198747.343525702,
+          "host_ms": 0.23019127547740936,
+          "device_start_ms": 8909.734375,
+          "device_end_ms": 8909.9736328125,
+          "device_ms": 0.2389799952507019
+        },
+        {
+          "step": 27,
+          "stage": "postprocess",
+          "host_start": 14198747.343775233,
+          "host_ms": 0.6420798599720001,
+          "device_start_ms": 8909.9736328125,
+          "device_end_ms": 8910.0302734375,
+          "device_ms": 0.05640000104904175
+        },
+        {
+          "step": 28,
+          "stage": "scheduler",
+          "host_start": 14198747.344450632,
+          "host_ms": 1.1588037014007568,
+          "device_start_ms": 8910.0302734375,
+          "device_end_ms": 8910.232421875,
+          "device_ms": 0.20173999667167664
+        },
+        {
+          "step": 28,
+          "stage": "scheduler",
+          "host_start": 14198747.345629696,
+          "host_ms": 0.2743806689977646,
+          "device_start_ms": 8910.2998046875,
+          "device_end_ms": 8910.525390625,
+          "device_ms": 0.22565999627113342
+        },
+        {
+          "step": 28,
+          "stage": "model_forward",
+          "host_start": 14198747.345939055,
+          "host_ms": 134.99207235872746,
+          "device_start_ms": 8910.603515625,
+          "device_end_ms": 9047.7158203125,
+          "device_ms": 137.1121368408203
+        },
+        {
+          "step": 28,
+          "stage": "postprocess",
+          "host_start": 14198747.480954109,
+          "host_ms": 0.34888647496700287,
+          "device_start_ms": 9047.7158203125,
+          "device_end_ms": 9047.75390625,
+          "device_ms": 0.038600001484155655
+        },
+        {
+          "step": 28,
+          "stage": "sampling",
+          "host_start": 14198747.481323356,
+          "host_ms": 0.2118535339832306,
+          "device_start_ms": 9047.7548828125,
+          "device_end_ms": 9047.9921875,
+          "device_ms": 0.23802000284194946
+        },
+        {
+          "step": 28,
+          "stage": "postprocess",
+          "host_start": 14198747.48155412,
+          "host_ms": 0.588592141866684,
+          "device_start_ms": 9047.9931640625,
+          "device_end_ms": 9048.048828125,
+          "device_ms": 0.05655999854207039
+        },
+        {
+          "step": 29,
+          "stage": "scheduler",
+          "host_start": 14198747.482185548,
+          "host_ms": 1.4307685196399689,
+          "device_start_ms": 9048.0498046875,
+          "device_end_ms": 9048.251953125,
+          "device_ms": 0.20263999700546265
+        },
+        {
+          "step": 29,
+          "stage": "scheduler",
+          "host_start": 14198747.483636634,
+          "host_ms": 0.2640616148710251,
+          "device_start_ms": 9048.322265625,
+          "device_end_ms": 9048.533203125,
+          "device_ms": 0.2109600007534027
+        },
+        {
+          "step": 29,
+          "stage": "model_forward",
+          "host_start": 14198747.483928325,
+          "host_ms": 136.63704134523869,
+          "device_start_ms": 9048.6064453125,
+          "device_end_ms": 9187.220703125,
+          "device_ms": 138.61395263671875
+        },
+        {
+          "step": 29,
+          "stage": "postprocess",
+          "host_start": 14198747.620603316,
+          "host_ms": 0.3727767616510391,
+          "device_start_ms": 9187.220703125,
+          "device_end_ms": 9187.255859375,
+          "device_ms": 0.03571999818086624
+        },
+        {
+          "step": 29,
+          "stage": "sampling",
+          "host_start": 14198747.620996483,
+          "host_ms": 0.22176094353199005,
+          "device_start_ms": 9187.255859375,
+          "device_end_ms": 9187.494140625,
+          "device_ms": 0.23785999417304993
+        },
+        {
+          "step": 29,
+          "stage": "postprocess",
+          "host_start": 14198747.621237015,
+          "host_ms": 0.6386414170265198,
+          "device_start_ms": 9187.494140625,
+          "device_end_ms": 9187.5498046875,
+          "device_ms": 0.05538000166416168
+        },
+        {
+          "step": 30,
+          "stage": "scheduler",
+          "host_start": 14198747.621903025,
+          "host_ms": 1.2278519570827484,
+          "device_start_ms": 9187.5498046875,
+          "device_end_ms": 9187.7734375,
+          "device_ms": 0.22310000658035278
+        },
+        {
+          "step": 30,
+          "stage": "scheduler",
+          "host_start": 14198747.623151263,
+          "host_ms": 0.2703331410884857,
+          "device_start_ms": 9187.8212890625,
+          "device_end_ms": 9188.0576171875,
+          "device_ms": 0.2363400012254715
+        },
+        {
+          "step": 30,
+          "stage": "model_forward",
+          "host_start": 14198747.623449424,
+          "host_ms": 133.4519423544407,
+          "device_start_ms": 9188.1298828125,
+          "device_end_ms": 9323.6669921875,
+          "device_ms": 135.53668212890625
+        },
+        {
+          "step": 30,
+          "stage": "postprocess",
+          "host_start": 14198747.756925236,
+          "host_ms": 0.3453679382801056,
+          "device_start_ms": 9323.6669921875,
+          "device_end_ms": 9323.705078125,
+          "device_ms": 0.038120001554489136
+        },
+        {
+          "step": 30,
+          "stage": "sampling",
+          "host_start": 14198747.757291904,
+          "host_ms": 0.21662376821041107,
+          "device_start_ms": 9323.705078125,
+          "device_end_ms": 9323.943359375,
+          "device_ms": 0.23812000453472137
+        },
+        {
+          "step": 30,
+          "stage": "postprocess",
+          "host_start": 14198747.757527117,
+          "host_ms": 0.5778204649686813,
+          "device_start_ms": 9323.943359375,
+          "device_end_ms": 9323.9990234375,
+          "device_ms": 0.05558000132441521
+        },
+        {
+          "step": 31,
+          "stage": "scheduler",
+          "host_start": 14198747.758130757,
+          "host_ms": 1.4300867915153503,
+          "device_start_ms": 9323.9990234375,
+          "device_end_ms": 9324.20703125,
+          "device_ms": 0.2076999992132187
+        },
+        {
+          "step": 31,
+          "stage": "scheduler",
+          "host_start": 14198747.759581031,
+          "host_ms": 0.2633631229400635,
+          "device_start_ms": 9324.275390625,
+          "device_end_ms": 9324.486328125,
+          "device_ms": 0.21046000719070435
+        },
+        {
+          "step": 31,
+          "stage": "model_forward",
+          "host_start": 14198747.759871803,
+          "host_ms": 133.49691964685917,
+          "device_start_ms": 9324.5576171875,
+          "device_end_ms": 9460.1435546875,
+          "device_ms": 135.58534240722656
+        },
+        {
+          "step": 31,
+          "stage": "postprocess",
+          "host_start": 14198747.893392293,
+          "host_ms": 0.34158676862716675,
+          "device_start_ms": 9460.1435546875,
+          "device_end_ms": 9460.1826171875,
+          "device_ms": 0.03945999965071678
+        },
+        {
+          "step": 31,
+          "stage": "sampling",
+          "host_start": 14198747.89375303,
+          "host_ms": 0.2092551440000534,
+          "device_start_ms": 9460.1826171875,
+          "device_end_ms": 9460.4208984375,
+          "device_ms": 0.23788000643253326
+        },
+        {
+          "step": 31,
+          "stage": "postprocess",
+          "host_start": 14198747.893988973,
+          "host_ms": 0.5932319909334183,
+          "device_start_ms": 9460.4208984375,
+          "device_end_ms": 9460.4775390625,
+          "device_ms": 0.056359998881816864
+        },
+        {
+          "step": 32,
+          "stage": "scheduler",
+          "host_start": 14198747.894608945,
+          "host_ms": 1.4425832778215408,
+          "device_start_ms": 9460.4775390625,
+          "device_end_ms": 9460.7021484375,
+          "device_ms": 0.2246199995279312
+        }
+      ]
+    },
+    {
+      "trial": 2,
+      "instrumented": false,
+      "wall_ms": 9413.96171785891,
+      "tokens_exact": true,
+      "e100_tokens_exact": true,
+      "peak_bytes": 59173664768,
+      "stages": []
+    },
+    {
+      "trial": 3,
+      "instrumented": true,
+      "wall_ms": 9455.374721437693,
+      "tokens_exact": true,
+      "e100_tokens_exact": true,
+      "peak_bytes": 59173664768,
+      "stages": [
+        {
+          "step": -1,
+          "stage": "prefill",
+          "host_start": 14198757.341857783,
+          "host_ms": 5149.800492450595,
+          "device_start_ms": 0.0,
+          "device_end_ms": 5199.5419921875,
+          "device_ms": 5199.5419921875
+        },
+        {
+          "step": 0,
+          "stage": "scheduler",
+          "host_start": 14198762.491727583,
+          "host_ms": 0.10200962424278259,
+          "device_start_ms": 5199.5419921875,
+          "device_end_ms": 5199.54248046875,
+          "device_ms": 0.00015999999595806003
+        },
+        {
+          "step": 0,
+          "stage": "postprocess",
+          "host_start": 14198762.49184691,
+          "host_ms": 0.41992776095867157,
+          "device_start_ms": 5199.54248046875,
+          "device_end_ms": 5199.58154296875,
+          "device_ms": 0.03903999924659729
+        },
+        {
+          "step": 0,
+          "stage": "sampling",
+          "host_start": 14198762.492287677,
+          "host_ms": 0.24730339646339417,
+          "device_start_ms": 5199.58154296875,
+          "device_end_ms": 5199.8203125,
+          "device_ms": 0.23871999979019165
+        },
+        {
+          "step": 0,
+          "stage": "postprocess",
+          "host_start": 14198762.492552048,
+          "host_ms": 0.7510986179113388,
+          "device_start_ms": 5199.8203125,
+          "device_end_ms": 5199.8759765625,
+          "device_ms": 0.05565999820828438
+        },
+        {
+          "step": 1,
+          "stage": "scheduler",
+          "host_start": 14198762.493325086,
+          "host_ms": 48.53526130318642,
+          "device_start_ms": 5199.87646484375,
+          "device_end_ms": 5200.1279296875,
+          "device_ms": 0.25165998935699463
+        },
+        {
+          "step": 1,
+          "stage": "scheduler",
+          "host_start": 14198762.541878296,
+          "host_ms": 0.2703443169593811,
+          "device_start_ms": 5200.177734375,
+          "device_end_ms": 5200.40185546875,
+          "device_ms": 0.22419999539852142
+        },
+        {
+          "step": 1,
+          "stage": "model_forward",
+          "host_start": 14198762.542186128,
+          "host_ms": 137.24081963300705,
+          "device_start_ms": 5200.4833984375,
+          "device_end_ms": 5339.77490234375,
+          "device_ms": 139.29168701171875
+        },
+        {
+          "step": 1,
+          "stage": "postprocess",
+          "host_start": 14198762.679458516,
+          "host_ms": 0.37137046456336975,
+          "device_start_ms": 5339.77490234375,
+          "device_end_ms": 5339.80908203125,
+          "device_ms": 0.03407999873161316
+        },
+        {
+          "step": 1,
+          "stage": "sampling",
+          "host_start": 14198762.679850524,
+          "host_ms": 0.23585371673107147,
+          "device_start_ms": 5339.8095703125,
+          "device_end_ms": 5340.04736328125,
+          "device_ms": 0.23819999396800995
+        },
+        {
+          "step": 1,
+          "stage": "postprocess",
+          "host_start": 14198762.680105949,
+          "host_ms": 0.6690863519906998,
+          "device_start_ms": 5340.0478515625,
+          "device_end_ms": 5340.10302734375,
+          "device_ms": 0.0551999993622303
+        },
+        {
+          "step": 2,
+          "stage": "scheduler",
+          "host_start": 14198762.680802476,
+          "host_ms": 1.2451522052288055,
+          "device_start_ms": 5340.10302734375,
+          "device_end_ms": 5340.3017578125,
+          "device_ms": 0.19857999682426453
+        },
+        {
+          "step": 2,
+          "stage": "scheduler",
+          "host_start": 14198762.682067458,
+          "host_ms": 0.26603229343891144,
+          "device_start_ms": 5340.36669921875,
+          "device_end_ms": 5340.5849609375,
+          "device_ms": 0.21792000532150269
+        },
+        {
+          "step": 2,
+          "stage": "model_forward",
+          "host_start": 14198762.682360668,
+          "host_ms": 138.4135466068983,
+          "device_start_ms": 5340.65576171875,
+          "device_end_ms": 5481.03369140625,
+          "device_ms": 140.37794494628906
+        },
+        {
+          "step": 2,
+          "stage": "postprocess",
+          "host_start": 14198762.820821244,
+          "host_ms": 0.3770068287849426,
+          "device_start_ms": 5481.03369140625,
+          "device_end_ms": 5481.07421875,
+          "device_ms": 0.040460001677274704
+        },
+        {
+          "step": 2,
+          "stage": "sampling",
+          "host_start": 14198762.82122095,
+          "host_ms": 0.22436492145061493,
+          "device_start_ms": 5481.07421875,
+          "device_end_ms": 5481.31640625,
+          "device_ms": 0.2418999969959259
+        },
+        {
+          "step": 2,
+          "stage": "postprocess",
+          "host_start": 14198762.821467131,
+          "host_ms": 0.6208624690771103,
+          "device_start_ms": 5481.31640625,
+          "device_end_ms": 5481.373046875,
+          "device_ms": 0.05668000131845474
+        },
+        {
+          "step": 3,
+          "stage": "scheduler",
+          "host_start": 14198762.822119484,
+          "host_ms": 1.218421384692192,
+          "device_start_ms": 5481.373046875,
+          "device_end_ms": 5481.603515625,
+          "device_ms": 0.23010000586509705
+        },
+        {
+          "step": 3,
+          "stage": "scheduler",
+          "host_start": 14198762.823357467,
+          "host_ms": 0.2858210355043411,
+          "device_start_ms": 5481.6591796875,
+          "device_end_ms": 5481.90576171875,
+          "device_ms": 0.24629999697208405
+        },
+        {
+          "step": 3,
+          "stage": "model_forward",
+          "host_start": 14198762.823674636,
+          "host_ms": 134.88863967359066,
+          "device_start_ms": 5481.9853515625,
+          "device_end_ms": 5618.8193359375,
+          "device_ms": 136.83401489257812
+        },
+        {
+          "step": 3,
+          "stage": "postprocess",
+          "host_start": 14198762.958602685,
+          "host_ms": 0.37073902785778046,
+          "device_start_ms": 5618.8193359375,
+          "device_end_ms": 5618.8583984375,
+          "device_ms": 0.03878000006079674
+        },
+        {
+          "step": 3,
+          "stage": "sampling",
+          "host_start": 14198762.958993845,
+          "host_ms": 0.22949092090129852,
+          "device_start_ms": 5618.8583984375,
+          "device_end_ms": 5619.09521484375,
+          "device_ms": 0.23693999648094177
+        },
+        {
+          "step": 3,
+          "stage": "postprocess",
+          "host_start": 14198762.959242288,
+          "host_ms": 0.646740198135376,
+          "device_start_ms": 5619.095703125,
+          "device_end_ms": 5619.1513671875,
+          "device_ms": 0.055879998952150345
+        },
+        {
+          "step": 4,
+          "stage": "scheduler",
+          "host_start": 14198762.959913168,
+          "host_ms": 1.3055484741926193,
+          "device_start_ms": 5619.1513671875,
+          "device_end_ms": 5619.486328125,
+          "device_ms": 0.33476001024246216
+        },
+        {
+          "step": 4,
+          "stage": "scheduler",
+          "host_start": 14198762.961238915,
+          "host_ms": 0.2730023115873337,
+          "device_start_ms": 5619.55126953125,
+          "device_end_ms": 5619.77392578125,
+          "device_ms": 0.22269999980926514
+        },
+        {
+          "step": 4,
+          "stage": "model_forward",
+          "host_start": 14198762.961539729,
+          "host_ms": 133.2891471683979,
+          "device_start_ms": 5619.8466796875,
+          "device_end_ms": 5755.1640625,
+          "device_ms": 135.3173065185547
+        },
+        {
+          "step": 4,
+          "stage": "postprocess",
+          "host_start": 14198763.094859555,
+          "host_ms": 0.3716610372066498,
+          "device_start_ms": 5755.1640625,
+          "device_end_ms": 5755.2041015625,
+          "device_ms": 0.039799999445676804
+        },
+        {
+          "step": 4,
+          "stage": "sampling",
+          "host_start": 14198763.095251493,
+          "host_ms": 0.23767538368701935,
+          "device_start_ms": 5755.2041015625,
+          "device_end_ms": 5755.4443359375,
+          "device_ms": 0.24045999348163605
+        },
+        {
+          "step": 4,
+          "stage": "postprocess",
+          "host_start": 14198763.095508415,
+          "host_ms": 0.6622914224863052,
+          "device_start_ms": 5755.44482421875,
+          "device_end_ms": 5755.50048828125,
+          "device_ms": 0.05581999942660332
+        },
+        {
+          "step": 5,
+          "stage": "scheduler",
+          "host_start": 14198763.096197585,
+          "host_ms": 1.2402329593896866,
+          "device_start_ms": 5755.50048828125,
+          "device_end_ms": 5755.70703125,
+          "device_ms": 0.20640000700950623
+        },
+        {
+          "step": 5,
+          "stage": "scheduler",
+          "host_start": 14198763.097457577,
+          "host_ms": 0.2621430903673172,
+          "device_start_ms": 5755.76806640625,
+          "device_end_ms": 5755.98828125,
+          "device_ms": 0.22023999691009521
+        },
+        {
+          "step": 5,
+          "stage": "model_forward",
+          "host_start": 14198763.09775048,
+          "host_ms": 132.0900209248066,
+          "device_start_ms": 5756.068359375,
+          "device_end_ms": 5890.26220703125,
+          "device_ms": 134.19387817382812
+        },
+        {
+          "step": 5,
+          "stage": "postprocess",
+          "host_start": 14198763.229865348,
+          "host_ms": 0.33981911838054657,
+          "device_start_ms": 5890.2626953125,
+          "device_end_ms": 5890.29736328125,
+          "device_ms": 0.03466000035405159
+        },
+        {
+          "step": 5,
+          "stage": "sampling",
+          "host_start": 14198763.230226235,
+          "host_ms": 0.21529383957386017,
+          "device_start_ms": 5890.29736328125,
+          "device_end_ms": 5890.5361328125,
+          "device_ms": 0.2387000024318695
+        },
+        {
+          "step": 5,
+          "stage": "postprocess",
+          "host_start": 14198763.23046032,
+          "host_ms": 0.5818922072649002,
+          "device_start_ms": 5890.5361328125,
+          "device_end_ms": 5890.591796875,
+          "device_ms": 0.05542000010609627
+        },
+        {
+          "step": 6,
+          "stage": "scheduler",
+          "host_start": 14198763.231065702,
+          "host_ms": 1.4602355659008026,
+          "device_start_ms": 5890.591796875,
+          "device_end_ms": 5890.80615234375,
+          "device_ms": 0.21442000567913055
+        },
+        {
+          "step": 6,
+          "stage": "scheduler",
+          "host_start": 14198763.232545769,
+          "host_ms": 0.2585388720035553,
+          "device_start_ms": 5890.86279296875,
+          "device_end_ms": 5891.0771484375,
+          "device_ms": 0.21422000229358673
+        },
+        {
+          "step": 6,
+          "stage": "model_forward",
+          "host_start": 14198763.232831558,
+          "host_ms": 133.14300402998924,
+          "device_start_ms": 5891.1513671875,
+          "device_end_ms": 6026.35595703125,
+          "device_ms": 135.204345703125
+        },
+        {
+          "step": 6,
+          "stage": "postprocess",
+          "host_start": 14198763.366002472,
+          "host_ms": 0.3723669797182083,
+          "device_start_ms": 6026.35595703125,
+          "device_end_ms": 6026.39697265625,
+          "device_ms": 0.04129999876022339
+        },
+        {
+          "step": 6,
+          "stage": "sampling",
+          "host_start": 14198763.36639552,
+          "host_ms": 0.2342425286769867,
+          "device_start_ms": 6026.3974609375,
+          "device_end_ms": 6026.6357421875,
+          "device_ms": 0.23851999640464783
+        },
+        {
+          "step": 6,
+          "stage": "postprocess",
+          "host_start": 14198763.36664862,
+          "host_ms": 0.6501711905002594,
+          "device_start_ms": 6026.63623046875,
+          "device_end_ms": 6026.6904296875,
+          "device_ms": 0.05462000146508217
+        },
+        {
+          "step": 7,
+          "stage": "scheduler",
+          "host_start": 14198763.36732456,
+          "host_ms": 1.2745503336191177,
+          "device_start_ms": 6026.69091796875,
+          "device_end_ms": 6026.8828125,
+          "device_ms": 0.19220000505447388
+        },
+        {
+          "step": 7,
+          "stage": "scheduler",
+          "host_start": 14198763.368621722,
+          "host_ms": 0.2748612314462662,
+          "device_start_ms": 6026.9453125,
+          "device_end_ms": 6027.17431640625,
+          "device_ms": 0.22922000288963318
+        },
+        {
+          "step": 7,
+          "stage": "model_forward",
+          "host_start": 14198763.368924191,
+          "host_ms": 137.83877342939377,
+          "device_start_ms": 6027.24951171875,
+          "device_end_ms": 6167.0380859375,
+          "device_ms": 139.7884979248047
+        },
+        {
+          "step": 7,
+          "stage": "postprocess",
+          "host_start": 14198763.506808523,
+          "host_ms": 0.38940832018852234,
+          "device_start_ms": 6167.0380859375,
+          "device_end_ms": 6167.0791015625,
+          "device_ms": 0.041120000183582306
+        },
+        {
+          "step": 7,
+          "stage": "sampling",
+          "host_start": 14198763.5072215,
+          "host_ms": 0.23142434656620026,
+          "device_start_ms": 6167.07958984375,
+          "device_end_ms": 6167.31689453125,
+          "device_ms": 0.23749999701976776
+        },
+        {
+          "step": 7,
+          "stage": "postprocess",
+          "host_start": 14198763.507471664,
+          "host_ms": 0.6457697600126266,
+          "device_start_ms": 6167.31689453125,
+          "device_end_ms": 6167.37255859375,
+          "device_ms": 0.055560000240802765
+        },
+        {
+          "step": 8,
+          "stage": "scheduler",
+          "host_start": 14198763.508144213,
+          "host_ms": 1.1333674192428589,
+          "device_start_ms": 6167.373046875,
+          "device_end_ms": 6167.572265625,
+          "device_ms": 0.19957999885082245
+        },
+        {
+          "step": 8,
+          "stage": "scheduler",
+          "host_start": 14198763.509297878,
+          "host_ms": 0.2983510494232178,
+          "device_start_ms": 6167.626953125,
+          "device_end_ms": 6167.8857421875,
+          "device_ms": 0.2588199973106384
+        },
+        {
+          "step": 8,
+          "stage": "model_forward",
+          "host_start": 14198763.509633128,
+          "host_ms": 134.46231186389923,
+          "device_start_ms": 6167.9697265625,
+          "device_end_ms": 6304.5302734375,
+          "device_ms": 136.5605926513672
+        },
+        {
+          "step": 8,
+          "stage": "postprocess",
+          "host_start": 14198763.644118192,
+          "host_ms": 0.3447681665420532,
+          "device_start_ms": 6304.5302734375,
+          "device_end_ms": 6304.5693359375,
+          "device_ms": 0.03872000053524971
+        },
+        {
+          "step": 8,
+          "stage": "sampling",
+          "host_start": 14198763.64448292,
+          "host_ms": 0.21065212786197662,
+          "device_start_ms": 6304.5693359375,
+          "device_end_ms": 6304.81005859375,
+          "device_ms": 0.24067999422550201
+        },
+        {
+          "step": 8,
+          "stage": "postprocess",
+          "host_start": 14198763.644712191,
+          "host_ms": 0.5875248461961746,
+          "device_start_ms": 6304.81005859375,
+          "device_end_ms": 6304.8662109375,
+          "device_ms": 0.05632000043988228
+        },
+        {
+          "step": 9,
+          "stage": "scheduler",
+          "host_start": 14198763.645328093,
+          "host_ms": 1.432979479432106,
+          "device_start_ms": 6304.86669921875,
+          "device_end_ms": 6305.052734375,
+          "device_ms": 0.1860799938440323
+        },
+        {
+          "step": 9,
+          "stage": "scheduler",
+          "host_start": 14198763.6467814,
+          "host_ms": 0.25976262986660004,
+          "device_start_ms": 6305.115234375,
+          "device_end_ms": 6305.32958984375,
+          "device_ms": 0.2144400030374527
+        },
+        {
+          "step": 9,
+          "stage": "model_forward",
+          "host_start": 14198763.647068381,
+          "host_ms": 134.77585464715958,
+          "device_start_ms": 6305.39990234375,
+          "device_end_ms": 6442.15625,
+          "device_ms": 136.75616455078125
+        },
+        {
+          "step": 9,
+          "stage": "postprocess",
+          "host_start": 14198763.781878464,
+          "host_ms": 0.3744605928659439,
+          "device_start_ms": 6442.15625,
+          "device_end_ms": 6442.19091796875,
+          "device_ms": 0.03443999961018562
+        },
+        {
+          "step": 9,
+          "stage": "sampling",
+          "host_start": 14198763.782274012,
+          "host_ms": 0.22998452186584473,
+          "device_start_ms": 6442.19091796875,
+          "device_end_ms": 6442.4287109375,
+          "device_ms": 0.23771999776363373
+        },
+        {
+          "step": 9,
+          "stage": "postprocess",
+          "host_start": 14198763.782522695,
+          "host_ms": 0.628940761089325,
+          "device_start_ms": 6442.4287109375,
+          "device_end_ms": 6442.48291015625,
+          "device_ms": 0.05420000106096268
+        },
+        {
+          "step": 10,
+          "stage": "scheduler",
+          "host_start": 14198763.783176126,
+          "host_ms": 1.236412674188614,
+          "device_start_ms": 6442.48291015625,
+          "device_end_ms": 6442.71142578125,
+          "device_ms": 0.22818000614643097
+        },
+        {
+          "step": 10,
+          "stage": "scheduler",
+          "host_start": 14198763.784433048,
+          "host_ms": 0.26638247072696686,
+          "device_start_ms": 6442.7744140625,
+          "device_end_ms": 6442.99658203125,
+          "device_ms": 0.22232000529766083
+        },
+        {
+          "step": 10,
+          "stage": "model_forward",
+          "host_start": 14198763.784726407,
+          "host_ms": 131.67044892907143,
+          "device_start_ms": 6443.0654296875,
+          "device_end_ms": 6576.8134765625,
+          "device_ms": 133.74781799316406
+        },
+        {
+          "step": 10,
+          "stage": "postprocess",
+          "host_start": 14198763.916422846,
+          "host_ms": 0.34384988248348236,
+          "device_start_ms": 6576.8134765625,
+          "device_end_ms": 6576.8525390625,
+          "device_ms": 0.039080001413822174
+        },
+        {
+          "step": 10,
+          "stage": "sampling",
+          "host_start": 14198763.916785764,
+          "host_ms": 0.21068379282951355,
+          "device_start_ms": 6576.8525390625,
+          "device_end_ms": 6577.091796875,
+          "device_ms": 0.23929999768733978
+        },
+        {
+          "step": 10,
+          "stage": "postprocess",
+          "host_start": 14198763.917015608,
+          "host_ms": 0.5905814468860626,
+          "device_start_ms": 6577.09228515625,
+          "device_end_ms": 6577.1484375,
+          "device_ms": 0.056439999490976334
+        },
+        {
+          "step": 11,
+          "stage": "scheduler",
+          "host_start": 14198763.917633967,
+          "host_ms": 1.4452487230300903,
+          "device_start_ms": 6577.14892578125,
+          "device_end_ms": 6577.38134765625,
+          "device_ms": 0.2325800061225891
+        },
+        {
+          "step": 11,
+          "stage": "scheduler",
+          "host_start": 14198763.919099264,
+          "host_ms": 0.25992467999458313,
+          "device_start_ms": 6577.4423828125,
+          "device_end_ms": 6577.6591796875,
+          "device_ms": 0.21687999367713928
+        },
+        {
+          "step": 11,
+          "stage": "model_forward",
+          "host_start": 14198763.919385957,
+          "host_ms": 132.90473073720932,
+          "device_start_ms": 6577.732421875,
+          "device_end_ms": 6712.6552734375,
+          "device_ms": 134.92303466796875
+        },
+        {
+          "step": 11,
+          "stage": "postprocess",
+          "host_start": 14198764.052321777,
+          "host_ms": 0.363226979970932,
+          "device_start_ms": 6712.6552734375,
+          "device_end_ms": 6712.69384765625,
+          "device_ms": 0.038339998573064804
+        },
+        {
+          "step": 11,
+          "stage": "sampling",
+          "host_start": 14198764.052704403,
+          "host_ms": 0.22728554904460907,
+          "device_start_ms": 6712.69384765625,
+          "device_end_ms": 6712.9306640625,
+          "device_ms": 0.23683999478816986
+        },
+        {
+          "step": 11,
+          "stage": "postprocess",
+          "host_start": 14198764.052950976,
+          "host_ms": 0.652611255645752,
+          "device_start_ms": 6712.93115234375,
+          "device_end_ms": 6712.98583984375,
+          "device_ms": 0.05503999814391136
+        },
+        {
+          "step": 12,
+          "stage": "scheduler",
+          "host_start": 14198764.053634785,
+          "host_ms": 1.2426357716321945,
+          "device_start_ms": 6712.986328125,
+          "device_end_ms": 6713.18603515625,
+          "device_ms": 0.19964000582695007
+        },
+        {
+          "step": 12,
+          "stage": "scheduler",
+          "host_start": 14198764.054896278,
+          "host_ms": 0.26460178196430206,
+          "device_start_ms": 6713.24658203125,
+          "device_end_ms": 6713.4658203125,
+          "device_ms": 0.21918000280857086
+        },
+        {
+          "step": 12,
+          "stage": "model_forward",
+          "host_start": 14198764.05519098,
+          "host_ms": 132.20546208322048,
+          "device_start_ms": 6713.54150390625,
+          "device_end_ms": 6847.83935546875,
+          "device_ms": 134.297607421875
+        },
+        {
+          "step": 12,
+          "stage": "postprocess",
+          "host_start": 14198764.187420333,
+          "host_ms": 0.34875981509685516,
+          "device_start_ms": 6847.83935546875,
+          "device_end_ms": 6847.87890625,
+          "device_ms": 0.03954000025987625
+        },
+        {
+          "step": 12,
+          "stage": "sampling",
+          "host_start": 14198764.18778912,
+          "host_ms": 0.22334419190883636,
+          "device_start_ms": 6847.87890625,
+          "device_end_ms": 6848.1201171875,
+          "device_ms": 0.24094000458717346
+        },
+        {
+          "step": 12,
+          "stage": "postprocess",
+          "host_start": 14198764.188031984,
+          "host_ms": 0.5975719541311264,
+          "device_start_ms": 6848.1201171875,
+          "device_end_ms": 6848.17626953125,
+          "device_ms": 0.05593999847769737
+        },
+        {
+          "step": 13,
+          "stage": "scheduler",
+          "host_start": 14198764.188654603,
+          "host_ms": 1.4373492449522018,
+          "device_start_ms": 6848.17626953125,
+          "device_end_ms": 6848.404296875,
+          "device_ms": 0.22789999842643738
+        },
+        {
+          "step": 13,
+          "stage": "scheduler",
+          "host_start": 14198764.19011238,
+          "host_ms": 0.30797161161899567,
+          "device_start_ms": 6848.46630859375,
+          "device_end_ms": 6848.72998046875,
+          "device_ms": 0.26350000500679016
+        },
+        {
+          "step": 13,
+          "stage": "model_forward",
+          "host_start": 14198764.19045,
+          "host_ms": 133.8688526302576,
+          "device_start_ms": 6848.80810546875,
+          "device_end_ms": 6984.71826171875,
+          "device_ms": 135.91015625
+        },
+        {
+          "step": 13,
+          "stage": "postprocess",
+          "host_start": 14198764.32434878,
+          "host_ms": 0.3709811717271805,
+          "device_start_ms": 6984.71826171875,
+          "device_end_ms": 6984.7529296875,
+          "device_ms": 0.03440000116825104
+        },
+        {
+          "step": 13,
+          "stage": "sampling",
+          "host_start": 14198764.324740209,
+          "host_ms": 0.2370234578847885,
+          "device_start_ms": 6984.7529296875,
+          "device_end_ms": 6984.99072265625,
+          "device_ms": 0.23800000548362732
+        },
+        {
+          "step": 13,
+          "stage": "postprocess",
+          "host_start": 14198764.32499624,
+          "host_ms": 0.6376411765813828,
+          "device_start_ms": 6984.9912109375,
+          "device_end_ms": 6985.0458984375,
+          "device_ms": 0.05503999814391136
+        },
+        {
+          "step": 14,
+          "stage": "scheduler",
+          "host_start": 14198764.32566018,
+          "host_ms": 1.3873595744371414,
+          "device_start_ms": 6985.04638671875,
+          "device_end_ms": 6985.365234375,
+          "device_ms": 0.3188999891281128
+        },
+        {
+          "step": 14,
+          "stage": "scheduler",
+          "host_start": 14198764.32706812,
+          "host_ms": 0.27704983949661255,
+          "device_start_ms": 6985.4306640625,
+          "device_end_ms": 6985.66064453125,
+          "device_ms": 0.23037999868392944
+        },
+        {
+          "step": 14,
+          "stage": "model_forward",
+          "host_start": 14198764.3273729,
+          "host_ms": 135.47157309949398,
+          "device_start_ms": 6985.7353515625,
+          "device_end_ms": 7123.30029296875,
+          "device_ms": 137.5647735595703
+        },
+        {
+          "step": 14,
+          "stage": "postprocess",
+          "host_start": 14198764.462867633,
+          "host_ms": 0.35244785249233246,
+          "device_start_ms": 7123.30029296875,
+          "device_end_ms": 7123.3388671875,
+          "device_ms": 0.038419999182224274
+        },
+        {
+          "step": 14,
+          "stage": "sampling",
+          "host_start": 14198764.46324039,
+          "host_ms": 0.21305307745933533,
+          "device_start_ms": 7123.3388671875,
+          "device_end_ms": 7123.5791015625,
+          "device_ms": 0.24045999348163605
+        },
+        {
+          "step": 14,
+          "stage": "postprocess",
+          "host_start": 14198764.463472452,
+          "host_ms": 0.605391338467598,
+          "device_start_ms": 7123.57958984375,
+          "device_end_ms": 7123.63427734375,
+          "device_ms": 0.054919999092817307
+        },
+        {
+          "step": 15,
+          "stage": "scheduler",
+          "host_start": 14198764.464104423,
+          "host_ms": 1.4287158846855164,
+          "device_start_ms": 7123.634765625,
+          "device_end_ms": 7123.85888671875,
+          "device_ms": 0.2242400050163269
+        },
+        {
+          "step": 15,
+          "stage": "scheduler",
+          "host_start": 14198764.46555278,
+          "host_ms": 0.2557709813117981,
+          "device_start_ms": 7123.919921875,
+          "device_end_ms": 7124.12890625,
+          "device_ms": 0.2087399959564209
+        },
+        {
+          "step": 15,
+          "stage": "model_forward",
+          "host_start": 14198764.465834891,
+          "host_ms": 138.80818337202072,
+          "device_start_ms": 7124.2001953125,
+          "device_end_ms": 7264.98388671875,
+          "device_ms": 140.783935546875
+        },
+        {
+          "step": 15,
+          "stage": "postprocess",
+          "host_start": 14198764.604686184,
+          "host_ms": 0.3711879253387451,
+          "device_start_ms": 7264.98388671875,
+          "device_end_ms": 7265.0224609375,
+          "device_ms": 0.03858000040054321
+        },
+        {
+          "step": 15,
+          "stage": "sampling",
+          "host_start": 14198764.605082432,
+          "host_ms": 0.2239421010017395,
+          "device_start_ms": 7265.02294921875,
+          "device_end_ms": 7265.26025390625,
+          "device_ms": 0.23759999871253967
+        },
+        {
+          "step": 15,
+          "stage": "postprocess",
+          "host_start": 14198764.605325704,
+          "host_ms": 0.622231513261795,
+          "device_start_ms": 7265.2607421875,
+          "device_end_ms": 7265.3154296875,
+          "device_ms": 0.05463999882340431
+        },
+        {
+          "step": 16,
+          "stage": "scheduler",
+          "host_start": 14198764.605975484,
+          "host_ms": 1.2278035283088684,
+          "device_start_ms": 7265.3154296875,
+          "device_end_ms": 7265.53857421875,
+          "device_ms": 0.22332000732421875
+        },
+        {
+          "step": 16,
+          "stage": "scheduler",
+          "host_start": 14198764.607222969,
+          "host_ms": 0.27249008417129517,
+          "device_start_ms": 7265.5927734375,
+          "device_end_ms": 7265.8291015625,
+          "device_ms": 0.23617999255657196
+        },
+        {
+          "step": 16,
+          "stage": "model_forward",
+          "host_start": 14198764.607527088,
+          "host_ms": 131.46639242768288,
+          "device_start_ms": 7265.91259765625,
+          "device_end_ms": 7399.47265625,
+          "device_ms": 133.5600128173828
+        },
+        {
+          "step": 16,
+          "stage": "postprocess",
+          "host_start": 14198764.73901541,
+          "host_ms": 0.3345794975757599,
+          "device_start_ms": 7399.47265625,
+          "device_end_ms": 7399.51220703125,
+          "device_ms": 0.03936000168323517
+        },
+        {
+          "step": 16,
+          "stage": "sampling",
+          "host_start": 14198764.73937016,
+          "host_ms": 0.21771155297756195,
+          "device_start_ms": 7399.51220703125,
+          "device_end_ms": 7399.7529296875,
+          "device_ms": 0.24065999686717987
+        },
+        {
+          "step": 16,
+          "stage": "postprocess",
+          "host_start": 14198764.739606893,
+          "host_ms": 2.7735158801078796,
+          "device_start_ms": 7399.7529296875,
+          "device_end_ms": 7400.72119140625,
+          "device_ms": 0.9680799841880798
+        },
+        {
+          "step": 17,
+          "stage": "scheduler",
+          "host_start": 14198764.742416847,
+          "host_ms": 0.3476198762655258,
+          "device_start_ms": 7400.80810546875,
+          "device_end_ms": 7401.103515625,
+          "device_ms": 0.2950400114059448
+        },
+        {
+          "step": 17,
+          "stage": "scheduler",
+          "host_start": 14198764.742783427,
+          "host_ms": 0.29421038925647736,
+          "device_start_ms": 7401.16748046875,
+          "device_end_ms": 7401.41357421875,
+          "device_ms": 0.2463800013065338
+        },
+        {
+          "step": 17,
+          "stage": "model_forward",
+          "host_start": 14198764.743108695,
+          "host_ms": 131.8584717810154,
+          "device_start_ms": 7401.4921875,
+          "device_end_ms": 7535.4150390625,
+          "device_ms": 133.922607421875
+        },
+        {
+          "step": 17,
+          "stage": "postprocess",
+          "host_start": 14198764.874995176,
+          "host_ms": 0.35189278423786163,
+          "device_start_ms": 7535.4150390625,
+          "device_end_ms": 7535.4501953125,
+          "device_ms": 0.03523999825119972
+        },
+        {
+          "step": 17,
+          "stage": "sampling",
+          "host_start": 14198764.875366906,
+          "host_ms": 0.2232138067483902,
+          "device_start_ms": 7535.45068359375,
+          "device_end_ms": 7535.6884765625,
+          "device_ms": 0.23792000114917755
+        },
+        {
+          "step": 17,
+          "stage": "postprocess",
+          "host_start": 14198764.875609508,
+          "host_ms": 0.6281416863203049,
+          "device_start_ms": 7535.6884765625,
+          "device_end_ms": 7535.7431640625,
+          "device_ms": 0.05432000011205673
+        },
+        {
+          "step": 18,
+          "stage": "scheduler",
+          "host_start": 14198764.87626598,
+          "host_ms": 1.3492684811353683,
+          "device_start_ms": 7535.7431640625,
+          "device_end_ms": 7535.962890625,
+          "device_ms": 0.21960000693798065
+        },
+        {
+          "step": 18,
+          "stage": "scheduler",
+          "host_start": 14198764.877636028,
+          "host_ms": 0.25836192071437836,
+          "device_start_ms": 7536.02099609375,
+          "device_end_ms": 7536.236328125,
+          "device_ms": 0.2156600058078766
+        },
+        {
+          "step": 18,
+          "stage": "model_forward",
+          "host_start": 14198764.87792684,
+          "host_ms": 131.37032464146614,
+          "device_start_ms": 7536.31689453125,
+          "device_end_ms": 7669.70556640625,
+          "device_ms": 133.38882446289062
+        },
+        {
+          "step": 18,
+          "stage": "postprocess",
+          "host_start": 14198765.009324463,
+          "host_ms": 0.35117007791996,
+          "device_start_ms": 7669.7060546875,
+          "device_end_ms": 7669.7470703125,
+          "device_ms": 0.04114000126719475
+        },
+        {
+          "step": 18,
+          "stage": "sampling",
+          "host_start": 14198765.009695904,
+          "host_ms": 0.22567249834537506,
+          "device_start_ms": 7669.7470703125,
+          "device_end_ms": 7669.98828125,
+          "device_ms": 0.24087999761104584
+        },
+        {
+          "step": 18,
+          "stage": "postprocess",
+          "host_start": 14198765.009941727,
+          "host_ms": 0.6246697157621384,
+          "device_start_ms": 7669.98828125,
+          "device_end_ms": 7670.04541015625,
+          "device_ms": 0.05724000185728073
+        },
+        {
+          "step": 19,
+          "stage": "scheduler",
+          "host_start": 14198765.010592137,
+          "host_ms": 1.341419294476509,
+          "device_start_ms": 7670.04541015625,
+          "device_end_ms": 7670.28369140625,
+          "device_ms": 0.23810000717639923
+        },
+        {
+          "step": 19,
+          "stage": "scheduler",
+          "host_start": 14198765.011953903,
+          "host_ms": 0.27104467153549194,
+          "device_start_ms": 7670.35693359375,
+          "device_end_ms": 7670.56689453125,
+          "device_ms": 0.2100200057029724
+        },
+        {
+          "step": 19,
+          "stage": "model_forward",
+          "host_start": 14198765.012256335,
+          "host_ms": 131.05747662484646,
+          "device_start_ms": 7670.6435546875,
+          "device_end_ms": 7803.779296875,
+          "device_ms": 133.13587951660156
+        },
+        {
+          "step": 19,
+          "stage": "postprocess",
+          "host_start": 14198765.143336073,
+          "host_ms": 0.3427881747484207,
+          "device_start_ms": 7803.779296875,
+          "device_end_ms": 7803.8203125,
+          "device_ms": 0.040780000388622284
+        },
+        {
+          "step": 19,
+          "stage": "sampling",
+          "host_start": 14198765.14369864,
+          "host_ms": 0.21503306925296783,
+          "device_start_ms": 7803.8203125,
+          "device_end_ms": 7804.05859375,
+          "device_ms": 0.23819999396800995
+        },
+        {
+          "step": 19,
+          "stage": "postprocess",
+          "host_start": 14198765.143932352,
+          "host_ms": 0.589052215218544,
+          "device_start_ms": 7804.05859375,
+          "device_end_ms": 7804.11572265625,
+          "device_ms": 0.05674000084400177
+        },
+        {
+          "step": 20,
+          "stage": "scheduler",
+          "host_start": 14198765.144544836,
+          "host_ms": 1.441696658730507,
+          "device_start_ms": 7804.11572265625,
+          "device_end_ms": 7804.34326171875,
+          "device_ms": 0.22752000391483307
+        },
+        {
+          "step": 20,
+          "stage": "scheduler",
+          "host_start": 14198765.146006413,
+          "host_ms": 0.25161169469356537,
+          "device_start_ms": 7804.39794921875,
+          "device_end_ms": 7804.6103515625,
+          "device_ms": 0.21265999972820282
+        },
+        {
+          "step": 20,
+          "stage": "model_forward",
+          "host_start": 14198765.146284932,
+          "host_ms": 134.87199880182743,
+          "device_start_ms": 7804.67578125,
+          "device_end_ms": 7941.6142578125,
+          "device_ms": 136.9387969970703
+        },
+        {
+          "step": 20,
+          "stage": "postprocess",
+          "host_start": 14198765.28118448,
+          "host_ms": 0.36999955773353577,
+          "device_start_ms": 7941.61474609375,
+          "device_end_ms": 7941.65966796875,
+          "device_ms": 0.04504000023007393
+        },
+        {
+          "step": 20,
+          "stage": "sampling",
+          "host_start": 14198765.281574758,
+          "host_ms": 0.22722221910953522,
+          "device_start_ms": 7941.65966796875,
+          "device_end_ms": 7941.89990234375,
+          "device_ms": 0.23985999822616577
+        },
+        {
+          "step": 20,
+          "stage": "postprocess",
+          "host_start": 14198765.281820793,
+          "host_ms": 0.6450489163398743,
+          "device_start_ms": 7941.89990234375,
+          "device_end_ms": 7941.9580078125,
+          "device_ms": 0.05820000171661377
+        },
+        {
+          "step": 21,
+          "stage": "scheduler",
+          "host_start": 14198765.282496892,
+          "host_ms": 1.3417582958936691,
+          "device_start_ms": 7941.9580078125,
+          "device_end_ms": 7942.193359375,
+          "device_ms": 0.23542000353336334
+        },
+        {
+          "step": 21,
+          "stage": "scheduler",
+          "host_start": 14198765.2838579,
+          "host_ms": 0.29546022415161133,
+          "device_start_ms": 7942.255859375,
+          "device_end_ms": 7942.50830078125,
+          "device_ms": 0.2521600127220154
+        },
+        {
+          "step": 21,
+          "stage": "model_forward",
+          "host_start": 14198765.28418144,
+          "host_ms": 136.57712005078793,
+          "device_start_ms": 7942.5791015625,
+          "device_end_ms": 8081.14453125,
+          "device_ms": 138.56561279296875
+        },
+        {
+          "step": 21,
+          "stage": "postprocess",
+          "host_start": 14198765.420801578,
+          "host_ms": 0.35569071769714355,
+          "device_start_ms": 8081.14501953125,
+          "device_end_ms": 8081.1806640625,
+          "device_ms": 0.03598000109195709
+        },
+        {
+          "step": 21,
+          "stage": "sampling",
+          "host_start": 14198765.421185456,
+          "host_ms": 0.2228710800409317,
+          "device_start_ms": 8081.18115234375,
+          "device_end_ms": 8081.41943359375,
+          "device_ms": 0.23839999735355377
+        },
+        {
+          "step": 21,
+          "stage": "postprocess",
+          "host_start": 14198765.421427129,
+          "host_ms": 0.5998425185680389,
+          "device_start_ms": 8081.41943359375,
+          "device_end_ms": 8081.47412109375,
+          "device_ms": 0.05477999895811081
+        },
+        {
+          "step": 22,
+          "stage": "scheduler",
+          "host_start": 14198765.42205458,
+          "host_ms": 1.3885591179132462,
+          "device_start_ms": 8081.474609375,
+          "device_end_ms": 8081.810546875,
+          "device_ms": 0.335999995470047
+        },
+        {
+          "step": 22,
+          "stage": "scheduler",
+          "host_start": 14198765.423463387,
+          "host_ms": 0.28135254979133606,
+          "device_start_ms": 8081.86962890625,
+          "device_end_ms": 8082.1083984375,
+          "device_ms": 0.23875999450683594
+        },
+        {
+          "step": 22,
+          "stage": "model_forward",
+          "host_start": 14198765.423776207,
+          "host_ms": 135.89365035295486,
+          "device_start_ms": 8082.19189453125,
+          "device_end_ms": 8220.083984375,
+          "device_ms": 137.89207458496094
+        },
+        {
+          "step": 22,
+          "stage": "postprocess",
+          "host_start": 14198765.559706748,
+          "host_ms": 0.37032924592494965,
+          "device_start_ms": 8220.083984375,
+          "device_end_ms": 8220.123046875,
+          "device_ms": 0.038279999047517776
+        },
+        {
+          "step": 22,
+          "stage": "sampling",
+          "host_start": 14198765.560097504,
+          "host_ms": 0.22618286311626434,
+          "device_start_ms": 8220.123046875,
+          "device_end_ms": 8220.361328125,
+          "device_ms": 0.23837999999523163
+        },
+        {
+          "step": 22,
+          "stage": "postprocess",
+          "host_start": 14198765.560342869,
+          "host_ms": 0.6313994526863098,
+          "device_start_ms": 8220.361328125,
+          "device_end_ms": 8220.41796875,
+          "device_ms": 0.05703999847173691
+        },
+        {
+          "step": 23,
+          "stage": "scheduler",
+          "host_start": 14198765.560997808,
+          "host_ms": 1.277390867471695,
+          "device_start_ms": 8220.4189453125,
+          "device_end_ms": 8220.638671875,
+          "device_ms": 0.2205599993467331
+        },
+        {
+          "step": 23,
+          "stage": "scheduler",
+          "host_start": 14198765.562295329,
+          "host_ms": 0.2658311277627945,
+          "device_start_ms": 8220.7021484375,
+          "device_end_ms": 8220.923828125,
+          "device_ms": 0.22154000401496887
+        },
+        {
+          "step": 23,
+          "stage": "model_forward",
+          "host_start": 14198765.56258869,
+          "host_ms": 130.98392635583878,
+          "device_start_ms": 8220.9951171875,
+          "device_end_ms": 8354.0791015625,
+          "device_ms": 133.0841064453125
+        },
+        {
+          "step": 23,
+          "stage": "postprocess",
+          "host_start": 14198765.693596605,
+          "host_ms": 0.3374014049768448,
+          "device_start_ms": 8354.080078125,
+          "device_end_ms": 8354.1181640625,
+          "device_ms": 0.03869999945163727
+        },
+        {
+          "step": 23,
+          "stage": "sampling",
+          "host_start": 14198765.693954246,
+          "host_ms": 0.21102279424667358,
+          "device_start_ms": 8354.1181640625,
+          "device_end_ms": 8354.35546875,
+          "device_ms": 0.23669999837875366
+        },
+        {
+          "step": 23,
+          "stage": "postprocess",
+          "host_start": 14198765.694190169,
+          "host_ms": 0.5864109843969345,
+          "device_start_ms": 8354.35546875,
+          "device_end_ms": 8354.4111328125,
+          "device_ms": 0.05544000118970871
+        },
+        {
+          "step": 24,
+          "stage": "scheduler",
+          "host_start": 14198765.69480045,
+          "host_ms": 1.441245898604393,
+          "device_start_ms": 8354.4111328125,
+          "device_end_ms": 8354.6201171875,
+          "device_ms": 0.20924000442028046
+        },
+        {
+          "step": 24,
+          "stage": "scheduler",
+          "host_start": 14198765.696261756,
+          "host_ms": 0.2571325749158859,
+          "device_start_ms": 8354.673828125,
+          "device_end_ms": 8354.8916015625,
+          "device_ms": 0.21796000003814697
+        },
+        {
+          "step": 24,
+          "stage": "model_forward",
+          "host_start": 14198765.696545959,
+          "host_ms": 131.3725057989359,
+          "device_start_ms": 8354.962890625,
+          "device_end_ms": 8488.3583984375,
+          "device_ms": 133.39576721191406
+        },
+        {
+          "step": 24,
+          "stage": "postprocess",
+          "host_start": 14198765.827946082,
+          "host_ms": 0.36532990634441376,
+          "device_start_ms": 8488.3583984375,
+          "device_end_ms": 8488.3974609375,
+          "device_ms": 0.03880000114440918
+        },
+        {
+          "step": 24,
+          "stage": "sampling",
+          "host_start": 14198765.82833222,
+          "host_ms": 0.2165045589208603,
+          "device_start_ms": 8488.3974609375,
+          "device_end_ms": 8488.634765625,
+          "device_ms": 0.23749999701976776
+        },
+        {
+          "step": 24,
+          "stage": "postprocess",
+          "host_start": 14198765.828567574,
+          "host_ms": 0.6067026406526566,
+          "device_start_ms": 8488.6357421875,
+          "device_end_ms": 8488.6904296875,
+          "device_ms": 0.055319998413324356
+        },
+        {
+          "step": 25,
+          "stage": "scheduler",
+          "host_start": 14198765.829208424,
+          "host_ms": 1.3294517993927002,
+          "device_start_ms": 8488.6904296875,
+          "device_end_ms": 8488.912109375,
+          "device_ms": 0.22147999703884125
+        },
+        {
+          "step": 25,
+          "stage": "scheduler",
+          "host_start": 14198765.830558093,
+          "host_ms": 0.25725364685058594,
+          "device_start_ms": 8488.9736328125,
+          "device_end_ms": 8489.1875,
+          "device_ms": 0.21400000154972076
+        },
+        {
+          "step": 25,
+          "stage": "model_forward",
+          "host_start": 14198765.830845123,
+          "host_ms": 128.5060327500105,
+          "device_start_ms": 8489.2626953125,
+          "device_end_ms": 8619.8681640625,
+          "device_ms": 130.60601806640625
+        },
+        {
+          "step": 25,
+          "stage": "postprocess",
+          "host_start": 14198765.959376067,
+          "host_ms": 0.3410782665014267,
+          "device_start_ms": 8619.8681640625,
+          "device_end_ms": 8619.90625,
+          "device_ms": 0.03790000081062317
+        },
+        {
+          "step": 25,
+          "stage": "sampling",
+          "host_start": 14198765.959737375,
+          "host_ms": 0.2061855047941208,
+          "device_start_ms": 8619.90625,
+          "device_end_ms": 8620.14453125,
+          "device_ms": 0.23829999566078186
+        },
+        {
+          "step": 25,
+          "stage": "postprocess",
+          "host_start": 14198765.959962709,
+          "host_ms": 0.5797110497951508,
+          "device_start_ms": 8620.1455078125,
+          "device_end_ms": 8620.201171875,
+          "device_ms": 0.05632000043988228
+        },
+        {
+          "step": 26,
+          "stage": "scheduler",
+          "host_start": 14198765.96056602,
+          "host_ms": 1.4476478099822998,
+          "device_start_ms": 8620.201171875,
+          "device_end_ms": 8620.400390625,
+          "device_ms": 0.19923999905586243
+        },
+        {
+          "step": 26,
+          "stage": "scheduler",
+          "host_start": 14198765.962033996,
+          "host_ms": 0.2524908632040024,
+          "device_start_ms": 8620.455078125,
+          "device_end_ms": 8620.669921875,
+          "device_ms": 0.2150000035762787
+        },
+        {
+          "step": 26,
+          "stage": "model_forward",
+          "host_start": 14198765.962313458,
+          "host_ms": 128.705944865942,
+          "device_start_ms": 8620.734375,
+          "device_end_ms": 8751.56640625,
+          "device_ms": 130.83163452148438
+        },
+        {
+          "step": 26,
+          "stage": "postprocess",
+          "host_start": 14198766.091044502,
+          "host_ms": 0.34331902861595154,
+          "device_start_ms": 8751.56640625,
+          "device_end_ms": 8751.60546875,
+          "device_ms": 0.03888000175356865
+        },
+        {
+          "step": 26,
+          "stage": "sampling",
+          "host_start": 14198766.09140772,
+          "host_ms": 0.21273642778396606,
+          "device_start_ms": 8751.60546875,
+          "device_end_ms": 8751.8447265625,
+          "device_ms": 0.23868000507354736
+        },
+        {
+          "step": 26,
+          "stage": "postprocess",
+          "host_start": 14198766.091638925,
+          "host_ms": 0.5919914692640305,
+          "device_start_ms": 8751.8447265625,
+          "device_end_ms": 8751.90234375,
+          "device_ms": 0.057500001043081284
+        },
+        {
+          "step": 27,
+          "stage": "scheduler",
+          "host_start": 14198766.092258547,
+          "host_ms": 1.4422181993722916,
+          "device_start_ms": 8751.90234375,
+          "device_end_ms": 8752.091796875,
+          "device_ms": 0.189860001206398
+        },
+        {
+          "step": 27,
+          "stage": "scheduler",
+          "host_start": 14198766.093721442,
+          "host_ms": 0.252552330493927,
+          "device_start_ms": 8752.146484375,
+          "device_end_ms": 8752.3623046875,
+          "device_ms": 0.21517999470233917
+        },
+        {
+          "step": 27,
+          "stage": "model_forward",
+          "host_start": 14198766.094001144,
+          "host_ms": 133.521793410182,
+          "device_start_ms": 8752.4287109375,
+          "device_end_ms": 8888.0009765625,
+          "device_ms": 135.57211303710938
+        },
+        {
+          "step": 27,
+          "stage": "postprocess",
+          "host_start": 14198766.227550598,
+          "host_ms": 0.3631375730037689,
+          "device_start_ms": 8888.0009765625,
+          "device_end_ms": 8888.041015625,
+          "device_ms": 0.03929999843239784
+        },
+        {
+          "step": 27,
+          "stage": "sampling",
+          "host_start": 14198766.227934156,
+          "host_ms": 0.23661181330680847,
+          "device_start_ms": 8888.041015625,
+          "device_end_ms": 8888.279296875,
+          "device_ms": 0.23815999925136566
+        },
+        {
+          "step": 27,
+          "stage": "postprocess",
+          "host_start": 14198766.228190418,
+          "host_ms": 0.6346888840198517,
+          "device_start_ms": 8888.279296875,
+          "device_end_ms": 8888.3359375,
+          "device_ms": 0.05671999976038933
+        },
+        {
+          "step": 28,
+          "stage": "scheduler",
+          "host_start": 14198766.228850689,
+          "host_ms": 1.3141799718141556,
+          "device_start_ms": 8888.3359375,
+          "device_end_ms": 8888.5556640625,
+          "device_ms": 0.2196200042963028
+        },
+        {
+          "step": 28,
+          "stage": "scheduler",
+          "host_start": 14198766.2301878,
+          "host_ms": 0.2692118287086487,
+          "device_start_ms": 8888.6240234375,
+          "device_end_ms": 8888.845703125,
+          "device_ms": 0.22186000645160675
+        },
+        {
+          "step": 28,
+          "stage": "model_forward",
+          "host_start": 14198766.23048409,
+          "host_ms": 135.42231358587742,
+          "device_start_ms": 8888.916015625,
+          "device_end_ms": 9026.3125,
+          "device_ms": 137.39688110351562
+        },
+        {
+          "step": 28,
+          "stage": "postprocess",
+          "host_start": 14198766.365948582,
+          "host_ms": 0.35889819264411926,
+          "device_start_ms": 9026.3134765625,
+          "device_end_ms": 9026.3515625,
+          "device_ms": 0.03874000161886215
+        },
+        {
+          "step": 28,
+          "stage": "sampling",
+          "host_start": 14198766.36633041,
+          "host_ms": 0.22686272859573364,
+          "device_start_ms": 9026.3515625,
+          "device_end_ms": 9026.58984375,
+          "device_ms": 0.23747999966144562
+        },
+        {
+          "step": 28,
+          "stage": "postprocess",
+          "host_start": 14198766.366576113,
+          "host_ms": 0.6029102951288223,
+          "device_start_ms": 9026.58984375,
+          "device_end_ms": 9026.64453125,
+          "device_ms": 0.05527999997138977
+        },
+        {
+          "step": 29,
+          "stage": "scheduler",
+          "host_start": 14198766.367218304,
+          "host_ms": 1.2294519692659378,
+          "device_start_ms": 9026.6455078125,
+          "device_end_ms": 9026.8515625,
+          "device_ms": 0.20679999887943268
+        },
+        {
+          "step": 29,
+          "stage": "scheduler",
+          "host_start": 14198766.368467815,
+          "host_ms": 0.2756919711828232,
+          "device_start_ms": 9026.90625,
+          "device_end_ms": 9027.1435546875,
+          "device_ms": 0.2371000051498413
+        },
+        {
+          "step": 29,
+          "stage": "model_forward",
+          "host_start": 14198766.368775517,
+          "host_ms": 132.78567045927048,
+          "device_start_ms": 9027.220703125,
+          "device_end_ms": 9162.0859375,
+          "device_ms": 134.86578369140625
+        },
+        {
+          "step": 29,
+          "stage": "postprocess",
+          "host_start": 14198766.501584869,
+          "host_ms": 0.3426596522331238,
+          "device_start_ms": 9162.0869140625,
+          "device_end_ms": 9162.12109375,
+          "device_ms": 0.034699998795986176
+        },
+        {
+          "step": 29,
+          "stage": "sampling",
+          "host_start": 14198766.501947427,
+          "host_ms": 0.2072323113679886,
+          "device_start_ms": 9162.12109375,
+          "device_end_ms": 9162.359375,
+          "device_ms": 0.23812000453472137
+        },
+        {
+          "step": 29,
+          "stage": "postprocess",
+          "host_start": 14198766.502173852,
+          "host_ms": 0.5796123296022415,
+          "device_start_ms": 9162.359375,
+          "device_end_ms": 9162.4140625,
+          "device_ms": 0.05437999963760376
+        },
+        {
+          "step": 30,
+          "stage": "scheduler",
+          "host_start": 14198766.502778672,
+          "host_ms": 1.445576548576355,
+          "device_start_ms": 9162.4140625,
+          "device_end_ms": 9162.6318359375,
+          "device_ms": 0.21807999908924103
+        },
+        {
+          "step": 30,
+          "stage": "scheduler",
+          "host_start": 14198766.50424424,
+          "host_ms": 0.2628713846206665,
+          "device_start_ms": 9162.6865234375,
+          "device_end_ms": 9162.912109375,
+          "device_ms": 0.22526000440120697
+        },
+        {
+          "step": 30,
+          "stage": "model_forward",
+          "host_start": 14198766.50453414,
+          "host_ms": 133.4669217467308,
+          "device_start_ms": 9162.9775390625,
+          "device_end_ms": 9298.46875,
+          "device_ms": 135.4912567138672
+        },
+        {
+          "step": 30,
+          "stage": "postprocess",
+          "host_start": 14198766.638034573,
+          "host_ms": 0.3524273633956909,
+          "device_start_ms": 9298.46875,
+          "device_end_ms": 9298.5087890625,
+          "device_ms": 0.040059998631477356
+        },
+        {
+          "step": 30,
+          "stage": "sampling",
+          "host_start": 14198766.6384065,
+          "host_ms": 0.22025220096111298,
+          "device_start_ms": 9298.5087890625,
+          "device_end_ms": 9298.7470703125,
+          "device_ms": 0.23865999281406403
+        },
+        {
+          "step": 30,
+          "stage": "postprocess",
+          "host_start": 14198766.638645612,
+          "host_ms": 0.6407331675291061,
+          "device_start_ms": 9298.748046875,
+          "device_end_ms": 9298.8056640625,
+          "device_ms": 0.05770000070333481
+        },
+        {
+          "step": 31,
+          "stage": "scheduler",
+          "host_start": 14198766.639313044,
+          "host_ms": 1.3057272881269455,
+          "device_start_ms": 9298.8056640625,
+          "device_end_ms": 9299.033203125,
+          "device_ms": 0.22742000222206116
+        },
+        {
+          "step": 31,
+          "stage": "scheduler",
+          "host_start": 14198766.640638571,
+          "host_ms": 0.26443228125572205,
+          "device_start_ms": 9299.087890625,
+          "device_end_ms": 9299.3134765625,
+          "device_ms": 0.22563999891281128
+        },
+        {
+          "step": 31,
+          "stage": "model_forward",
+          "host_start": 14198766.640930904,
+          "host_ms": 143.16369220614433,
+          "device_start_ms": 9299.3876953125,
+          "device_end_ms": 9444.474609375,
+          "device_ms": 145.08761596679688
+        },
+        {
+          "step": 31,
+          "stage": "postprocess",
+          "host_start": 14198766.784123143,
+          "host_ms": 0.3731288015842438,
+          "device_start_ms": 9444.474609375,
+          "device_end_ms": 9444.513671875,
+          "device_ms": 0.03897999972105026
+        },
+        {
+          "step": 31,
+          "stage": "sampling",
+          "host_start": 14198766.784517083,
+          "host_ms": 0.2252236008644104,
+          "device_start_ms": 9444.513671875,
+          "device_end_ms": 9444.7529296875,
+          "device_ms": 0.23892000317573547
+        },
+        {
+          "step": 31,
+          "stage": "postprocess",
+          "host_start": 14198766.784761105,
+          "host_ms": 0.6004106253385544,
+          "device_start_ms": 9444.7529296875,
+          "device_end_ms": 9444.810546875,
+          "device_ms": 0.05696000158786774
+        },
+        {
+          "step": 32,
+          "stage": "scheduler",
+          "host_start": 14198766.785387008,
+          "host_ms": 1.2248530983924866,
+          "device_start_ms": 9444.810546875,
+          "device_end_ms": 9445.0244140625,
+          "device_ms": 0.21435999870300293
+        }
+      ]
+    },
+    {
+      "trial": 4,
+      "instrumented": false,
+      "wall_ms": 9378.512438386679,
+      "tokens_exact": true,
+      "e100_tokens_exact": true,
+      "peak_bytes": 59173664768,
+      "stages": []
+    },
+    {
+      "trial": 5,
+      "instrumented": true,
+      "wall_ms": 9370.571292936802,
+      "tokens_exact": true,
+      "e100_tokens_exact": true,
+      "peak_bytes": 59173664768,
+      "stages": [
+        {
+          "step": -1,
+          "stage": "prefill",
+          "host_start": 14198776.19857216,
+          "host_ms": 5138.395691290498,
+          "device_start_ms": 0.0,
+          "device_end_ms": 5188.4609375,
+          "device_ms": 5188.4609375
+        },
+        {
+          "step": 0,
+          "stage": "scheduler",
+          "host_start": 14198781.337041248,
+          "host_ms": 0.09642913937568665,
+          "device_start_ms": 5188.4609375,
+          "device_end_ms": 5188.4609375,
+          "device_ms": 0.00015999999595806003
+        },
+        {
+          "step": 0,
+          "stage": "postprocess",
+          "host_start": 14198781.337156026,
+          "host_ms": 0.39055757224559784,
+          "device_start_ms": 5188.46142578125,
+          "device_end_ms": 5188.5,
+          "device_ms": 0.0384799987077713
+        },
+        {
+          "step": 0,
+          "stage": "sampling",
+          "host_start": 14198781.337566894,
+          "host_ms": 0.23454241454601288,
+          "device_start_ms": 5188.5,
+          "device_end_ms": 5188.73828125,
+          "device_ms": 0.23839999735355377
+        },
+        {
+          "step": 0,
+          "stage": "postprocess",
+          "host_start": 14198781.337818349,
+          "host_ms": 0.7409267127513885,
+          "device_start_ms": 5188.73828125,
+          "device_end_ms": 5188.794921875,
+          "device_ms": 0.05634000152349472
+        },
+        {
+          "step": 1,
+          "stage": "scheduler",
+          "host_start": 14198781.338584363,
+          "host_ms": 48.89332875609398,
+          "device_start_ms": 5188.794921875,
+          "device_end_ms": 5189.009765625,
+          "device_ms": 0.2149599939584732
+        },
+        {
+          "step": 1,
+          "stage": "scheduler",
+          "host_start": 14198781.38749714,
+          "host_ms": 0.2734921872615814,
+          "device_start_ms": 5189.06591796875,
+          "device_end_ms": 5189.29345703125,
+          "device_ms": 0.2274799942970276
+        },
+        {
+          "step": 1,
+          "stage": "model_forward",
+          "host_start": 14198781.38780544,
+          "host_ms": 131.17016851902008,
+          "device_start_ms": 5189.37744140625,
+          "device_end_ms": 5322.61279296875,
+          "device_ms": 133.23538208007812
+        },
+        {
+          "step": 1,
+          "stage": "postprocess",
+          "host_start": 14198781.519002456,
+          "host_ms": 0.33948011696338654,
+          "device_start_ms": 5322.61328125,
+          "device_end_ms": 5322.6474609375,
+          "device_ms": 0.03449999913573265
+        },
+        {
+          "step": 1,
+          "stage": "sampling",
+          "host_start": 14198781.519362876,
+          "host_ms": 0.22461451590061188,
+          "device_start_ms": 5322.64794921875,
+          "device_end_ms": 5322.8857421875,
+          "device_ms": 0.23768000304698944
+        },
+        {
+          "step": 1,
+          "stage": "postprocess",
+          "host_start": 14198781.51960636,
+          "host_ms": 0.6047021597623825,
+          "device_start_ms": 5322.8857421875,
+          "device_end_ms": 5322.94091796875,
+          "device_ms": 0.055059999227523804
+        },
+        {
+          "step": 2,
+          "stage": "scheduler",
+          "host_start": 14198781.520235712,
+          "host_ms": 1.4919359236955643,
+          "device_start_ms": 5322.94091796875,
+          "device_end_ms": 5323.26708984375,
+          "device_ms": 0.325980007648468
+        },
+        {
+          "step": 2,
+          "stage": "scheduler",
+          "host_start": 14198781.521748077,
+          "host_ms": 0.2598632127046585,
+          "device_start_ms": 5323.32177734375,
+          "device_end_ms": 5323.54345703125,
+          "device_ms": 0.22200000286102295
+        },
+        {
+          "step": 2,
+          "stage": "model_forward",
+          "host_start": 14198781.522035228,
+          "host_ms": 129.17238660156727,
+          "device_start_ms": 5323.60986328125,
+          "device_end_ms": 5454.7978515625,
+          "device_ms": 131.18801879882812
+        },
+        {
+          "step": 2,
+          "stage": "postprocess",
+          "host_start": 14198781.651237313,
+          "host_ms": 0.35875104367733,
+          "device_start_ms": 5454.7978515625,
+          "device_end_ms": 5454.837890625,
+          "device_ms": 0.039719998836517334
+        },
+        {
+          "step": 2,
+          "stage": "sampling",
+          "host_start": 14198781.651615912,
+          "host_ms": 0.2210848033428192,
+          "device_start_ms": 5454.837890625,
+          "device_end_ms": 5455.080078125,
+          "device_ms": 0.24233999848365784
+        },
+        {
+          "step": 2,
+          "stage": "postprocess",
+          "host_start": 14198781.651855703,
+          "host_ms": 0.632893294095993,
+          "device_start_ms": 5455.080078125,
+          "device_end_ms": 5455.13671875,
+          "device_ms": 0.056460000574588776
+        },
+        {
+          "step": 3,
+          "stage": "scheduler",
+          "host_start": 14198781.652515097,
+          "host_ms": 1.3137217611074448,
+          "device_start_ms": 5455.13671875,
+          "device_end_ms": 5455.36474609375,
+          "device_ms": 0.2275799959897995
+        },
+        {
+          "step": 3,
+          "stage": "scheduler",
+          "host_start": 14198781.653848657,
+          "host_ms": 0.26883184909820557,
+          "device_start_ms": 5455.4306640625,
+          "device_end_ms": 5455.6513671875,
+          "device_ms": 0.22100000083446503
+        },
+        {
+          "step": 3,
+          "stage": "model_forward",
+          "host_start": 14198781.65414822,
+          "host_ms": 127.9980968683958,
+          "device_start_ms": 5455.7265625,
+          "device_end_ms": 5585.81689453125,
+          "device_ms": 130.09071350097656
+        },
+        {
+          "step": 3,
+          "stage": "postprocess",
+          "host_start": 14198781.782171097,
+          "host_ms": 0.3388393670320511,
+          "device_start_ms": 5585.8173828125,
+          "device_end_ms": 5585.8564453125,
+          "device_ms": 0.039000000804662704
+        },
+        {
+          "step": 3,
+          "stage": "sampling",
+          "host_start": 14198781.782529686,
+          "host_ms": 0.20493380725383759,
+          "device_start_ms": 5585.8564453125,
+          "device_end_ms": 5586.0947265625,
+          "device_ms": 0.23844000697135925
+        },
+        {
+          "step": 3,
+          "stage": "postprocess",
+          "host_start": 14198781.78275325,
+          "host_ms": 0.5685016512870789,
+          "device_start_ms": 5586.09521484375,
+          "device_end_ms": 5586.15185546875,
+          "device_ms": 0.0568000003695488
+        },
+        {
+          "step": 4,
+          "stage": "scheduler",
+          "host_start": 14198781.783347204,
+          "host_ms": 1.4445483684539795,
+          "device_start_ms": 5586.15185546875,
+          "device_end_ms": 5586.34375,
+          "device_ms": 0.19193999469280243
+        },
+        {
+          "step": 4,
+          "stage": "scheduler",
+          "host_start": 14198781.78481092,
+          "host_ms": 0.2557728439569473,
+          "device_start_ms": 5586.4033203125,
+          "device_end_ms": 5586.61181640625,
+          "device_ms": 0.20880000293254852
+        },
+        {
+          "step": 4,
+          "stage": "model_forward",
+          "host_start": 14198781.785094261,
+          "host_ms": 129.71253134310246,
+          "device_start_ms": 5586.69580078125,
+          "device_end_ms": 5718.51171875,
+          "device_ms": 131.81619262695312
+        },
+        {
+          "step": 4,
+          "stage": "postprocess",
+          "host_start": 14198781.91482911,
+          "host_ms": 0.3422219306230545,
+          "device_start_ms": 5718.51220703125,
+          "device_end_ms": 5718.55126953125,
+          "device_ms": 0.03922000154852867
+        },
+        {
+          "step": 4,
+          "stage": "sampling",
+          "host_start": 14198781.9151911,
+          "host_ms": 0.21419301629066467,
+          "device_start_ms": 5718.55126953125,
+          "device_end_ms": 5718.791015625,
+          "device_ms": 0.23984000086784363
+        },
+        {
+          "step": 4,
+          "stage": "postprocess",
+          "host_start": 14198781.915423203,
+          "host_ms": 0.5914121866226196,
+          "device_start_ms": 5718.79150390625,
+          "device_end_ms": 5718.8486328125,
+          "device_ms": 0.057259999215602875
+        },
+        {
+          "step": 5,
+          "stage": "scheduler",
+          "host_start": 14198781.916038876,
+          "host_ms": 1.4460477977991104,
+          "device_start_ms": 5718.8486328125,
+          "device_end_ms": 5719.041015625,
+          "device_ms": 0.19237999618053436
+        },
+        {
+          "step": 5,
+          "stage": "scheduler",
+          "host_start": 14198781.917504225,
+          "host_ms": 0.2575404942035675,
+          "device_start_ms": 5719.09765625,
+          "device_end_ms": 5719.31298828125,
+          "device_ms": 0.21522000432014465
+        },
+        {
+          "step": 5,
+          "stage": "model_forward",
+          "host_start": 14198781.917789675,
+          "host_ms": 130.02181984484196,
+          "device_start_ms": 5719.38037109375,
+          "device_end_ms": 5851.52392578125,
+          "device_ms": 132.14398193359375
+        },
+        {
+          "step": 5,
+          "stage": "postprocess",
+          "host_start": 14198782.047834024,
+          "host_ms": 0.35393983125686646,
+          "device_start_ms": 5851.5244140625,
+          "device_end_ms": 5851.55908203125,
+          "device_ms": 0.03491999953985214
+        },
+        {
+          "step": 5,
+          "stage": "sampling",
+          "host_start": 14198782.048207665,
+          "host_ms": 0.2102833241224289,
+          "device_start_ms": 5851.5595703125,
+          "device_end_ms": 5851.7978515625,
+          "device_ms": 0.23849999904632568
+        },
+        {
+          "step": 5,
+          "stage": "postprocess",
+          "host_start": 14198782.048436156,
+          "host_ms": 0.5687549710273743,
+          "device_start_ms": 5851.7978515625,
+          "device_end_ms": 5851.85400390625,
+          "device_ms": 0.0558600015938282
+        },
+        {
+          "step": 6,
+          "stage": "scheduler",
+          "host_start": 14198782.04902819,
+          "host_ms": 1.4625657349824905,
+          "device_start_ms": 5851.85400390625,
+          "device_end_ms": 5852.05078125,
+          "device_ms": 0.19689999520778656
+        },
+        {
+          "step": 6,
+          "stage": "scheduler",
+          "host_start": 14198782.050510695,
+          "host_ms": 0.25899335741996765,
+          "device_start_ms": 5852.10498046875,
+          "device_end_ms": 5852.3251953125,
+          "device_ms": 0.22040000557899475
+        },
+        {
+          "step": 6,
+          "stage": "model_forward",
+          "host_start": 14198782.050796699,
+          "host_ms": 129.62497398257256,
+          "device_start_ms": 5852.39208984375,
+          "device_end_ms": 5984.0986328125,
+          "device_ms": 131.70643615722656
+        },
+        {
+          "step": 6,
+          "stage": "postprocess",
+          "host_start": 14198782.18044547,
+          "host_ms": 0.33576972782611847,
+          "device_start_ms": 5984.0986328125,
+          "device_end_ms": 5984.13720703125,
+          "device_ms": 0.038339998573064804
+        },
+        {
+          "step": 6,
+          "stage": "sampling",
+          "host_start": 14198782.18080108,
+          "host_ms": 0.21275319159030914,
+          "device_start_ms": 5984.13720703125,
+          "device_end_ms": 5984.3759765625,
+          "device_ms": 0.23890000581741333
+        },
+        {
+          "step": 6,
+          "stage": "postprocess",
+          "host_start": 14198782.181032045,
+          "host_ms": 0.5823411047458649,
+          "device_start_ms": 5984.37646484375,
+          "device_end_ms": 5984.43212890625,
+          "device_ms": 0.05590000003576279
+        },
+        {
+          "step": 7,
+          "stage": "scheduler",
+          "host_start": 14198782.181645185,
+          "host_ms": 1.437278464436531,
+          "device_start_ms": 5984.4326171875,
+          "device_end_ms": 5984.64501953125,
+          "device_ms": 0.21281999349594116
+        },
+        {
+          "step": 7,
+          "stage": "scheduler",
+          "host_start": 14198782.183102164,
+          "host_ms": 0.25436095893383026,
+          "device_start_ms": 5984.70068359375,
+          "device_end_ms": 5984.9169921875,
+          "device_ms": 0.21668000519275665
+        },
+        {
+          "step": 7,
+          "stage": "model_forward",
+          "host_start": 14198782.183385676,
+          "host_ms": 130.6881606578827,
+          "device_start_ms": 5984.99072265625,
+          "device_end_ms": 6117.7900390625,
+          "device_ms": 132.79937744140625
+        },
+        {
+          "step": 7,
+          "stage": "postprocess",
+          "host_start": 14198782.314096784,
+          "host_ms": 0.33733993768692017,
+          "device_start_ms": 6117.7900390625,
+          "device_end_ms": 6117.828125,
+          "device_ms": 0.03798000141978264
+        },
+        {
+          "step": 7,
+          "stage": "sampling",
+          "host_start": 14198782.314454254,
+          "host_ms": 0.2086348831653595,
+          "device_start_ms": 6117.828125,
+          "device_end_ms": 6118.0654296875,
+          "device_ms": 0.23739999532699585
+        },
+        {
+          "step": 7,
+          "stage": "postprocess",
+          "host_start": 14198782.314681455,
+          "host_ms": 0.5725249648094177,
+          "device_start_ms": 6118.06591796875,
+          "device_end_ms": 6118.12109375,
+          "device_ms": 0.05545999854803085
+        },
+        {
+          "step": 8,
+          "stage": "scheduler",
+          "host_start": 14198782.31527652,
+          "host_ms": 1.516975462436676,
+          "device_start_ms": 6118.12158203125,
+          "device_end_ms": 6118.35498046875,
+          "device_ms": 0.23364000022411346
+        },
+        {
+          "step": 8,
+          "stage": "scheduler",
+          "host_start": 14198782.316812536,
+          "host_ms": 0.2524927258491516,
+          "device_start_ms": 6118.4169921875,
+          "device_end_ms": 6118.62353515625,
+          "device_ms": 0.20681999623775482
+        },
+        {
+          "step": 8,
+          "stage": "model_forward",
+          "host_start": 14198782.317091258,
+          "host_ms": 135.56895032525063,
+          "device_start_ms": 6118.693359375,
+          "device_end_ms": 6256.34521484375,
+          "device_ms": 137.65188598632812
+        },
+        {
+          "step": 8,
+          "stage": "postprocess",
+          "host_start": 14198782.452687966,
+          "host_ms": 0.36549754440784454,
+          "device_start_ms": 6256.34521484375,
+          "device_end_ms": 6256.38427734375,
+          "device_ms": 0.039000000804662704
+        },
+        {
+          "step": 8,
+          "stage": "sampling",
+          "host_start": 14198782.453073584,
+          "host_ms": 0.2269148826599121,
+          "device_start_ms": 6256.384765625,
+          "device_end_ms": 6256.625,
+          "device_ms": 0.24060000479221344
+        },
+        {
+          "step": 8,
+          "stage": "postprocess",
+          "host_start": 14198782.453319218,
+          "host_ms": 0.6491616368293762,
+          "device_start_ms": 6256.62548828125,
+          "device_end_ms": 6256.681640625,
+          "device_ms": 0.0561399981379509
+        },
+        {
+          "step": 9,
+          "stage": "scheduler",
+          "host_start": 14198782.453992138,
+          "host_ms": 1.3296529650688171,
+          "device_start_ms": 6256.681640625,
+          "device_end_ms": 6256.896484375,
+          "device_ms": 0.214819997549057
+        },
+        {
+          "step": 9,
+          "stage": "scheduler",
+          "host_start": 14198782.45534172,
+          "host_ms": 0.2723522484302521,
+          "device_start_ms": 6256.95068359375,
+          "device_end_ms": 6257.1845703125,
+          "device_ms": 0.23401999473571777
+        },
+        {
+          "step": 9,
+          "stage": "model_forward",
+          "host_start": 14198782.455641633,
+          "host_ms": 131.88663311302662,
+          "device_start_ms": 6257.26220703125,
+          "device_end_ms": 6391.26123046875,
+          "device_ms": 133.99903869628906
+        },
+        {
+          "step": 9,
+          "stage": "postprocess",
+          "host_start": 14198782.587551717,
+          "host_ms": 0.3437995910644531,
+          "device_start_ms": 6391.26123046875,
+          "device_end_ms": 6391.29541015625,
+          "device_ms": 0.033980000764131546
+        },
+        {
+          "step": 9,
+          "stage": "sampling",
+          "host_start": 14198782.587915216,
+          "host_ms": 0.2303626388311386,
+          "device_start_ms": 6391.29541015625,
+          "device_end_ms": 6391.53369140625,
+          "device_ms": 0.2379399985074997
+        },
+        {
+          "step": 9,
+          "stage": "postprocess",
+          "host_start": 14198782.588164777,
+          "host_ms": 0.5831234157085419,
+          "device_start_ms": 6391.53369140625,
+          "device_end_ms": 6391.58837890625,
+          "device_ms": 0.05477999895811081
+        },
+        {
+          "step": 10,
+          "stage": "scheduler",
+          "host_start": 14198782.58877053,
+          "host_ms": 1.4580190181732178,
+          "device_start_ms": 6391.58837890625,
+          "device_end_ms": 6391.80078125,
+          "device_ms": 0.2122800052165985
+        },
+        {
+          "step": 10,
+          "stage": "scheduler",
+          "host_start": 14198782.590252507,
+          "host_ms": 0.26504136621952057,
+          "device_start_ms": 6391.87158203125,
+          "device_end_ms": 6392.08740234375,
+          "device_ms": 0.21571999788284302
+        },
+        {
+          "step": 10,
+          "stage": "model_forward",
+          "host_start": 14198782.59054638,
+          "host_ms": 130.79132325947285,
+          "device_start_ms": 6392.1669921875,
+          "device_end_ms": 6525.04541015625,
+          "device_ms": 132.8782958984375
+        },
+        {
+          "step": 10,
+          "stage": "postprocess",
+          "host_start": 14198782.721360777,
+          "host_ms": 0.34935958683490753,
+          "device_start_ms": 6525.04541015625,
+          "device_end_ms": 6525.08447265625,
+          "device_ms": 0.03897999972105026
+        },
+        {
+          "step": 10,
+          "stage": "sampling",
+          "host_start": 14198782.721730104,
+          "host_ms": 0.20888447761535645,
+          "device_start_ms": 6525.0849609375,
+          "device_end_ms": 6525.32470703125,
+          "device_ms": 0.23994000256061554
+        },
+        {
+          "step": 10,
+          "stage": "postprocess",
+          "host_start": 14198782.721957408,
+          "host_ms": 0.5888417363166809,
+          "device_start_ms": 6525.32470703125,
+          "device_end_ms": 6525.380859375,
+          "device_ms": 0.05615999922156334
+        },
+        {
+          "step": 11,
+          "stage": "scheduler",
+          "host_start": 14198782.72257524,
+          "host_ms": 1.4527086168527603,
+          "device_start_ms": 6525.38134765625,
+          "device_end_ms": 6525.61328125,
+          "device_ms": 0.23231999576091766
+        },
+        {
+          "step": 11,
+          "stage": "scheduler",
+          "host_start": 14198782.724048756,
+          "host_ms": 0.25609321892261505,
+          "device_start_ms": 6525.66943359375,
+          "device_end_ms": 6525.88427734375,
+          "device_ms": 0.2150000035762787
+        },
+        {
+          "step": 11,
+          "stage": "model_forward",
+          "host_start": 14198782.72433246,
+          "host_ms": 137.69759610295296,
+          "device_start_ms": 6525.9580078125,
+          "device_end_ms": 6665.611328125,
+          "device_ms": 139.65338134765625
+        },
+        {
+          "step": 11,
+          "stage": "postprocess",
+          "host_start": 14198782.862072596,
+          "host_ms": 0.3673974424600601,
+          "device_start_ms": 6665.611328125,
+          "device_end_ms": 6665.64990234375,
+          "device_ms": 0.038339998573064804
+        },
+        {
+          "step": 11,
+          "stage": "sampling",
+          "host_start": 14198782.862463964,
+          "host_ms": 0.22653117775917053,
+          "device_start_ms": 6665.64990234375,
+          "device_end_ms": 6665.88720703125,
+          "device_ms": 0.2371000051498413
+        },
+        {
+          "step": 11,
+          "stage": "postprocess",
+          "host_start": 14198782.862709828,
+          "host_ms": 0.6205122917890549,
+          "device_start_ms": 6665.88720703125,
+          "device_end_ms": 6665.94384765625,
+          "device_ms": 0.056439999490976334
+        },
+        {
+          "step": 12,
+          "stage": "scheduler",
+          "host_start": 14198782.863359518,
+          "host_ms": 1.2264735996723175,
+          "device_start_ms": 6665.94384765625,
+          "device_end_ms": 6666.16650390625,
+          "device_ms": 0.22285999357700348
+        },
+        {
+          "step": 12,
+          "stage": "scheduler",
+          "host_start": 14198782.864606282,
+          "host_ms": 0.28328225016593933,
+          "device_start_ms": 6666.2294921875,
+          "device_end_ms": 6666.46826171875,
+          "device_ms": 0.23885999619960785
+        },
+        {
+          "step": 12,
+          "stage": "model_forward",
+          "host_start": 14198782.864924245,
+          "host_ms": 131.7562274634838,
+          "device_start_ms": 6666.55078125,
+          "device_end_ms": 6800.38525390625,
+          "device_ms": 133.83482360839844
+        },
+        {
+          "step": 12,
+          "stage": "postprocess",
+          "host_start": 14198782.996703992,
+          "host_ms": 0.3548804670572281,
+          "device_start_ms": 6800.3857421875,
+          "device_end_ms": 6800.42626953125,
+          "device_ms": 0.040800001472234726
+        },
+        {
+          "step": 12,
+          "stage": "sampling",
+          "host_start": 14198782.99708016,
+          "host_ms": 0.21249428391456604,
+          "device_start_ms": 6800.42626953125,
+          "device_end_ms": 6800.66796875,
+          "device_ms": 0.24140000343322754
+        },
+        {
+          "step": 12,
+          "stage": "postprocess",
+          "host_start": 14198782.997318244,
+          "host_ms": 0.6033126264810562,
+          "device_start_ms": 6800.66796875,
+          "device_end_ms": 6800.7236328125,
+          "device_ms": 0.05550000071525574
+        },
+        {
+          "step": 13,
+          "stage": "scheduler",
+          "host_start": 14198782.997946316,
+          "host_ms": 1.376040279865265,
+          "device_start_ms": 6800.7236328125,
+          "device_end_ms": 6800.91064453125,
+          "device_ms": 0.1868399977684021
+        },
+        {
+          "step": 13,
+          "stage": "scheduler",
+          "host_start": 14198782.999347404,
+          "host_ms": 0.2661328762769699,
+          "device_start_ms": 6800.9794921875,
+          "device_end_ms": 6801.19775390625,
+          "device_ms": 0.21797999739646912
+        },
+        {
+          "step": 13,
+          "stage": "model_forward",
+          "host_start": 14198782.999641467,
+          "host_ms": 132.60589353740215,
+          "device_start_ms": 6801.2763671875,
+          "device_end_ms": 6935.9580078125,
+          "device_ms": 134.68182373046875
+        },
+        {
+          "step": 13,
+          "stage": "postprocess",
+          "host_start": 14198783.13227437,
+          "host_ms": 0.34121982753276825,
+          "device_start_ms": 6935.9580078125,
+          "device_end_ms": 6935.9931640625,
+          "device_ms": 0.034960001707077026
+        },
+        {
+          "step": 13,
+          "stage": "sampling",
+          "host_start": 14198783.132635348,
+          "host_ms": 0.2134367823600769,
+          "device_start_ms": 6935.9931640625,
+          "device_end_ms": 6936.23193359375,
+          "device_ms": 0.2387399971485138
+        },
+        {
+          "step": 13,
+          "stage": "postprocess",
+          "host_start": 14198783.132867804,
+          "host_ms": 0.6034523248672485,
+          "device_start_ms": 6936.232421875,
+          "device_end_ms": 6936.287109375,
+          "device_ms": 0.054680000990629196
+        },
+        {
+          "step": 14,
+          "stage": "scheduler",
+          "host_start": 14198783.133494576,
+          "host_ms": 1.4160778373479843,
+          "device_start_ms": 6936.287109375,
+          "device_end_ms": 6936.50244140625,
+          "device_ms": 0.2152400016784668
+        },
+        {
+          "step": 14,
+          "stage": "scheduler",
+          "host_start": 14198783.134930603,
+          "host_ms": 0.26898086071014404,
+          "device_start_ms": 6936.5654296875,
+          "device_end_ms": 6936.78759765625,
+          "device_ms": 0.22242000699043274
+        },
+        {
+          "step": 14,
+          "stage": "model_forward",
+          "host_start": 14198783.135228254,
+          "host_ms": 131.35982677340508,
+          "device_start_ms": 6936.8701171875,
+          "device_end_ms": 7070.34033203125,
+          "device_ms": 133.47018432617188
+        },
+        {
+          "step": 14,
+          "stage": "postprocess",
+          "host_start": 14198783.266610753,
+          "host_ms": 0.3420878201723099,
+          "device_start_ms": 7070.34033203125,
+          "device_end_ms": 7070.38037109375,
+          "device_ms": 0.0399399995803833
+        },
+        {
+          "step": 14,
+          "stage": "sampling",
+          "host_start": 14198783.26697276,
+          "host_ms": 0.2128947526216507,
+          "device_start_ms": 7070.38037109375,
+          "device_end_ms": 7070.62060546875,
+          "device_ms": 0.24036000669002533
+        },
+        {
+          "step": 14,
+          "stage": "postprocess",
+          "host_start": 14198783.267204594,
+          "host_ms": 0.5761217325925827,
+          "device_start_ms": 7070.62109375,
+          "device_end_ms": 7070.67626953125,
+          "device_ms": 0.05552000179886818
+        },
+        {
+          "step": 15,
+          "stage": "scheduler",
+          "host_start": 14198783.267803807,
+          "host_ms": 1.4609172940254211,
+          "device_start_ms": 7070.6767578125,
+          "device_end_ms": 7070.86962890625,
+          "device_ms": 0.19315999746322632
+        },
+        {
+          "step": 15,
+          "stage": "scheduler",
+          "host_start": 14198783.269284815,
+          "host_ms": 0.25825202465057373,
+          "device_start_ms": 7070.92431640625,
+          "device_end_ms": 7071.14794921875,
+          "device_ms": 0.22378000617027283
+        },
+        {
+          "step": 15,
+          "stage": "model_forward",
+          "host_start": 14198783.269570597,
+          "host_ms": 131.3776671886444,
+          "device_start_ms": 7071.22119140625,
+          "device_end_ms": 7204.67724609375,
+          "device_ms": 133.45608520507812
+        },
+        {
+          "step": 15,
+          "stage": "postprocess",
+          "host_start": 14198783.400971694,
+          "host_ms": 0.3324802964925766,
+          "device_start_ms": 7204.67724609375,
+          "device_end_ms": 7204.71484375,
+          "device_ms": 0.03764000162482262
+        },
+        {
+          "step": 15,
+          "stage": "sampling",
+          "host_start": 14198783.401325032,
+          "host_ms": 0.20903535187244415,
+          "device_start_ms": 7204.71484375,
+          "device_end_ms": 7204.9521484375,
+          "device_ms": 0.23722000420093536
+        },
+        {
+          "step": 15,
+          "stage": "postprocess",
+          "host_start": 14198783.401552629,
+          "host_ms": 0.5758814513683319,
+          "device_start_ms": 7204.95263671875,
+          "device_end_ms": 7205.00927734375,
+          "device_ms": 0.05671999976038933
+        },
+        {
+          "step": 16,
+          "stage": "scheduler",
+          "host_start": 14198783.40215523,
+          "host_ms": 1.4215987175703049,
+          "device_start_ms": 7205.00927734375,
+          "device_end_ms": 7205.177734375,
+          "device_ms": 0.16835999488830566
+        },
+        {
+          "step": 16,
+          "stage": "scheduler",
+          "host_start": 14198783.403595967,
+          "host_ms": 0.2584122121334076,
+          "device_start_ms": 7205.2421875,
+          "device_end_ms": 7205.453125,
+          "device_ms": 0.2108200043439865
+        },
+        {
+          "step": 16,
+          "stage": "model_forward",
+          "host_start": 14198783.40388395,
+          "host_ms": 132.97570124268532,
+          "device_start_ms": 7205.52587890625,
+          "device_end_ms": 7340.4697265625,
+          "device_ms": 134.94363403320312
+        },
+        {
+          "step": 16,
+          "stage": "postprocess",
+          "host_start": 14198783.536895892,
+          "host_ms": 0.35447999835014343,
+          "device_start_ms": 7340.4697265625,
+          "device_end_ms": 7340.5087890625,
+          "device_ms": 0.039000000804662704
+        },
+        {
+          "step": 16,
+          "stage": "sampling",
+          "host_start": 14198783.537270492,
+          "host_ms": 0.22032298147678375,
+          "device_start_ms": 7340.5087890625,
+          "device_end_ms": 7340.7490234375,
+          "device_ms": 0.23995999991893768
+        },
+        {
+          "step": 16,
+          "stage": "postprocess",
+          "host_start": 14198783.537509395,
+          "host_ms": 0.6269719451665878,
+          "device_start_ms": 7340.7490234375,
+          "device_end_ms": 7340.8056640625,
+          "device_ms": 0.056620001792907715
+        },
+        {
+          "step": 17,
+          "stage": "scheduler",
+          "host_start": 14198783.538159736,
+          "host_ms": 1.2246053665876389,
+          "device_start_ms": 7340.8056640625,
+          "device_end_ms": 7340.9931640625,
+          "device_ms": 0.18727999925613403
+        },
+        {
+          "step": 17,
+          "stage": "scheduler",
+          "host_start": 14198783.539404009,
+          "host_ms": 0.2676136791706085,
+          "device_start_ms": 7341.05810546875,
+          "device_end_ms": 7341.27685546875,
+          "device_ms": 0.21850000321865082
+        },
+        {
+          "step": 17,
+          "stage": "model_forward",
+          "host_start": 14198783.539699,
+          "host_ms": 131.21246546506882,
+          "device_start_ms": 7341.34912109375,
+          "device_end_ms": 7474.6591796875,
+          "device_ms": 133.30999755859375
+        },
+        {
+          "step": 17,
+          "stage": "postprocess",
+          "host_start": 14198783.670934834,
+          "host_ms": 0.33960118889808655,
+          "device_start_ms": 7474.6591796875,
+          "device_end_ms": 7474.69287109375,
+          "device_ms": 0.03384000062942505
+        },
+        {
+          "step": 17,
+          "stage": "sampling",
+          "host_start": 14198783.671294753,
+          "host_ms": 0.21015480160713196,
+          "device_start_ms": 7474.693359375,
+          "device_end_ms": 7474.931640625,
+          "device_ms": 0.23836000263690948
+        },
+        {
+          "step": 17,
+          "stage": "postprocess",
+          "host_start": 14198783.671523577,
+          "host_ms": 0.5897432565689087,
+          "device_start_ms": 7474.931640625,
+          "device_end_ms": 7474.9853515625,
+          "device_ms": 0.05355999991297722
+        },
+        {
+          "step": 18,
+          "stage": "scheduler",
+          "host_start": 14198783.672136027,
+          "host_ms": 1.4418289065361023,
+          "device_start_ms": 7474.9853515625,
+          "device_end_ms": 7475.1962890625,
+          "device_ms": 0.21077999472618103
+        },
+        {
+          "step": 18,
+          "stage": "scheduler",
+          "host_start": 14198783.673598276,
+          "host_ms": 0.2545733004808426,
+          "device_start_ms": 7475.251953125,
+          "device_end_ms": 7475.46826171875,
+          "device_ms": 0.21663999557495117
+        },
+        {
+          "step": 18,
+          "stage": "model_forward",
+          "host_start": 14198783.673885789,
+          "host_ms": 130.8417823165655,
+          "device_start_ms": 7475.5478515625,
+          "device_end_ms": 7608.50341796875,
+          "device_ms": 132.9553985595703
+        },
+        {
+          "step": 18,
+          "stage": "postprocess",
+          "host_start": 14198783.804750143,
+          "host_ms": 0.33064931631088257,
+          "device_start_ms": 7608.50341796875,
+          "device_end_ms": 7608.5439453125,
+          "device_ms": 0.040619999170303345
+        },
+        {
+          "step": 18,
+          "stage": "sampling",
+          "host_start": 14198783.805100882,
+          "host_ms": 0.2117939293384552,
+          "device_start_ms": 7608.5439453125,
+          "device_end_ms": 7608.7841796875,
+          "device_ms": 0.24007999897003174
+        },
+        {
+          "step": 18,
+          "stage": "postprocess",
+          "host_start": 14198783.805331163,
+          "host_ms": 0.5745254456996918,
+          "device_start_ms": 7608.7841796875,
+          "device_end_ms": 7608.8408203125,
+          "device_ms": 0.056439999490976334
+        },
+        {
+          "step": 19,
+          "stage": "scheduler",
+          "host_start": 14198783.805935077,
+          "host_ms": 1.6099344938993454,
+          "device_start_ms": 7608.8408203125,
+          "device_end_ms": 7609.16357421875,
+          "device_ms": 0.3227199912071228
+        },
+        {
+          "step": 19,
+          "stage": "scheduler",
+          "host_start": 14198783.80756574,
+          "host_ms": 0.2663247287273407,
+          "device_start_ms": 7609.2265625,
+          "device_end_ms": 7609.4482421875,
+          "device_ms": 0.22154000401496887
+        },
+        {
+          "step": 19,
+          "stage": "model_forward",
+          "host_start": 14198783.807862062,
+          "host_ms": 130.88448159396648,
+          "device_start_ms": 7609.52294921875,
+          "device_end_ms": 7742.525390625,
+          "device_ms": 133.00257873535156
+        },
+        {
+          "step": 19,
+          "stage": "postprocess",
+          "host_start": 14198783.938769303,
+          "host_ms": 0.3357008099555969,
+          "device_start_ms": 7742.52587890625,
+          "device_end_ms": 7742.5654296875,
+          "device_ms": 0.039739999920129776
+        },
+        {
+          "step": 19,
+          "stage": "sampling",
+          "host_start": 14198783.939124944,
+          "host_ms": 0.21370500326156616,
+          "device_start_ms": 7742.5654296875,
+          "device_end_ms": 7742.80322265625,
+          "device_ms": 0.23746000230312347
+        },
+        {
+          "step": 19,
+          "stage": "postprocess",
+          "host_start": 14198783.939357867,
+          "host_ms": 0.5803648382425308,
+          "device_start_ms": 7742.80322265625,
+          "device_end_ms": 7742.859375,
+          "device_ms": 0.056379999965429306
+        },
+        {
+          "step": 20,
+          "stage": "scheduler",
+          "host_start": 14198783.93996176,
+          "host_ms": 1.4520082622766495,
+          "device_start_ms": 7742.85986328125,
+          "device_end_ms": 7743.037109375,
+          "device_ms": 0.17723999917507172
+        },
+        {
+          "step": 20,
+          "stage": "scheduler",
+          "host_start": 14198783.941433638,
+          "host_ms": 0.2544540911912918,
+          "device_start_ms": 7743.10400390625,
+          "device_end_ms": 7743.30908203125,
+          "device_ms": 0.20496000349521637
+        },
+        {
+          "step": 20,
+          "stage": "model_forward",
+          "host_start": 14198783.94171473,
+          "host_ms": 131.36932998895645,
+          "device_start_ms": 7743.37890625,
+          "device_end_ms": 7876.7900390625,
+          "device_ms": 133.41151428222656
+        },
+        {
+          "step": 20,
+          "stage": "postprocess",
+          "host_start": 14198784.073113037,
+          "host_ms": 0.3500506281852722,
+          "device_start_ms": 7876.79052734375,
+          "device_end_ms": 7876.83056640625,
+          "device_ms": 0.04024000093340874
+        },
+        {
+          "step": 20,
+          "stage": "sampling",
+          "host_start": 14198784.073482748,
+          "host_ms": 0.22900477051734924,
+          "device_start_ms": 7876.83056640625,
+          "device_end_ms": 7877.07080078125,
+          "device_ms": 0.23984000086784363
+        },
+        {
+          "step": 20,
+          "stage": "postprocess",
+          "host_start": 14198784.07373069,
+          "host_ms": 0.6293412297964096,
+          "device_start_ms": 7877.07080078125,
+          "device_end_ms": 7877.12744140625,
+          "device_ms": 0.05649999901652336
+        },
+        {
+          "step": 21,
+          "stage": "scheduler",
+          "host_start": 14198784.07438634,
+          "host_ms": 1.328352838754654,
+          "device_start_ms": 7877.12744140625,
+          "device_end_ms": 7877.35107421875,
+          "device_ms": 0.2234400063753128
+        },
+        {
+          "step": 21,
+          "stage": "scheduler",
+          "host_start": 14198784.075735003,
+          "host_ms": 0.26295334100723267,
+          "device_start_ms": 7877.41552734375,
+          "device_end_ms": 7877.63720703125,
+          "device_ms": 0.22190000116825104
+        },
+        {
+          "step": 21,
+          "stage": "model_forward",
+          "host_start": 14198784.076040935,
+          "host_ms": 131.0577690601349,
+          "device_start_ms": 7877.72509765625,
+          "device_end_ms": 8010.84228515625,
+          "device_ms": 133.11703491210938
+        },
+        {
+          "step": 21,
+          "stage": "postprocess",
+          "host_start": 14198784.207122404,
+          "host_ms": 0.3336407244205475,
+          "device_start_ms": 8010.84228515625,
+          "device_end_ms": 8010.87890625,
+          "device_ms": 0.03660000115633011
+        },
+        {
+          "step": 21,
+          "stage": "sampling",
+          "host_start": 14198784.207479604,
+          "host_ms": 0.21308474242687225,
+          "device_start_ms": 8010.87890625,
+          "device_end_ms": 8011.1181640625,
+          "device_ms": 0.23890000581741333
+        },
+        {
+          "step": 21,
+          "stage": "postprocess",
+          "host_start": 14198784.207711175,
+          "host_ms": 0.5968455225229263,
+          "device_start_ms": 8011.1181640625,
+          "device_end_ms": 8011.173828125,
+          "device_ms": 0.05552000179886818
+        },
+        {
+          "step": 22,
+          "stage": "scheduler",
+          "host_start": 14198784.208331848,
+          "host_ms": 1.439528539776802,
+          "device_start_ms": 8011.173828125,
+          "device_end_ms": 8011.40185546875,
+          "device_ms": 0.22801999747753143
+        },
+        {
+          "step": 22,
+          "stage": "scheduler",
+          "host_start": 14198784.209791789,
+          "host_ms": 0.24809129536151886,
+          "device_start_ms": 8011.46484375,
+          "device_end_ms": 8011.66845703125,
+          "device_ms": 0.2037000060081482
+        },
+        {
+          "step": 22,
+          "stage": "model_forward",
+          "host_start": 14198784.21006938,
+          "host_ms": 130.73845580220222,
+          "device_start_ms": 8011.74169921875,
+          "device_end_ms": 8144.5673828125,
+          "device_ms": 132.8255157470703
+        },
+        {
+          "step": 22,
+          "stage": "postprocess",
+          "host_start": 14198784.340831025,
+          "host_ms": 0.3316514194011688,
+          "device_start_ms": 8144.5673828125,
+          "device_end_ms": 8144.60546875,
+          "device_ms": 0.03824000060558319
+        },
+        {
+          "step": 22,
+          "stage": "sampling",
+          "host_start": 14198784.341182804,
+          "host_ms": 0.2115946263074875,
+          "device_start_ms": 8144.60546875,
+          "device_end_ms": 8144.841796875,
+          "device_ms": 0.23600000143051147
+        },
+        {
+          "step": 22,
+          "stage": "postprocess",
+          "host_start": 14198784.341412729,
+          "host_ms": 0.5821641534566879,
+          "device_start_ms": 8144.841796875,
+          "device_end_ms": 8144.8984375,
+          "device_ms": 0.05660000070929527
+        },
+        {
+          "step": 23,
+          "stage": "scheduler",
+          "host_start": 14198784.34201777,
+          "host_ms": 1.4364905655384064,
+          "device_start_ms": 8144.8984375,
+          "device_end_ms": 8145.0986328125,
+          "device_ms": 0.19979999959468842
+        },
+        {
+          "step": 23,
+          "stage": "scheduler",
+          "host_start": 14198784.343474088,
+          "host_ms": 0.25790371000766754,
+          "device_start_ms": 8145.154296875,
+          "device_end_ms": 8145.37158203125,
+          "device_ms": 0.2176000028848648
+        },
+        {
+          "step": 23,
+          "stage": "model_forward",
+          "host_start": 14198784.3437614,
+          "host_ms": 131.1952844262123,
+          "device_start_ms": 8145.44775390625,
+          "device_end_ms": 8278.7255859375,
+          "device_ms": 133.2775421142578
+        },
+        {
+          "step": 23,
+          "stage": "postprocess",
+          "host_start": 14198784.474980792,
+          "host_ms": 0.33840909600257874,
+          "device_start_ms": 8278.7255859375,
+          "device_end_ms": 8278.763671875,
+          "device_ms": 0.03779999911785126
+        },
+        {
+          "step": 23,
+          "stage": "sampling",
+          "host_start": 14198784.475338982,
+          "host_ms": 0.21846406161785126,
+          "device_start_ms": 8278.763671875,
+          "device_end_ms": 8279.001953125,
+          "device_ms": 0.23826000094413757
+        },
+        {
+          "step": 23,
+          "stage": "postprocess",
+          "host_start": 14198784.475576824,
+          "host_ms": 0.8710268884897232,
+          "device_start_ms": 8279.001953125,
+          "device_end_ms": 8279.056640625,
+          "device_ms": 0.05522000044584274
+        },
+        {
+          "step": 24,
+          "stage": "scheduler",
+          "host_start": 14198784.4764722,
+          "host_ms": 1.1215675622224808,
+          "device_start_ms": 8279.0576171875,
+          "device_end_ms": 8279.2353515625,
+          "device_ms": 0.17842000722885132
+        },
+        {
+          "step": 24,
+          "stage": "scheduler",
+          "host_start": 14198784.477612808,
+          "host_ms": 0.2592001110315323,
+          "device_start_ms": 8279.298828125,
+          "device_end_ms": 8279.5126953125,
+          "device_ms": 0.21337999403476715
+        },
+        {
+          "step": 24,
+          "stage": "model_forward",
+          "host_start": 14198784.477902068,
+          "host_ms": 130.72365708649158,
+          "device_start_ms": 8279.591796875,
+          "device_end_ms": 8412.4140625,
+          "device_ms": 132.8225555419922
+        },
+        {
+          "step": 24,
+          "stage": "postprocess",
+          "host_start": 14198784.608649105,
+          "host_ms": 0.3439486026763916,
+          "device_start_ms": 8412.4140625,
+          "device_end_ms": 8412.4521484375,
+          "device_ms": 0.03818000108003616
+        },
+        {
+          "step": 24,
+          "stage": "sampling",
+          "host_start": 14198784.609014373,
+          "host_ms": 0.21315552294254303,
+          "device_start_ms": 8412.453125,
+          "device_end_ms": 8412.69140625,
+          "device_ms": 0.23837999999523163
+        },
+        {
+          "step": 24,
+          "stage": "postprocess",
+          "host_start": 14198784.609247236,
+          "host_ms": 0.5782637745141983,
+          "device_start_ms": 8412.69140625,
+          "device_end_ms": 8412.748046875,
+          "device_ms": 0.056699998676776886
+        },
+        {
+          "step": 25,
+          "stage": "scheduler",
+          "host_start": 14198784.609856628,
+          "host_ms": 1.4336295425891876,
+          "device_start_ms": 8412.748046875,
+          "device_end_ms": 8412.9384765625,
+          "device_ms": 0.19050000607967377
+        },
+        {
+          "step": 25,
+          "stage": "scheduler",
+          "host_start": 14198784.611315569,
+          "host_ms": 0.2551618963479996,
+          "device_start_ms": 8413.005859375,
+          "device_end_ms": 8413.2177734375,
+          "device_ms": 0.21130000054836273
+        },
+        {
+          "step": 25,
+          "stage": "model_forward",
+          "host_start": 14198784.61160046,
+          "host_ms": 130.3025782108307,
+          "device_start_ms": 8413.291015625,
+          "device_end_ms": 8545.71484375,
+          "device_ms": 132.42404174804688
+        },
+        {
+          "step": 25,
+          "stage": "postprocess",
+          "host_start": 14198784.741926769,
+          "host_ms": 0.332539901137352,
+          "device_start_ms": 8545.71484375,
+          "device_end_ms": 8545.7490234375,
+          "device_ms": 0.03420000150799751
+        },
+        {
+          "step": 25,
+          "stage": "sampling",
+          "host_start": 14198784.742279088,
+          "host_ms": 0.2155844122171402,
+          "device_start_ms": 8545.75,
+          "device_end_ms": 8545.98828125,
+          "device_ms": 0.23844000697135925
+        },
+        {
+          "step": 25,
+          "stage": "postprocess",
+          "host_start": 14198784.74251334,
+          "host_ms": 0.5891919136047363,
+          "device_start_ms": 8545.98828125,
+          "device_end_ms": 8546.0439453125,
+          "device_ms": 0.055959999561309814
+        },
+        {
+          "step": 26,
+          "stage": "scheduler",
+          "host_start": 14198784.743125971,
+          "host_ms": 1.4442410320043564,
+          "device_start_ms": 8546.0439453125,
+          "device_end_ms": 8546.2236328125,
+          "device_ms": 0.17924000322818756
+        },
+        {
+          "step": 26,
+          "stage": "scheduler",
+          "host_start": 14198784.744590132,
+          "host_ms": 0.2529118210077286,
+          "device_start_ms": 8546.283203125,
+          "device_end_ms": 8546.494140625,
+          "device_ms": 0.21050000190734863
+        },
+        {
+          "step": 26,
+          "stage": "model_forward",
+          "host_start": 14198784.744872872,
+          "host_ms": 130.37409633398056,
+          "device_start_ms": 8546.56640625,
+          "device_end_ms": 8679.025390625,
+          "device_ms": 132.45849609375
+        },
+        {
+          "step": 26,
+          "stage": "postprocess",
+          "host_start": 14198784.875271479,
+          "host_ms": 0.3396887332201004,
+          "device_start_ms": 8679.025390625,
+          "device_end_ms": 8679.064453125,
+          "device_ms": 0.03903999924659729
+        },
+        {
+          "step": 26,
+          "stage": "sampling",
+          "host_start": 14198784.875631008,
+          "host_ms": 0.2137441188097,
+          "device_start_ms": 8679.064453125,
+          "device_end_ms": 8679.3017578125,
+          "device_ms": 0.23705999553203583
+        },
+        {
+          "step": 26,
+          "stage": "postprocess",
+          "host_start": 14198784.875863,
+          "host_ms": 0.5996134132146835,
+          "device_start_ms": 8679.3017578125,
+          "device_end_ms": 8679.357421875,
+          "device_ms": 0.055479999631643295
+        },
+        {
+          "step": 27,
+          "stage": "scheduler",
+          "host_start": 14198784.876487125,
+          "host_ms": 1.4350377023220062,
+          "device_start_ms": 8679.357421875,
+          "device_end_ms": 8679.580078125,
+          "device_ms": 0.22210000455379486
+        },
+        {
+          "step": 27,
+          "stage": "scheduler",
+          "host_start": 14198784.877942232,
+          "host_ms": 0.2541709691286087,
+          "device_start_ms": 8679.6484375,
+          "device_end_ms": 8679.8544921875,
+          "device_ms": 0.20542000234127045
+        },
+        {
+          "step": 27,
+          "stage": "model_forward",
+          "host_start": 14198784.878227944,
+          "host_ms": 133.92804376780987,
+          "device_start_ms": 8679.927734375,
+          "device_end_ms": 8815.8671875,
+          "device_ms": 135.9391632080078
+        },
+        {
+          "step": 27,
+          "stage": "postprocess",
+          "host_start": 14198785.012185888,
+          "host_ms": 0.37256814539432526,
+          "device_start_ms": 8815.8671875,
+          "device_end_ms": 8815.90625,
+          "device_ms": 0.03917999938130379
+        },
+        {
+          "step": 27,
+          "stage": "sampling",
+          "host_start": 14198785.012578435,
+          "host_ms": 0.22668391466140747,
+          "device_start_ms": 8815.9072265625,
+          "device_end_ms": 8816.14453125,
+          "device_ms": 0.23783999681472778
+        },
+        {
+          "step": 27,
+          "stage": "postprocess",
+          "host_start": 14198785.012823949,
+          "host_ms": 0.6457008421421051,
+          "device_start_ms": 8816.14453125,
+          "device_end_ms": 8816.201171875,
+          "device_ms": 0.05615999922156334
+        },
+        {
+          "step": 28,
+          "stage": "scheduler",
+          "host_start": 14198785.01349556,
+          "host_ms": 1.2435317039489746,
+          "device_start_ms": 8816.201171875,
+          "device_end_ms": 8816.400390625,
+          "device_ms": 0.19949999451637268
+        },
+        {
+          "step": 28,
+          "stage": "scheduler",
+          "host_start": 14198785.014763145,
+          "host_ms": 0.27065910398960114,
+          "device_start_ms": 8816.46875,
+          "device_end_ms": 8816.6923828125,
+          "device_ms": 0.22392000257968903
+        },
+        {
+          "step": 28,
+          "stage": "model_forward",
+          "host_start": 14198785.015064104,
+          "host_ms": 134.2774946242571,
+          "device_start_ms": 8816.767578125,
+          "device_end_ms": 8953.1484375,
+          "device_ms": 136.38052368164062
+        },
+        {
+          "step": 28,
+          "stage": "postprocess",
+          "host_start": 14198785.149364797,
+          "host_ms": 0.3502313047647476,
+          "device_start_ms": 8953.1484375,
+          "device_end_ms": 8953.1865234375,
+          "device_ms": 0.03819999843835831
+        },
+        {
+          "step": 28,
+          "stage": "sampling",
+          "host_start": 14198785.149735056,
+          "host_ms": 0.2105366438627243,
+          "device_start_ms": 8953.1865234375,
+          "device_end_ms": 8953.42578125,
+          "device_ms": 0.2384600043296814
+        },
+        {
+          "step": 28,
+          "stage": "postprocess",
+          "host_start": 14198785.149964172,
+          "host_ms": 0.5847010761499405,
+          "device_start_ms": 8953.42578125,
+          "device_end_ms": 8953.482421875,
+          "device_ms": 0.05711999908089638
+        },
+        {
+          "step": 29,
+          "stage": "scheduler",
+          "host_start": 14198785.15067208,
+          "host_ms": 1.3841502368450165,
+          "device_start_ms": 8953.482421875,
+          "device_end_ms": 8953.724609375,
+          "device_ms": 0.24211999773979187
+        },
+        {
+          "step": 29,
+          "stage": "scheduler",
+          "host_start": 14198785.15207651,
+          "host_ms": 0.2522934228181839,
+          "device_start_ms": 8953.78515625,
+          "device_end_ms": 8953.9951171875,
+          "device_ms": 0.20980000495910645
+        },
+        {
+          "step": 29,
+          "stage": "model_forward",
+          "host_start": 14198785.152359473,
+          "host_ms": 130.60553558170795,
+          "device_start_ms": 8954.0673828125,
+          "device_end_ms": 9086.7763671875,
+          "device_ms": 132.7082061767578
+        },
+        {
+          "step": 29,
+          "stage": "postprocess",
+          "host_start": 14198785.28298824,
+          "host_ms": 0.34444965422153473,
+          "device_start_ms": 9086.7763671875,
+          "device_end_ms": 9086.810546875,
+          "device_ms": 0.03488000109791756
+        },
+        {
+          "step": 29,
+          "stage": "sampling",
+          "host_start": 14198785.283351868,
+          "host_ms": 0.21177344024181366,
+          "device_start_ms": 9086.8115234375,
+          "device_end_ms": 9087.048828125,
+          "device_ms": 0.23802000284194946
+        },
+        {
+          "step": 29,
+          "stage": "postprocess",
+          "host_start": 14198785.283581782,
+          "host_ms": 0.5804747343063354,
+          "device_start_ms": 9087.0498046875,
+          "device_end_ms": 9087.10546875,
+          "device_ms": 0.05607999861240387
+        },
+        {
+          "step": 30,
+          "stage": "scheduler",
+          "host_start": 14198785.284185624,
+          "host_ms": 1.455528661608696,
+          "device_start_ms": 9087.10546875,
+          "device_end_ms": 9087.322265625,
+          "device_ms": 0.21646000444889069
+        },
+        {
+          "step": 30,
+          "stage": "scheduler",
+          "host_start": 14198785.285661481,
+          "host_ms": 0.2546347677707672,
+          "device_start_ms": 9087.3828125,
+          "device_end_ms": 9087.5927734375,
+          "device_ms": 0.2097799926996231
+        },
+        {
+          "step": 30,
+          "stage": "model_forward",
+          "host_start": 14198785.285945404,
+          "host_ms": 130.9343073517084,
+          "device_start_ms": 9087.66796875,
+          "device_end_ms": 9220.703125,
+          "device_ms": 133.0352020263672
+        },
+        {
+          "step": 30,
+          "stage": "postprocess",
+          "host_start": 14198785.416902164,
+          "host_ms": 0.33730827271938324,
+          "device_start_ms": 9220.703125,
+          "device_end_ms": 9220.7421875,
+          "device_ms": 0.0391400009393692
+        },
+        {
+          "step": 30,
+          "stage": "sampling",
+          "host_start": 14198785.417259512,
+          "host_ms": 0.21041370928287506,
+          "device_start_ms": 9220.7421875,
+          "device_end_ms": 9220.9814453125,
+          "device_ms": 0.2387000024318695
+        },
+        {
+          "step": 30,
+          "stage": "postprocess",
+          "host_start": 14198785.417488925,
+          "host_ms": 0.5737747997045517,
+          "device_start_ms": 9220.9814453125,
+          "device_end_ms": 9221.037109375,
+          "device_ms": 0.056379999965429306
+        },
+        {
+          "step": 31,
+          "stage": "scheduler",
+          "host_start": 14198785.41808522,
+          "host_ms": 1.509685069322586,
+          "device_start_ms": 9221.0380859375,
+          "device_end_ms": 9221.28125,
+          "device_ms": 0.24395999312400818
+        },
+        {
+          "step": 31,
+          "stage": "scheduler",
+          "host_start": 14198785.419614436,
+          "host_ms": 0.24513155221939087,
+          "device_start_ms": 9221.3388671875,
+          "device_end_ms": 9221.541015625,
+          "device_ms": 0.20156000554561615
+        },
+        {
+          "step": 31,
+          "stage": "model_forward",
+          "host_start": 14198785.419889688,
+          "host_ms": 136.0652521252632,
+          "device_start_ms": 9221.609375,
+          "device_end_ms": 9359.654296875,
+          "device_ms": 138.04452514648438
+        },
+        {
+          "step": 31,
+          "stage": "postprocess",
+          "host_start": 14198785.555996168,
+          "host_ms": 0.3627203404903412,
+          "device_start_ms": 9359.654296875,
+          "device_end_ms": 9359.6923828125,
+          "device_ms": 0.038839999586343765
+        },
+        {
+          "step": 31,
+          "stage": "sampling",
+          "host_start": 14198785.556383248,
+          "host_ms": 0.21926313638687134,
+          "device_start_ms": 9359.693359375,
+          "device_end_ms": 9359.931640625,
+          "device_ms": 0.2382200062274933
+        },
+        {
+          "step": 31,
+          "stage": "postprocess",
+          "host_start": 14198785.55662121,
+          "host_ms": 0.5982927978038788,
+          "device_start_ms": 9359.931640625,
+          "device_end_ms": 9359.98828125,
+          "device_ms": 0.05683999881148338
+        },
+        {
+          "step": 32,
+          "stage": "scheduler",
+          "host_start": 14198785.557247233,
+          "host_ms": 1.3799797743558884,
+          "device_start_ms": 9359.98828125,
+          "device_end_ms": 9360.31640625,
+          "device_ms": 0.3281799852848053
+        }
+      ]
+    },
+    {
+      "trial": 6,
+      "instrumented": false,
+      "wall_ms": 9325.569849461317,
+      "tokens_exact": true,
+      "e100_tokens_exact": true,
+      "peak_bytes": 59173664768,
+      "stages": []
+    }
+  ],
+  "source_sha256": null,
+  "limitations": [
+    "Device event intervals include host submission gaps and queue effects; not kernel busy time.",
+    "scheduler means HF loop condition and input preparation, not Agent admission/tool scheduling.",
+    "postprocess includes model kwargs/cache metadata update, EOS masking, concatenation and stopping criteria.",
+    "sampling includes logits copy/processors and greedy argmax.",
+    "prefill includes HF prefill preparation and forward; excluded from decode comparison.",
+    "Terminal failed loop condition is recorded as scheduler step=steps.",
+    "Short first-round replay cannot establish full128 makespan or quality."
+  ]
+}

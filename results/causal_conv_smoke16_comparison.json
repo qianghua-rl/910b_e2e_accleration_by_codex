@@ -1,0 +1,9 @@
+{
+  "task_count": 16,
+  "baseline": "results/phase2_concise_sdpa_batch16_final12_length128.jsonl",
+  "mismatching_task_ids": [
+    428
+  ],
+  "candidate_correct": 15,
+  "baseline_correct": 15
+}

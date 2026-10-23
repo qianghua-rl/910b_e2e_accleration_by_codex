@@ -1,0 +1,19 @@
+{
+  "artifact": "results/gdn_real_batch_artifact.pt",
+  "scope": "captured repeated-prompt HF decode; not E100; FP32 working state",
+  "correctness": {
+    "output_max_error": 3.0517578125e-05,
+    "state_max_error": 3.814697265625e-06,
+    "output_exact": false,
+    "state_exact": false
+  },
+  "input_state_unchanged": true,
+  "segment_ms": {
+    "baseline": 0.399148091673851,
+    "fused": 0.6810827180743217
+  },
+  "wrapper_ms": {
+    "baseline": 0.8815601468086243,
+    "fused": 1.1864202097058296
+  }
+}

@@ -1,0 +1,4 @@
+[2026-10-22-14:10:45.503] [INFO] [AscendProfiler_TraceStepTimeParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_e2e_accleration_by_codex/results/profile_mlp_buffer_8_baseline/06f2b62264eb_173043_20261022141041984_ascend_pt/logs/profiler_20261022141045_173404_TraceStepTimeParser.log
+[2026-10-22-14:10:45.505] [INFO] [AscendProfiler_TraceStepTimeParser:169] TraceStepTimeParser start.
+[2026-10-22-14:10:45.505] [WARNING] [AscendProfiler_TraceStepTimeParser:69] Get step range failed, the step node list is empty.
+[2026-10-22-14:10:45.509] [INFO] [AscendProfiler_TraceStepTimeParser:177] TraceStepTimeParser finish.

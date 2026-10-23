@@ -1,58 +1,71 @@
 # 单卡 Qwen3.5-27B / GSM8K 优化实验记录
 
-## 优化路线重构（当前执行版；更新至 2026-10-19）
+## 当前优化路线（更新至 2026-10-23；E130 与归因证据矩阵后）
 
-### 阶段位置、目标与已知边界
+本节是后续工作的执行入口。下方历史实验按当时认识保留；历史“下一步”、初步归因和估算若与本节冲突，以本节及其引用的最终证据为准。探索允许边做边改，不要求事前预知所有接口、数值和编译问题；规则的作用是降低实验成本并防止把弱证据当成果。
 
-优化阶段是递进关系，不是互相排斥的最终目标：Phase 1 优化/理解单请求执行路径；Phase 2 在稳定模型路径上优化多请求调度和 128 题 makespan；Phase 3 再做面向设备的通用 kernel、内存与 launch 优化。Phase 1 的 batch=1 指标用于判断基础执行路径，Phase 2 的 batch 指标衡量调度，Phase 3 的局部算子指标用于验证机制；任何 Phase 3 改动要成为项目收益，最终仍须改善 Phase 2 的端到端任务且守住质量。
+### 目标与冻结参考
 
-当前已完成 Phase 1 的基线与主要执行路径探索，并完成 Phase 2 的离线批处理优化。E100 是当前 128 题工作流中已验收的最好配置，但其中 final-turn cap 12 是任务协议预算调整，收益有限且依赖当前工作负载，不作为底层优化的主要技术贡献。当前工作的重心应进入 Phase 3：寻找能在正确性、显存和兼容性约束下改善模型执行成本的通用优化；hybrid cache/continuous batching 是候选系统方向之一，不预设为唯一答案。
+目标仍是固定 128 题、单 NPU、原生 Python tool call、non-thinking、greedy、最多 6 轮的未插桩 makespan；scorer v3 至少 `122/128`，同时报告失败 ID、生成 token 与显存峰值。禁止针对答案特化或使用 MTP/speculative。
 
-目标是缩短固定 128 题离线 GSM8K 工作流的未插桩 makespan，并保持 scorer v3 至少 `122/128`。当前最佳自有实现冻结为 E100：`265.030128 s / 122/128 / 15,961 tokens`；对照 E047 为 vLLM-Ascend `239.194 s / 122/128 / 16,629 tokens`。差距为 `25.836 s`（自有实现需缩短约 9.75% 才追平该 makespan）。两次 token 轨迹不同，E047/E100 是端到端系统结果，不是执行效率对比。超过 E047 的声明仍须在同一 128 题、未插桩运行中低于 `239.194 s`，同时通过相同评分护栏并报告 token 数、失败 ID 与归因。
+- 自有最佳 E100：HF Qwen3.5-27B、BF16、SDPA、batch16、generation_length 排序、fused RMSNorm/Gated RMSNorm、single-step recurrent、首轮 cap512/final cap12；`265.030128 s / 122/128 / 15,961 tokens / peak 62,094,008,832 bytes`。证据：`results/phase2_concise_sdpa_batch16_final12_length128.jsonl` 及 v3 派生记录。
+- E047 vLLM-Ascend 系统对照：`239.194 s / 122/128 / 16,629 tokens`，差距 25.836 s。不同 token 轨迹和 runtime，不能据此直接比较 kernel 效率。超过它需同任务完整验收，不靠微基准外推。
+- cap12 是当前任务生成预算设置，不作为通用底层优化贡献。E100 默认路径不因新候选改变；用 opt-in 开关进行实验，获胜后才接纳。
+- 冻结参考不等于禁止重测：候选比较、依赖变化或数据矛盾时，跑必要的同环境 matched baseline；不要只为了“刷新基线”重跑全量。
 
-E100 配置与结果作为冻结参考，不为刷新基线重跑。HF batch runner 已保存每个同步 generation call 的墙钟时间、输入准备时间和工具时间；这些时间不能直接相加成各题耗时，batch call wall time 是该调用的有效成本。E047 的归档没有 `llm.generate()` 阶段时间，只有总 makespan、逐题 token/轮次和工具时间，因此不能从现有记录推断 prefill/decode/轮间空档占比。E007 的 profiler idle、E093 的 22.8% row-step 上界也都不是可实现的时间收益。
+### 已获得的成本证据与当前结论
 
-E100 相比 E047 少生成 668 tokens，质量分相同；所以 25.836 秒端到端差距混合了 token 数、模型执行路径与调度差异。任何“执行效率更高/更低”的结论须基于相同 prompt 与输出 token 轨迹的 replay。现有 replay 资产主要验证 HF 局部路径和候选正确性，尚无完整的 HF-vs-vLLM 固定轨迹耗时对照；固定轨迹结果只能回答执行成本，不能替代 128 题端到端验收。
+| 证据 | 可以支持的判断 | 不能支持的判断 |
+|---|---|---|
+| E113，E100 首 batch 的四步 decode：计算 union 493.910 ms，stage 710.295 ms；Matmul 237.046、Convolution 116.231、Mul 49.617、Copy 22.529、ReduceSum 14.147 ms | 优先检查重复矩阵乘、短卷积、recurrent 状态读写及其调用边界；E100 记录重建为 1,258 个 batch16 decode 步骤 | 四步早期 trace 不代表所有上下文；kernel 时间和可能重叠，free/idle 不都是可消除成本，不能直接乘成整批收益 |
+| E114 FP32 reduction 短卷积：随机 exact，真实局部有差异，前16 token 相同，完整工具轮 task428 改变 | 随机测试和短 token gate 都不足；该算术版本拒绝 | 不能否定所有短卷积实现 |
+| E114 原始 conv 窗口版：真实输出/cache、短程 logits exact，完整16题轨迹/质量一致；81.146→82.124 s，局部几乎不快 | 此实现无测得收益，不接纳、不扩展128题 | 单次慢1.2%不能证明普遍回退；也没有支持继续扩展的收益证据 |
+| E112 staged GDN：16/16 首 token 变0；C64 chunk-H 编译不兼容 | **该 staged 补丁不可用**，不能用于 KKT 单变量验收 | 全0不能独立定位哪一阶段出错；C64编译失败不等于证明C128运行失败的精确根因 |
+| E112 正确 worker 路由后的 KKT-only：16/16 首 token 相同；6.651→7.120 s | 只证明首 token 兼容，当前无提速证据；未接纳 | 未验证 logits/长轨迹；独立参考147 ms不是实际 vLLM基线；B1的4096-token筛选值21.44%不是E100可实现收益或已证上限 |
+| E115/E100 early-decode attribution：4个早期 step；MLP Matmul 157.407 ms，GDN convolution family 116.823 ms，projection 71.687 ms，recurrent Mul/ReduceSum/copy 43.200/14.776/9.113 ms | 各项是设备侧 attribution；不能相加为 endpoint latency。卷积族含 Conv2D 55.776 ms 与邻近 TransData/MemSet 61.048 ms | 对应设备时间本身不等于可消除成本；GDN 转换归属和可避免比例尚未确认 |
+| E116 recurrent state fusion 与 E114 causal-convolution update | 逻辑中间态或窗口工作可作为机制假设；已测实现分别 wrapper 更慢/不精确，以及局部预算约0.200 ms/48层步、16题 makespan 慢1.21% | 这些具体实现停止；不能据此推断所有 recurrent/conv 机制都不可能 |
+| E120–E130 MLP/runtime：buffer reuse无完整 wrapper收益；persistent NZ full generation慢3.718–7.324%；E130 gate/up交叉上限外推4.3–6.2 ms/4步，约0.4–0.7% stage window | 可观察到局部 Matmul 优势和调用位置差异，但其完整路径收益没有转化；位置候选低于2%筛选 | 停止已测 buffer/NZ/简单重排路线；不把局部roofline差额或孤立kernel差当作可回收预算 |
 
-### Phase 3 当前路线：补齐归因，再验证底层候选
+详见 `results/e100_decode_profile_summary.json`、`results/causal_conv_window_matched_comparison.json`、`results/gdn_model_gate_kkt_only_comparison.json`。不重复采整模型长 trace，除非缺失证据会改变候选选择。
 
-#### Phase 3 执行细化与 few-shot 案例库（当前执行版）
+### 候选路线决策（三字段）
 
-Phase 3 不再把“优化算子”视为单一步骤。每个候选必须依次经过：
-
-1. **算子契约**：记录输入/输出 shape、stride、dtype、layout、`cu_seqlens`、state 语义、原位更新和精度要求。
-2. **三方 reference**：同一输入分别运行 Python/FP32 reference、HF reference 和当前 vLLM/NPU 实现，比较 output、final state、下一层 hidden、logits 与 greedy top-1。
-3. **单阶段替换**：GDN 的 `chunk_cumsum`、`scaled_dot_kkt`、`solve_tril`、`wy_fast`、`chunk_h`、`chunk_o` 必须逐个替换；每次只改变一个阶段。
-4. **边界成本测量**：同时测纯 kernel、wrapper、transpose/contiguous、metadata、workspace、launch 和完整 model layer，不能用 microbenchmark 代替调用路径成本。
-5. **融合验证**：只有六个阶段逐项对齐后才允许启用 MegaGDN fused kernel；先单序列，再多序列，最后 E100 batch16。
-6. **分层验收**：单层数值 → 固定 prompt logits/top-1 → E100 首批 16 题 token 轨迹 → 32 题 smoke → 128 题 makespan/scorer v3。
-
-每个候选必须满足：E100 batch16 token 轨迹不变、峰值显存不超过预算、墙钟收益超过基线波动且至少 2%；任一 task 轨迹改变、OOM、设备异常或 128 题未达到 `122/128`，立即停止。
-
-新增 `operator_cases/` few-shot 案例库和 `scripts/operator_case.py` 检索/证据检查工具。案例同时包含已接纳组件、MegaGDN token drift、GDN state 语义不匹配、graph capture host copy 和 cache OOM 等失败样例。模型生成新候选前先按 operator/mode/device/dtype/layout 检索相似案例；案例不能替代 reference 和真实 workload 验收，失败案例必须保留以约束错误迁移。
-
-| 阶段 | 工作与产物 | 继续条件 | 停止/转向条件 |
+| 路线 | 已确认的成本 | 可能消除的成本 | 可信的端到端收益上限与决策 |
 |---|---|---|---|
-| 0. 冻结 Phase 2 参考 | 固定 E100 配置、数据 hash、scorer v3 失败集合 `[1161,423,952,1035,552,1048]`、15,961 token、265.030 s；E084 cap32 保留作更宽 final-turn budget 的对照，E047 保留作系统参考。 | 只在环境/依赖变化、结果完整性问题或新候选 A/B 时复测必要对照。 | 不因 Phase 3 开始而重跑全量基线；不把 E100 cap12 当作底层 kernel 收益。 |
-| 1. 建立 Phase 3 诊断基线 | 离线整理 E100/HF 已有逐批 generation、prompt 长度、有效输出 token、工具轮和已有 profile；指出 prefill/decode/launch/scheduler 哪些已知、哪些未知。只有缺失项会改变候选排序时，才做代表性插桩或给 vLLM runner 加阶段字段。 | 有证据把工作量映射到 prefill、decode、NPU launch/算子、batch tail 或 Agent 轮间成本；局部 profile 不作为收益结论。 | 不把 E007 idle、row-step 理论上界或单算子峰值直接当可实现收益；不能影响决策的 profile 不采。 |
-| 2. 选择 Phase 3 候选 | 按诊断和收益预算选择一个通用算子/内存/执行机制候选。近期可核实 E106 的 GDN B16 kernel 语义能否与 HF reference 对齐；也可只读审计 hybrid-cache runtime 能力。二者均需确认当前依赖和接口，不直接扩展为主 runner。 | 候选命中关键路径，理想总收益足以改变决策，且当前环境有可执行实现。 | GDN adapter 既有 E052 慢约10.5%、发生过设备异常；runtime admission 有 E096 OOM。除非找到新的可测实现条件，不重复原形状/原 wrapper 试验。 |
-| 3. 分层验证候选 | 单算子/真实模型形状 reference 对照 → 固定输入及 token replay → 16–32 题 batch smoke。算子速度必须连同转换、cache、workspace 和 launch 开销一起量。 | 数值/状态正确，轨迹风险可解释，无 OOM，重复 smoke 收益高于运行波动。 | 局部快但调用路径总成本不降、正确性失败、显存无余量或收益在噪声内则停止，不做全量。 |
-| 4. 回到 Phase 2 目标验收 | 只给 smoke 胜者跑完整 128 题；未插桩、单 NPU、同数据和环境口径，运行 audit/scorer v3，报告 makespan、分数/失败 ID、token、峰值显存。 | 更新自有最佳需 `>=122/128` 且快于 E100；声称超过 E047 还需 `<239.194 s`。 | 未改善 128 题 makespan 的 Phase 3 候选可作为算子研究结果记录，但不能宣称项目端到端优化成功。 |
+| GDN convolution/layout conversion | 116.823 ms/4个早期 decode step；Conv2D 55.776 ms，邻近 TransData/MemSet 61.048 ms。设备 kernel 名称没有 GDN module/layer 身份 | 只有被证明冗余或可复用的转换部分；当前没有这种证明 | **无可信收益上限，暂停。** 现有 trace 无法继续回答归属；不做算子改动或 A/B，等待模块级证据 |
+| GDN recurrent state | Mul 43.200、ReduceSum 14.776、copy 9.113、Add 5.984 ms/4步；状态流量估算不是实测 HBM | 减少真实 wrapper 中的状态中间态/遍数 | **未建立端到端上限。** E116 两 kernel 实现 wrapper 慢且非 exact，当前实现停止；新机制需先有真实状态 wrapper 预算 |
+| T=1 causal convolution update | E114 保守裁窗约0.200 ms/48层步局部机会，远低于 4.214 ms/步筛选参考；matched16 慢1.21% | 该实现减少的窗口/拼接工作 | **已低于门槛且模型级无收益，停止。** 不扩展128题 |
+| MLP persistent NZ / buffer reuse | MLP matmul 约157 ms/4步；NZ局部 wrapper 曾有15–18%收益，但只切换768/1,992次Matmul；buffer reuse未降低完整wrapper成本 | NZ支持的MLP matmul计算；buffer分配事件（已测复用无效） | **无正向 endpoint 上限。** NZ matched full generation慢3.718–7.324%，buffer reuse无收益；两路线停止/封存 |
+| MLP gate/up重排 | E130真实交叉局部差16.7–24.3 μs/两投影；粗略四步外推4.3–6.2 ms | 调用位置相关的部分差异 | **约0.4–0.7%四步stage window，低于2%。停止。** 不做 full Decode A/B |
+| Runtime thread/graph/async | E118计算union仅变0.27%，空隙变化更大；E119定位部分host prep/scalar barrier | 仅有稳定、可归因且可捕获/移除的具体片段 | **无可信上限。暂停。** 不把空隙总量当可回收预算，不盲目重试graph |
+| Attention/GDN projection packing/layout | 71.687 ms/4步；历史 grouped projection 较慢且非 exact | 单一真实shape的layout或launch成本 | **无可信收益上限。暂停。** 只有新机制能通过低成本完整wrapper证伪且预算达到门槛时再评估 |
 
-### 候选收益预算
+详细证据、限制及历史引用见 `results/candidate_evidence_matrix.md`。GDN 转换分支当前明确暂停：转换累计时间较大，但模块归属、转换必要性与可消除份额均未证实；不为了维持项目进度而制造实验。若未来出现模块级 layout/ownership 证据，再评估是否能给出可信的 >=2% 端到端上限及低成本证伪办法。整条 PTO GDN pipeline 与 KKT-only 扩展验收也继续暂停。
 
-任何编码前先写一行预算：要消除的真实工作、当前量、理想上限、实现成本/显存/数值风险、验证样本、停止阈值。局部算子按 Amdahl 上界折算到 265 秒总 makespan；工作量比例只标为上界信号。没有可观测时间份额、没有可执行路径或理论最大收益不足以改变决策时，不进入实现。
+### 实验如何推进：小实验获得信息，再按证据调整
 
-### 当前待办
+1. **先检索，不照搬。** 用 `operator_cases/`、`scripts/operator_case.py` 和本日志找相近case，写清可迁移机制、不同环境/形状/精度及旧停止原因。三方Python/HF/vLLM对照只在语义和runtime确实可比时采用；不为凑齐reference引入另一条pipeline。
+2. **写一个可修改的假设。** 简记要消除的工作、真实入口、可能收益、最大风险和最小区分实验；不要求编码前所有未知都解决。明确标注测得值、条件外推和未知量。
+3. **一次隔离一个主要变化。** 先拆 kernel、layout/转换、wrapper/state、worker路由，再做模型接入。融合本身可以是候选，但先说明它改变哪些边界，不能冒充单阶段替换；不要求所有无关阶段都先重写。
+4. **先验证可执行路径。** 实际解释器、torch/torch_npu、Triton driver、CANN与设备、动态库ABI、输出dtype均以运行结果为准。`py_compile`只证明语法，不执行torch导入或证明NPU支持；CPU-build torch配torch_npu不等于NPU不可用。HF E100用ascend-e2e，现有NPU Triton probe用vllm-ascend-py310；不要混装包。`scripts/env.sh`会将PATH指向ascend-e2e，切换环境须检查最终解释器。多进程补丁必须证实EngineCore实际执行了候选。
+5. **局部正确性先用真实输入补强。** 检查output、更新后的cache、alias/原位语义、序列边界、自然exp/exp2、FP16/BF16/FP32舍入；随机样本只作快速筛查。遇到差异先查第一处分歧，允许在同一假设内修改实现，不必每次失败都放弃方向。
+6. **模型gate逐步延长。** 固定prompt logits/top-1和多步greedy → 固定16题完整工具轮（长输出、已知失败题）→ 必要时32题 → 胜者128题。短程token相同不代表完整轨迹相同，token非空不证明logits finite。数值差异与质量变化分开记录。
+7. **测完整调用成本。** kernel计时之外覆盖pack、cast、transpose、metadata、workspace、cache更新、launch和同步；正确性shadow/reference开销不计入性能。只比较相同task IDs、顺序、协议、生成cap、runtime和插桩条件；启动/冷编译/warmup分开。小差异先做必要重复或交替A/B，不能靠重复直到出现最好值。
+8. **按证据决定投入。** 明确不可能有效的具体方法可提前排除；合理但未知的先做便宜实验。出现设备异常先定位设备状态，长时间无输出先加阶段标记，不反复杀掉同一运行并重新猜测原因。停止时留下可复现证据和允许重开的新条件。
 
-1. 将 E100 冻结为 Phase 2 端到端参考；报告时把 cap12 标为当前任务配置收益，与底层执行优化分开。
-2. 以已有 E100/E084 数据和 profile 建立 Phase 3 成本视图，避免重测已知部分；按证据选定一个可执行的通用底层候选。
-3. 对选中候选执行真实形状正确性、固定轨迹和 16–32 题 smoke。当前可先审查 E106 GDN B16 结果能否接到 HF reference；若需重建兼容环境，先验证其是否可能消除 E052 adapter 的转换/调度损失。
-4. hybrid-cache/continuous batching 作为系统级候选并行做能力审计，Python cache 合并不重开。任一候选只有通过完整 128 题 Phase 2 指标后才更新最佳。
+### 收益预算与接纳口径
 
-### 已知停止项
+E100若仍有1,258个batch16 decode步骤，节省2% makespan需平均每步**净省4.214 ms**；若跨48层均摊约87.8 μs/层。这是决定是否值得继续投入的条件预算，不是每个局部算子必须独自达到的硬性正确性规则；调用数/轨迹变化时须重新计算。2%用作近期筛选目标，小而可靠、成本低的收益也可说明理由后评估，不能自动宣称成果。
 
-E092 finished-row compaction 比参考慢约 3.4%；E096 Python cache admission OOM；E098/E103 recurrent graph capture 失败；E087 投影打包全量慢于 E084；E089 weight-only INT8 没有稳定延迟收益；静态排序复测处于噪声范围。除非依赖、硬件接口或实现前提发生变化，不再重开这些方向。
+- **等价加速候选**：local/cache、模型logits误差与greedy轨迹逐层检查。出现轨迹变化不再称等价加速；可先定位舍入/实现错误。若要改成允许数值/轨迹变化的候选，明确重设实验声明，再走独立质量验收，不能在失败后悄悄放宽门槛。
+- **端到端接纳**：完整128题audit、scorer v3至少122/128，检查新增失败与原因；未插桩makespan可靠优于E100，报告token数和peak。只有16题通过时只声称16题结果；局部失败或无收益可提前淘汰，不必为了流程跑128题。
+- **证据强度**：缺失符号、已确认ABI错误、计算上限不足可以提前排除对应方法；单次轻微慢、四步profile、近似公式和首token一致都只支持有限判断。精确根因未定位时写“观察/怀疑/待证”，不把症状当根因。
+
+### 当前下一步与记录模板
+
+当前没有候选同时具备可信的 >=2% 端到端收益上限和低成本证伪方法，因此暂不启动新优化实验。下一步是整理/接收能改变路线决策的新证据，优先级为：GDN 转换的模块级 ownership 与输入输出 layout；或其他路线中可量化且可隔离的真实 wrapper 机制。只有形成候选预算并有低成本证伪路径后，才进入单变量实验；否则保持 E100 默认实现和当前最佳结果不变。
+
+每次实验记录：**假设与case依据 → 配置/代码与证据路径 → 最小实验 → 观察及第一处分歧 → 修改假设/实现 → 正确性覆盖范围 → matched性能与预算 → 接纳/拒绝/未完成及重开条件**。记录最终版本和历史artifact对应关系；文件名变更/结果覆盖必须避免让旧结果误指向新代码。默认实现始终保留已验收路径。
 
 ### 历史路线（仅追溯，不执行）
 
@@ -903,9 +916,160 @@ E092 finished-row compaction 比参考慢约 3.4%；E096 Python cache admission 
 
 ## E110 GDN `chunk_cumsum` 单阶段探针（设备占用，未执行）
 
+- 用户报告显存问题已解决后复测：`/tmp/megagdn-pto/megagdn_pto/kernel_libs.py` 已恢复（checkout 含既有本地修改，未触碰），但 `npu-smi` 仍报 DCMI `ret=-8005`；`torch.npu.is_available()` 为 false 且 `device_count()` 为0，runtime 报 `drvRet=4` / `driver error: internal error`。NPU capture 未启动。Python3.10 CPU-only reference 命令通过：`/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/bin/python scripts/gdn_cumsum_probe.py --cpu-self-test`，Python/HF chunk reference 与 packed row boundary 均 exact。probe 现先检查 PTO source，再导入 NPU/vLLM；当前没有 kernel/model/e2e timing、NPU peak memory、真实 E100 logits 或 token 轨迹，需先恢复容器内 driver/DCMI。
+
 - 本轮只研究 GDN prefill 的 `chunk_cumsum`，不改 decode recurrent、scheduler、prompt 协议或其它五个阶段。契约：HF 输入 `g` 为 `[B,T,H]`、原始 BF16 gate logits在模型内先转 FP32，输出同 shape FP32，按每个序列每个64-token chunk独立沿 T 做 inclusive cumsum；无 recurrent state。PTO packed 适配将输入视为 `[1,B*T,H]`，以 contiguous int32 `cu_seqlens=[0,T,...,B*T]` 定义序列边界，输出仍为 FP32 `[1,B*T,H]`，不应跨序列累加。
 - 收益预算：这是 GDN prefill 的一个 Vec-only阶段；候选必须同时计 kernel+launch、wrapper、pack/layout、workspace 和 peak allocation。只有在 E100 16题首轮固定 token 全部一致后才可扩展。即使把当前阶段在所有48层、16个prefill调用、每序列4096 token的测量时间全部视为可消除工作，才可作为2%端到端上限信号；实际 E100 prompt 更短，真实上限会更低。
 - 新增 `scripts/gdn_cumsum_capture.py`：复用 E100 首批 task IDs、concise protocol、SDPA、BF16、fused RMSNorm/Gated RMSNorm，在真实 HF GDN prefill 调用点保存 `g`、shape/stride/dtype、prompt lengths 和首 token。新增 `scripts/gdn_cumsum_probe.py`：比较 Python/FP32 reference、HF chunk reference、当前 vLLM/NPU `chunk_local_cumsum` 与 PTO C=64 kernel，分层记录 device/host stage、wrapper、peak delta 和理论上限；任一 output mismatch 在计时和扩展前停止。
-- 预定命令：`source scripts/env.sh && python scripts/gdn_cumsum_capture.py --output results/gdn_cumsum_e100_batch16.pt`；随后在兼容的 vLLM/CANN 环境执行 `python scripts/gdn_cumsum_probe.py --artifact results/gdn_cumsum_e100_batch16.pt --output results/gdn_cumsum_probe.json`。本次 `npu-smi info` 显示两张910B3各约61.8GiB/64GiB已用且AICore约30%，虽然没有可见进程ID，无法证明独占设备，因此未启动27B加载或kernel编译。候选状态为 blocked_environment，不能据此宣称性能或正确性。
+- 预定命令：capture 使用 `source scripts/env.sh && python scripts/gdn_cumsum_capture.py --output results/gdn_cumsum_e100_batch16.pt`（`ascend-e2e` Python3.12/Transformers）；CPU reference 可独立运行 `source scripts/env.sh && python scripts/gdn_cumsum_probe.py --cpu-self-test`；NPU/PTO probe 必须使用兼容 vLLM Python3.10 环境：`source /usr/local/Ascend/ascend-toolkit/set_env.sh && export LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64/common:${LD_LIBRARY_PATH:-} && /remote-home/S45160/miniforge3/envs/vllm-ascend-py310/bin/python scripts/gdn_cumsum_probe.py --artifact results/gdn_cumsum_e100_batch16.pt --output results/gdn_cumsum_probe.json`。本次 `npu-smi info` 显示两张910B3各约61.8GiB/64GiB已用且AICore约30%，虽然没有可见进程ID，无法证明独占设备，因此未启动27B加载或kernel编译。候选状态为 blocked_environment，不能据此宣称性能或正确性。
 - 复查时设备状态未变化；host `ps` 没有可归属的 Python/vLLM/Ascend 进程，且该设备报告“不支持查询 proc info”，因此无法安全释放或归因这约61.8GiB分配。已在 `ascend-e2e` CPU路径用随机 `B=3,T=130,H=5,C=64` 验证 Python chunk-local cumsum 与 padded HF 语义逐元素相等，并验证 packed `[1,B*T,H]` 按 `cu_seqlens=[0,130,260,390]` 分段不会跨序列累加；这只证明参考公式，不替代NPU kernel或真实E100结果。继续条件仍是获得独占且有足够空闲HBM后执行两条预定命令。
 - 第三次连续轮询仍显示两卡约61.8GiB/64GiB占用，AICore非零，且无法从主机或 `npu-smi` 取得归属进程；因此本候选在当前外部设备状态下阻断。恢复条件：设备重置或外部作业释放分配后，重新确认独占状态，再运行 capture → reference/NPU/PTO cumsum 分层验证；在此之前不扩大到32/128题。
+- 2026-10-22恢复检查时，设备遥测状态发生变化：`npu-smi info` 在重新 source toolkit 和 driver lib 后仍以 exit 187 报 `dcmi module initialize failed. ret is -8005`，并有 `DrvMngGetConsoleLogLevel failed (ret=4)`；host 无推理进程，容器仅暴露 `/dev/davinci6`、`/dev/davinci7`。因此当前无法读取HBM/利用率或证明独占，未启动 capture。case 007 更新为 telemetry-unavailable 状态；待DCMI恢复并能确认可用HBM后继续原候选，不将此前61.8GiB读数当作本次状态。
+
+## E111 GDN `chunk_cumsum` PTO 单阶段复核（收益上限不足，淘汰）
+
+- 设备恢复后执行真实 E100 首批 capture：`g` shape `[16,459,48]`、stride `[22032,48,1]`、FP32，prompt lengths `[459,410,386,436,380,396,373,389,405,395,396,397,404,380,378,390]`，HF baseline 首 token 16/16 为 `248058`。artifact=`results/gdn_cumsum_e100_batch16.pt`。
+- 命令：`source scripts/env.sh && python scripts/gdn_cumsum_capture.py --output results/gdn_cumsum_e100_batch16.pt`；`source /usr/local/Ascend/ascend-toolkit/set_env.sh && export LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64/common:${LD_LIBRARY_PATH:-} && export PYTHONPATH=/tmp/megagdn-pto:${PYTHONPATH:-} && /remote-home/S45160/miniforge3/envs/vllm-ascend-py310/bin/python scripts/gdn_cumsum_probe.py --artifact results/gdn_cumsum_e100_batch16.pt --output results/gdn_cumsum_probe.json --repeats 12`。
+- Python reference与HF padded C=64 reference exact。当前 vLLM/NPU实现和PTO C=64候选均finite，二者逐元素exact；相对FP32 reference最大误差均`1.5259e-4`（以`2e-4`容差解释为NPU累加舍入）。当前 device median `0.9223 ms`，PTO kernel+launch `0.3016 ms`，完整wrapper `0.3580 ms`，PTO peak delta `1,410,560 bytes`，cu metadata 68 bytes。
+- 即使采用极宽松、不可实现的上限假设（所有48层、16次prefill、每序列4096 token全部执行并完全消除该阶段），基线 cumsum累计仅`4.4546 s`，占E100 `265.030128 s`的`1.6808%`，低于至少2%门槛；真实E100 prompt更短且wrapper/其它阶段仍保留。按收益预算停止，不做固定 logits注入、32题或128题。case 008记录为 rejected；E100不变。
+
+## E112 GDN `scaled_dot_kkt` 单阶段候选准备
+
+- 只替换 chunk size C=64 的 `scaled_dot_kkt`，decode、其它 GDN stages、模型、prompt、scheduler 均不变。输入为实际 Qwen3.5 prefill 的 normalized `k:[B=16,T,H=48,D=128]` BF16、`beta:[16,T,48]` BF16、chunk-local `g_sum:[16,T,48]` FP32；输出 A `[16,T,48,64]`，lower-triangular rows with `j<i`。无 recurrent state；dense HF batch 中序列边界独立，PTO packed `[1,16*T,...]` 使用 `cu_seqlens=[0,T,...,16*T]` 并在每条序列重置 chunk。
+- 候选是恢复 checkout 中 PTO `run_scaled_dot_kkt(..., chunk_size=64)` 替换当前 vLLM Triton KKT 单阶段。由于 HF eager GDN 的内部 WY 因子化表达与 vLLM optimized KKT 中间表示不保证相同，单阶段 acceptance contract 是 Python 公式对照、candidate-vs-current vLLM stage output exact/finite；若要整层/模型接入，仍必须完整 HF logits/greedy top-1 和 E100 首 token 对照。case 003/004 的语义/轨迹门槛可迁移；case 008 的Amdahl ceiling gate可迁移；case 001/002仅支持“融合需模型级验收”，其 normalization/SwiGLU机制不迁移。
+- 收益预算先测真实首批 shape 与每序列4096-token shape 的 current/PTO stage device time；上限按`baseline_stage_ms * 48层 * 16次prefill / 265.030128s`折算，只有严格大于2%才继续。workspace/output按实测 peak delta 记录；FP16 PTO A 对 FP32 current A 有舍入风险，停止条件为参考误差不可解释、candidate/current不一致、token变化、OOM/设备异常或 ceiling≤2%。验证入口计划为 `scripts/gdn_scaled_dot_kkt_probe.py`，复用 E100 artifact 和分层 stage timers；尚未运行。
+- E112 probe environment follow-up (2026-10-22): syntax check passed in the documented `ascend-e2e` environment. The PTO vendored reference is `/tmp/megagdn-pto/kernels/triton_baseline/fla_vendor/chunk_scaled_dot_kkt.py`; its signature uses `g_cumsum`. The probe accepts both `--artifact` and `--input`. Running it against `results/gdn_kkt_e100_batch16.pt` stops before measurement because that vendored file imports `vllm.triton_utils`, which is absent from `ascend-e2e`. The available `vllm-ascend-py310` environment is a separate Python/torch stack and was not mixed into this run. No FP32/current/PTO errors, peak delta, or 4096-token ceiling are reported until the reference can load. This is a setup limitation, separate from any installation-kernel UB claim.
+- E112 independent-reference follow-up (2026-10-22): the installed `fla.ops.common.backends.triton_ascend` source was not runnable in `ascend-e2e` because that environment has CPU PyTorch and no active Triton NPU driver. A self-contained port is in `scripts/gdn_scaled_dot_kkt_reference.py`; it has no vLLM/FLA runtime imports and passed a real 910B3 NPU smoke in `vllm-ascend-py310`. The full E100 probe was attempted there with the saved artifact. The first gate exposed the source's `exp2` versus Qwen's natural-exponential gate convention (max error 0.133), so timings were correctly withheld; after correcting the port to safe natural `exp`, full-shape Triton compilation remained active for several minutes and was stopped. No accepted FP32/reference/PTO timing, peak delta, or 4096-token ceiling is claimed. This remains separate from the archived installation failure in `results/vllm_kkt_install_ub_failure.log`.
+- E112 completed NPU run (2026-10-22, `vllm-ascend-py310`, saved artifact): standalone Ascend reference versus Python FP32 max_abs_error `4.768e-7`; PTO versus reference max_abs_error `5.227e-4`; both pass the `2e-3` gate and all outputs are finite. Reference device time for `[16,459,48,128]` was `147.257 ms`; PTO direct kernel `0.575 ms`, full wrapper `1.053 ms`; PTO peak delta `139,136,000` bytes. The 4096-token screen was run at `B=1` (`73.989 ms` reference), then conservatively scaled across 48 layers and 16 prefill calls: `56.824 s`, `21.44%` of the 265.03 s E100 baseline. This is an upper-bound screening signal, not a model result; no logits/token replay was run. The candidate remains pending model-level acceptance and a direct installed-vLLM kernel comparison.
+- E112 model gate follow-up (2026-10-22): baseline `triton` completed the fixed E100 batch in `6.651 s` and produced token `248058` for all 16 rows (`results/gdn_model_gate_triton.json`). The PTO staged drop-in was initially attempted with C=64, but the existing `chunk_h.cpp` is template-specialized for `GDN_C=128` and failed compilation; the patch was restored to C=128. With C=128, the model run completed in `8.289 s` but produced token `0` for all 16 rows (`results/gdn_model_gate_pto_staged.json`), so the model gate is rejected. The stage-level KKT result does not transfer to the full model because the current drop-in replaces the entire staged GDN pipeline and its output semantics are not yet equivalent. Do not enable this model patch.
+- E112 final model-gate disposition: the PTO staged patch is **not usable for acceptance**. The trusted baseline produced `248058` for 16/16 rows in `6.651 s`; the staged replacement produced `0` for 16/16 rows in `8.289 s`. This is a structural semantic failure, not a precision or environment-noise issue. The patch replaces the whole GDN pipeline, while `chunk_h.cpp` is template-specialized for `C=128` and incompatible with the vLLM C=64 configuration. The staged patch must remain disabled. The next experiment is KKT-only integration: keep vLLM cumsum, solve-tril, WY, chunk-H, and chunk-O unchanged, and replace only the scaled-dot-KKT call after verifying its `g_cumsum` contract and C=64 support.
+- E112 KKT-only valid worker run (2026-10-22): original Ascend `chunk.py` computes chunk-local natural-log gate cumsum before calling `chunk_scaled_dot_kkt_fwd(k=k,beta=beta,g_cumsum=g,...)`, C=64. The adapter alone converts key/beta to FP16, transposes gate/beta metadata, uses `cu_seqlens.numel()-1` sequences, allocates FP16 PTO output and casts it back to requested FP32. All other vLLM GDN stages remain original. Parent and EngineCore logs confirm KKT-only activation. Result: **16/16 first tokens match 248058**, `7.120497 s` versus baseline `6.651192 s` (7.05% slower, single timed run). This passes only the first-token gate, not logits/decode or end-to-end performance acceptance. Results: `results/gdn_model_gate_pto_kkt_only.json`, full worker log, and `results/gdn_model_gate_kkt_only_comparison.json`. Repo-owned adapter/hook: `scripts/pto_kkt_patch/`. Earlier KKT-only-labelled all-zero output was invalid because the worker hook still installed the rejected staged pipeline; it is superseded by this explicitly routed worker run. The staged patch remains unusable; all-zero tokens alone do not isolate its precise faulty stage.
+
+## E113 E100 decode-only profile and one candidate budget
+
+- Profiled the actual HF E100 configuration (BF16, SDPA, sorted first batch16, fused RMSNorm/gated RMSNorm, single-step recurrent), not the vLLM KKT experiment. Skipped prefill and first decode using profiler schedule; collected steps 2–5 only. Artifacts: `results/profile_e100_decode_only/`, log, and `results/e100_decode_profile_summary.json`.
+- Four decode steps: device computing union 493.910 ms, stage window 710.295 ms. Kernel-family sums: Matmul 237.046 ms/1996 launches; convolution 116.231 ms/1344 launches; Mul 49.617 ms/2632 launches; copy 22.529 ms; ReduceSum 14.147 ms. Convolution is 23.53% of computing, 16.36% of the stage window. Sums may overlap; profiler wall and free gaps are not E100 speedup estimates.
+- Select exactly one candidate: T=1 causal depthwise convolution update, leaving prefill, recurrent arithmetic, and cache layout unchanged. Source is HF `torch_causal_conv1d_update`: concat cached state/new input, copy updated state, grouped conv1d, last-token slice and SiLU. E066 only rejected the unavailable fused API; do not repeat that API. Local target: halve measured 29.058 ms convolution kernel-family time per batch16 decode; conditional profiled-stage gain about 8.18%, not measured model gain. Reconstructed actual E100 generation/decode counts and 2% threshold are in the summary JSON; batch-size differences and profiling overhead limit extrapolation.
+- Acceptance remains local real-input output/cache correctness, then model logits and multi-step greedy trajectory, then fixed workload quality audit and unprofiled makespan. Do not enable a candidate on profile evidence alone. Implementation has not started; this experiment selects and budgets the next candidate only.
+
+## E114 T=1 depthwise causal convolution candidate（已结束：两版均不接纳）
+
+- Implemented `scripts/causal_conv_single_step.py`: T=1 only, concat/read original cache layout, FP32 weighted reduction, cast at convolution boundary before SiLU, identical cache update. Prefill delegates to HF. Screening budget is >=4.214 ms net per batch16 decode across 48 layers to target 2% of E100; no gain assumed from profile alone.
+- Local synthetic B1/B16 bias/no-bias tests: output and cache bit equal in all four cases. B16 no-bias wrapper median 0.778→0.335 ms per layer; bias 0.844→0.404 ms. Random inputs do not replace real-input validation.
+- E100 first batch 16-token model gate: greedy trajectories 16/16 equal, finite logits; logits max/mean absolute difference 0.4140625/0.00493175. Follow-up checked 720 real-input layer updates: cache 720/720 exact; outputs 662/720 exact, maximum local output difference 0.0009765625. Thus this is not bit-exact. Full tool-round smoke is required before workload expansion; candidate is opt-in and not accepted.
+- Artifacts: `results/causal_conv_single_step_probe.json`, `results/causal_conv_model_gate.json`, `results/causal_conv_model_gate_checked.json`. Model gate runtimes include cold/warm differences and are not throughput claims.
+- E114 disposition: direct FP32 reduction changed task 428's full greedy trajectory in the fixed first-batch16 smoke (15/16 quality matched). Reject this arithmetic variant; the initial 16-token gate was insufficient. Its evidence is preserved as `causal_conv_reduction_probe.json` and `causal_conv_reduction_model_gate_checked.json`.
+- Conservative variant keeps original F.conv1d, restricts T=1 input to last K samples, and keeps original state update. Synthetic local outputs/cache exact; 720/720 real model layer calls exact; full model first16-token logits bit-exact. Fixed matched 16-task complete tool-round runs audited without errors; all tokens/tool outputs equal and quality 15/16 on both sides. Baseline makespan 81.145922 s; candidate 82.124225 s (1.21% slower, single pair), equal peak 62,094,008,832 bytes. B16 local wrapper 0.784291→0.780130 ms/layer gives only ~0.200 ms/48-layer step, far below 4.214 ms budget. No measured performance benefit: reject deployment and do not expand to full128. E100 unchanged. Evidence: `results/causal_conv_window_model_gate_checked.json`, `results/causal_conv_window_matched_comparison.json`, `results/causal_conv_matched_baseline16.jsonl`, `results/causal_conv_window_smoke16.jsonl`. The checked model gate includes shadow-reference overhead and is used only for correctness, never performance.
+
+## E115 Matmul / recurrent state / dispatch attribution（已完成诊断，未启用优化）
+
+- Added opt-in `--attribute-decode` module labels to the E100 short profiler; `scripts/analyze_decode_attribution.py` joins marked CPU regions to NPU kernels using exact `torch_to_npu` flows. Four decode steps: MLP matmul 157.407 ms/768 kernels, projections 71.687 ms/1216, LM head separately 8.448 ms/4; recurrent has zero matmul. Remaining unlabelled kernels are retained as other rather than misassigned.
+- Recurrent device total 76.751 ms (Mul 43.200, ReduceSum 14.776, copies 9.113, Add 5.984 ms). State [16,48,128,128] FP32 =48MiB/layer; eager source accounting about12 state-sized passes, 27GiB logical traffic per48-layer step. This is not measured HBM traffic/bandwidth; copies include dtype/layout movement, not all cache writes.
+- Recurrent host inclusive markers 201.993 ms; nested ACLNN dispatch sum about29.86 ms. Flow delay contains queue/backlog and is not pure launch latency. Marked device union495.062ms/window952.157ms vs E113493.910/710.295ms: instrumentation substantially inflates host window, so gaps cannot become an Amdahl claim.
+- Conclusion: MLP dominates matrix work; recurrent cost lies in state/intermediate elementwise/reduction and dispatch, not recurrent matmul. Next isolate a concrete real-state recurrent segment and check whether reducing tensor passes also reduces full wrapper time; consult failed inplace/addcmul/AOT/graph cases. Do not claim memory bandwidth saturation or a scheduling speedup without new evidence. Report: `results/e100_decode_attribution_report.md`; raw labelled trace and `results/e100_decode_attribution.json` retain attribution and limitations.
+
+## E116 Real recurrent state segment: two-kernel fusion（不接纳）
+
+- Purpose remains reducing E100 fixed128 makespan at unchanged quality. Before new work, reviewed E070/E078 inplace/addcmul (only1–2% local gains), E072 BMM contraction (small gains/numerical changes), BMMV2/AOT/graph failures. Do not repeat those unchanged. New mechanism: Triton memory kernel fuses FP32 state decay and key contraction; update kernel recomputes decay, writes new state and contracts query, omitting state-sized product/outer temporaries. Input cache is not modified; no model patch was installed. Floating-point fusion disabled; reduction order still differs.
+- Input evidence: `results/gdn_real_batch_artifact.pt`, actual HF repeated-prompt decode B16, H48,K128,V128, q/k/v/beta BF16, gate FP32; original captured state BF16 is converted to FP32 as current single-step working state. This is not an E100 capture, not a steady-state multi-step FP32 cache validation. Complete wrapper includes normalization, contiguous/casts, gate exp, allocations and output cast. Both sides use same inputs/preparation in NPU Triton-capable `vllm-ascend-py310`; no cross-runtime performance conclusion.
+- Tile8 state segment baseline0.398ms vs fused1.988ms; full wrapper0.888ms vs2.558ms. One bounded tile32 follow-up: segment0.399ms vs0.681ms; full wrapper0.882ms vs1.186ms (about34.6% slower). Both output max error3.052e-5 and state max error3.815e-6; input working state unchanged. Values are warmup then10 synchronized host-wall samples, median; not model/e2e timing. Performance instrumentation deliberately includes full allocation/dispatch/synchronization cost, not just kernel launch.
+- Conclusion: eliminating logical intermediates does not guarantee faster physical execution; this two-kernel implementation fails the wrapper performance gate and is not exact. Do not expand to model/logits/128 tasks or deploy. This is a rejection of this kernel/tile implementation, not a proof that recurrent fusion cannot work; future attempts require a materially different tiling/reduction mechanism and budget. Existing E100 unchanged. Script `scripts/recurrent_fused_state_probe.py` supports explicit tile/output; artifacts `results/recurrent_fused_state_tile8.json`, `results/recurrent_fused_state_tile32.json` and logs.
+
+## E117 MLP / runtime 机制区分（诊断，不启用优化）
+
+- Before implementation, reviewed E089 weight-only latency rejection, E087 packing, E096 admission OOM, E098/E103 graph capture failures. New diagnostic uses real checkpoint MLP gate/up/down layers8–11 with synthetic BF16 activations, M1/16/64; compares serial-sync, queued same weights, queued rotating weights. Raw host/event/submission samples in `results/mlp_runtime_diagnostic.json`; no quality or E100 speedup claim.
+- M16 full MLP host0.5483ms serial vs0.4910ms queued vs0.4927ms rotating. M1/16/64 queued0.4729/0.4910/0.5347ms: small-M FLOPs alone do not explain latency. Individual gate/up repeat-hot ~0.080ms vs rotating~0.173ms, but complete MLP does not retain this difference. This supports a cache/residency concern in isolated microbenchmarks, not measured HBM saturation. Do not sum hot isolated GEMMs or revive INT8/packing without a new mechanism.
+- Unlabelled E113 trace flow association: next-host-start-after-prior-device-end gaps208.005ms vs before8.622ms. Dispatch origin is not command-ready time; association does not prove removable launch cost. E100 has no per-layer sync, so artificial serial/queued difference is not deployable gain. Report and conditional experiment decisions: `results/mlp_runtime_experiment_plan.md`; analyzer `scripts/analyze_runtime_gaps.py`.
+- Next priority is fixed-shape/teacher-forced E100 runtime host-sensitivity test (interleaved threads8/1/4 and8 control, unprofiled wall/events plus logits); inspect prior phase1 conditions before interpreting. MLP real-activation/layout/residency audit second. Graph only after evidence and exact-segment eligibility checks; no blind full-model capture or new quantization implementation. End-to-end goal and acceptance gates remain unchanged.
+
+## E118 E100 fixed-trajectory host thread sensitivity（诊断未定，控制组漂移）
+
+- `scripts/e100_thread_sensitivity.py` uses actual E100 first-batch16 prompts, original HF generate preparation/cache, BF16 SDPA/fused norms/single-step recurrent. A logits processor forces first12 saved E100 tokens; collect original forward logits before forcing. Fresh cache every condition; 11 decode forwards. Initial nine-trial run retained separately; expanded17-trial run interleaves8/1/8/4/8 and reverse order controls. No candidate model/kernel implementation enabled.
+- All17 trials: logits bit-exact to first8-thread reference, finite, identical argmax and forced tokens. Timing records host generate wall, decode-span wall and NPU forward events; score CPU transfer occurs after measured completion. No profiler trace collection in these windows, but hooks/events/forced processor overhead remains identical across conditions.
+- Analysis: four paired conditions each for threads1/4. Threads1 savings versus mean adjacent8 controls range -3.35% to+2.82%; threads4 -5.97% to+5.77%. Every pair's adjacent8 controls drift >2% (2.37–16.34%), hence zero stable pairs under the diagnostic threshold. Initial run showed large temporal shift (~1.91s to1.52s for11decode calls), so repeated rather than interpreting first apparent wins. No stable benefit demonstrated; retain threads8.
+- Host decode span minus forward-event sum only8.40–13.40ms across11calls, suggesting small generation-between-forward overhead in this replay. Events include host submission gaps inside forward; they cannot isolate kernel-only execution or establish device-bound behavior. Drift cause remains unproven (do not attribute to DVFS/CPU scheduling without telemetry). Thus this does not support graph/runtime implementation yet and does not rule out all host-launch opportunities. Next diagnostic should establish timing stability/telemetry or correlate per-step host/device work under a stable condition, not tune threads until a winner appears.
+- Artifacts: `results/e100_thread_sensitivity_initial.json`, `results/e100_thread_sensitivity.json`, `results/e100_thread_sensitivity_analysis.json`, initial/confirmation logs; `scripts/analyze_thread_sensitivity.py` retains all pairs and marks instability rather than deleting negative samples. Goal of causal bottleneck discrimination remains unresolved. E100 default unchanged; no quality or end-to-end speedup claim.
+- E118 supplemental completion: fixed-replay four-step profiles8→1→4→8, all17,416 lowered kernels and output tokens identical. Computing union494.270/494.450/494.896/495.586ms (range0.27%); stage712.701/731.701/696.962/742.605ms; free218.431/237.251/202.066/247.019ms. Repeated8 control changes mainly in gaps, not kernel time. This distinguishes stable device work from variable gaps in these profiles, but does not isolate host submission vs dependencies/driver scheduling or prove a removable-launch budget. Separate-profile observations cannot causally label all unprofiled drift. CPU affinity recorded, cpufreq unavailable in container; no DVFS attribution.
+- E118 decision: requested thread-sensitivity diagnostic completed with bounded conclusion: logits/trajectory exact, no robust benefit from1/4, E100 threads8 retained. No graph/runtime implementation justified. Further runtime experiment requires a specific gap mechanism/eligible segment, not blind capture retries. Final evidence and limitations: `results/e118_thread_sensitivity_report.md`, `results/e118_thread_kernel_cost.json`, four raw profiles and unprofiled analysis. Broader end-to-end optimization remains unfinished.
+
+## E119 具体间隙机制定位（不做盲目graph）
+
+- Reused E118 four fixed-replay traces; exact host/runtime/device flows partition idle. Idle202–247ms/foursteps: before next host flow174.6–202.1ms; hostflow→runtime marker25.4–51.5ms; after marker2.2–2.4ms. These are clipped temporal intervals, not removable-cost proof. In8a, disjoint idle host coverage includes empty_tensor24.33ms, RMSNorm custom op23.81ms, matmul8.33ms, copy8.17ms, as_strided7.08ms, cat6.71ms, unrecorded68.56ms. Main mechanism location is host producer preparation/dispatch; unrecorded Python/scheduling/profiler components not separated.
+- Corrected queue hypothesis: largest gap1.508ms overlaps long enqueue1.989ms, but only1/14,884 enqueue spans>100us. Does not establish persistent backpressure or justify queue tuning.
+- Source-level scalar interception proves per-decode SDPA padding_mask.all() Python bool and generation this_peer_finished Python bool. Fourstep8 is_nonzero, inclusive2.343ms;1248 local_scalar calls are NOT all device readbacks. Fixed-left-padding mask-skip bypass keeps logits/tokens exact on five replay runs but one candidate slower0.82%, another faster6.94%; no stable performance gain. Diagnostic-only, not general mask optimization or model acceptance. It does not identify E098/E103 recurrent capture failures' exact source.
+- Conclusion: specific host prep/dispatch stages and recurring bool synchronization located; much idle remains non-causally attributed. Do not count200+ms as graph savings; do not claim all host/runtime costs removable. No E100 change. Report `results/e119_gap_mechanism_report.md`; scalar stacks, timestamp partition/host coverage JSONs, mask-check A/B and analyzers preserved. Further implementation requires a stable general mechanism and complete-wrapper budget.
+
+## DeepInfer 官方实现参考（2026-10-22；只读审查）
+
+- Official main commit9bd9cf243fc53ef9afbf8f04d391d989117d6ab9 supports Ascend950, but model listed only DeepSeek-V4.1-Flash, CANN9.2, torch/torch_npu2.13; not our910B3/CANN8.5.1/Qwen3.5. README benchmarks are SM100 multiGPU, not950 or singleNPU. No dependencies installed/default flags changed.
+- Verified transferable mechanisms: graph runner preallocated metadata/output and bucket views/memory-pool reuse; worker current-forward overlaps previous-postprocess using events/state; Linear BF16 GEMM explicit output/alignment buffers; Ascend device-side batched metadata. V4 MoE/FP8 scale layouts are not drop-in denseMLP implementations. Platform TASK_QUEUE_ENABLE=0 is its configuration, not proof of HF speedup or persistent queue backpressure.
+- Most grounded next candidate experiment is complete BF16 Qwen MLP real-activation buffer/layout boundary comparison (allocation vs reuse, identical arithmetic), measuring all dispatch/copy costs and exact outputs before graph/quantization. Profitability remains unknown; asynchronous scheduler migration lower priority given E118 between-forward cost. DSpark/MTP excluded by project constraints; V4 SWA/EP/EPLB/CP and NVIDIA-only batch invariance not transferred. Detailed source review/conditions: `results/deepinfer_reference_review.md`.
+
+## E120 DeepInfer-inspired complete BF16 MLP buffer/layout probe（不接纳）
+
+- Captured actual E100 firstbatch16 decode activations at layers8/55, three calls each, BF16[16,1,5120] stride[5120,5120,1]. Loaded same real checkpoint gate/up/down weights. Kept final implementation's gate→SiLU→up→multiply→down order and BF16 boundaries. Explicit mm/silu/mul output buffers; separate clone variant includes output ownership cost. No precision change, fusion or weight packing. Persistent2,392,064bytes/layer; no model/default patch.
+- Six real outputs finite/bit-exact and output stride identical. Timings:4warmup,9windows×8calls; interleaved baseline/reuse/baseline/clone/baseline, serial and queued. Final queued original~0.486ms vs reuse0.490–0.493ms, no gain; clone also slower. Serial likewise no improvement. Raw event/host samples retained, final ordered profiles separate from initial-order trial.
+- Separate4call profiles verify baseline20allocation events→reuse0, clone4; each12GEMM+4SiLU+4Mul, no contiguous/format_cast. Device kernel sum remains~1.87–1.90ms/fourcalls. Hence eliminating allocation-event count did not reduce complete-wrapper cost. F.linear/aclnnMatmul versus mm(out=)/aclnnMm is an API difference, not pure allocator causal proof. Reject this specific buffering implementation; no model/128 expansion and no DeepInfer speedup inference. Original E100 unchanged.
+- Evidence: `results/e100_mlp_activations.pt`, `results/mlp_buffer_probe.json`, `results/mlp_buffer_probe_analysis.json`, `results/mlp_buffer_report.md`, final `profile_mlp_buffer_ordered_*` traces. Scripts capture_e100_mlp.py/mlp_buffer_probe.py/analyze_mlp_buffer_probe.py. No actual format conversion identified to optimize; only reopen with a different measured mechanism, not blind buffer/INT8/packing retries.
+
+## E121 bounded BF16 GEMM capability audit（找到NZ候选，未接纳）
+
+- Reviewed installed interfaces/docs/headers on910B3/CANN8.5.1. Existing npu_linear(E083), buffer reuse(E120), grouped projection/INT8 failures not repeated. Default JIT already off. Communication-fused GEMM irrelevant singleNPU; fused_matmul proto BF16 notes910_95 and has add/mul/GELU notSiLU, so no invented fusion test. DeepInfer950 kernels not assumed compatible.
+- New mechanism tested on actual E100 layers8/55 three decode activations each: persistent BF16 FRACTAL_NZ weight format29. Full original-order MLP output exact/finite6/6. Layer8 ND0.47731→NZ0.39812ms; layer55 interleaved ND0.47727/NZ0.39693/ND0.47720/NZ0.39665ms (~16.8%local gain). Trace12aclnnMatmulWeightNz kernels/fourMLPs, no runtime format_cast/contiguous. This is distinct from E120 output buffer reuse. Physical contiguous transpose has smaller gain and changes values up to0.00390625; deprioritized.
+- One-time NZ preparation~15s/layer probe includes cold compiler; do not extrapolate initialization or ignore it. Full-model peak, startup, prefill/decode/logits/complete trajectory unvalidated. Local~80us/layer×64≈5.1ms/step is conditional budget only, not end-to-end gain. Next candidate may convert MLP weights once while preserving original forward, with memory/ownership and model gates before deployment. E100 unchanged.
+- Audit report `results/bf16_gemm_capability_review.md`; initial/layer55JSON and raw NZ trace. Scope complete: capability audit only, not optimization acceptance.
+
+## E122 持久化 BF16 NZ MLP 模型接入与 matched16 gate（不接纳）
+
+- Added opt-in `--mlp-nz`; converted only the192 BF16 gate/up/down weights with `npu_format_cast(...,29)`, one weight at a time; verified each actual format=29, replaced module Parameter, released old reference, synchronized and emptied cache. No forward operation changed. Full 16-task model allocation stayed stable: before/after preparation 54,713,982,976 bytes; preparation peak54,892,241,408 (about179MiB above baseline); model load time26.50s vs11.55s. Generation peak62,099,070,464 vs62,094,008,832 (+~5MiB), no OOM.
+- Fixed E100 batch16 tasks/config, matched run audits have no errors. 16/16 round token/tool-output trajectory exact, quality15/16 and total3969 tokens both. Baseline76.976515s; NZ80.804083s, 4.97% slower; single matched pair; no benefit. Local six-input exactness and ~16.8% layer microbench gain fail to transfer to full task. Preparation is outside measured generation makespan but still a service startup cost.
+- Candidate rejected at model performance gate; no128 expansion/deployment; E100 unchanged. Results `mlp_nz_model_gate.json` (logits/16-token exact), `mlp_nz_smoke16.jsonl`, `mlp_nz_baseline16.jsonl`, `mlp_nz_matched_gate.json`. This specifically rejects persistent-NZ path in current PyTorch HF wrapper/910B3 conditions, not every possible specialized GEMM implementation.
+
+## E124 BF16 NZ MLP 收益断层归因（A/B 完成，不接纳）
+
+- 按附件方案先做 E124-A：新增 `scripts/e124_nz_e2e_ab.py` 和 `scripts/analyze_e124_nz.py`。每次新进程重新加载模型，固定 E100 首批16题、batch16、concise、SDPA、BF16、fused norms、single-step recurrent、final cap12、generation-length 排序，交替 ND→NZ→NZ→ND。两组配对 ND makespan=`79.5052/78.2747 s`，NZ=`85.3281/81.1845 s`，NZ 慢`7.324%/3.718%`，中位数`5.521%`；两组轨迹 hash 完全一致，任务均15/16正确。生成时间不含模型加载/NZ转换；ND peak=`62,094,008,832`，NZ peak=`62,099,070,464` bytes。NZ 转换约15.0–15.3s，启动 load 约28.4–28.6s，ND load约13.3s。
+- E124-B 新增 `scripts/e124_nz_mlp_probe.py`，复用 `results/e100_mlp_activations.pt` 第8、55层的三个真实 `[16,1,5120]` BF16 激活，完整 gate→SiLU→up→mul→down wrapper，ND/NZ 交替各20次，记录 host wall、设备事件、输入/输出 stride 和 peak。两层全部 bit-exact；第8层 NZ host/device 中位数相对 ND分别`-0.368%/-0.177%`，第55层分别`+0.473%/+0.090%`，没有复现 E121 的16.8%局部收益。设备事件仍含排队/host间隙，不能解释成纯 kernel busy。
+- 结论：E124-A 稳定复现 E122 的生成回退，E124-B 表明完整真实 MLP wrapper 中收益已消失且层间方向不一致；按停止条件不进入 E124-C，不做布局选择、trace 归因或异步调度改动。E122/E124 NZ 路线继续 rejected，E100 `265.030128 s / 122/128` 保持参考。原始数据：`results/e124_nz_e2e.jsonl`、`results/e124_nz_mlp.jsonl`；报告：`results/e124_nz_gain_gap_report.md`。
+
+## E125 NZ E121 局部收益复现与 decode 边界归因
+
+- E125-A/B 原样复现 E121：新增 `scripts/e125_nz_boundary_probe.py`，固定 E100 layer8/55 的真实 `[16,1,5120]` BF16 激活、三组原始权重、原始 `F.linear -> SiLU -> mul -> F.linear` 顺序、4 warmup、8 calls/window、窗口末同步，ND/NZ 交替20对。两层完整 MLP 均 bit-exact；layer8 NZ `-17.88%`，layer55 `-15.70%` host wall，三组独立 matmul 也均有收益。NZ conversion 约15.1s，不计入稳态窗口。E121 的约16.8%收益可重复，E124-B 的近零结果来自不同时间/调用路径，不能据此否定局部收益。
+- E125-C 对相同 E100 首批16题、12个强制 replay token、SDPA/fused norms/single-step recurrent 做 ND/NZ 固定轨迹 profile。两次 replay token exact。ND/NZ 均17,416 kernels；ND 总列示设备时长494,439.6us，NZ510,079.5us。ND regular `aclnnMatmul` 237,218.4us；NZ 为 regular80,591.4us + `aclnnMatmulWeightNz`172,189.9us，只有768个 matmul切到NZ，仍有1,220个 regular matmul。NZ列示总时长高15,639.9us，并出现约45ms transdata路径。Profiler wall 受插桩影响，不作为端到端结论。
+- 结论：局部 wrapper收益真实，但完整 decode 中仅部分 matmul切换且存在布局/数据搬运路径；这是收益首次与模型级结果分离的边界。NZ 仍不部署，因为 E124-A 未插桩完整生成稳定慢`3.718%/7.324%`。下一步若继续，只能先把 regular/NZ matmul与具体模块及 transdata 归属映射清楚，不能直接做异步或继续扩大 workload。详细报告：`results/e125_nz_gain_boundary_report.md`。
+
+## E126-E128 Matmul 账本与布局路径核对（停止修改）
+
+- 新增 `scripts/e126_matmul_ledger.py`、`scripts/e126_enrich_ledger.py`、`scripts/analyze_e126_ledger.py`，从 ND/NZ `trace_view.json` 和 `kernel_details.csv` 逐调用导出 `results/e126_matmul_ledger.json` 与 CSV。两边各1,992个 Matmul 调用；NZ 为768个 `aclnnMatmulWeightNz`（64层×3 MLP投影×4 decode steps），其余1,224个为 regular。MLP调用 shape 可由 checkpoint 权重和固定 batch 推导并写入账本：例如 gate/up `[M=16,N=17408,K=5120]`、down `[16,5120,17408]`，BF16，NZ format29；其余调用也保留 layer/module/shape/kernel时长。输入 runtime stride 仍未被该 profiler export记录，明确标为缺失，不猜测。
+- 1,224 regular 调用均属于 attention/projection/lm_head，超出 `mlp_nz.py` 仅转换 `.mlp.{gate,up,down}_proj` 的选择器；账本不能证明它们是 shape unsupported，也不能据此盲目转换。
+- E127 检查了布局/搬运生命周期：decode trace 中无重复 NZ weight format_cast；192权重在生成前转换一次并跨 step 复用。NZ `trans_TransData_5`约45,099us在每个4-step profile中48次/step，ND 对应 `aclnnConvolution_TransDataFzToDst_TransData`约44,749us，同级路径并非已证实的NZ新增45ms。ND/NZ conversion-like host enqueue均不是权重转换本身，不能从名称推断对象归属。
+- E128 不改代码：当前没有找到“可消除的重复权重转换”这一单因素；NZ局部收益真实但E124完整生成仍慢`3.718%/7.324%`，且NZ/regular混合路径和同规模transdata占据完整trace。继续优化前必须新增带 runtime input stride/format 与权重 identity 的低扰动 hook；本轮不扩大 workload、不部署NZ。报告：`results/e126_matmul_ledger_report.md`，逐调用CSV为 `results/e126_matmul_ledger.csv`。
+
+## NZ 路线封存与完整 Decode 热点排序
+
+- NZ 正式记录为“局部有效、端到端无效”的已验证负结果。E121/E125 重复证明 MLP wrapper 和 Matmul 局部收益约15–18%，E124/E122 的完整生成却稳定变慢；正确性和 token 轨迹均通过，但没有 makespan 收益。因此停止 NZ 扩展、权重布局范围扩大、转换复用改动和进一步 profiler 归因。
+- 下一轮排序见 `results/next_decode_hotspot_ranking.md`：四步设备归因中 MLP Matmul=`157.407ms/768 kernels`，GDN convolution/transdata=`116.823ms`，recurrent Mul/ReduceSum/copy=`43.200/14.776/9.113ms`，attention/GDN projections=`71.687ms/1216 kernels`，LM head=`8.448ms`。这些是互斥归因表中的局部设备证据，不把嵌套时间相加成端到端结论。
+- 新候选必须从可量化假设开始：明确目标阶段、输入/状态契约、可回收时间上限、固定 replay correctness 和完整 decode gate；优先研究 GDN state/convolution 或一个有明确 wrapper 预算的 projection，而不是继续 NZ 或盲目 graph/async。E100 `265.030128s / 122/128` 仍为参考。
+
+## E129 MLP Matmul 性能上界分析（只选下一项假设，未改模型）
+
+- 新增 `scripts/e129_mlp_matmul_roofline.py` 与 `results/e129_mlp_roofline.json/.md`。从 E125 ND trace 通过精确 `torch_to_npu` flow 将设备 kernel 对到 MLP module，再按真实 shape/dtype 聚合；768/768 个 Matmul 均匹配，覆盖4个固定 decode steps。形状：`[M16,N5120,K17408]` down 256次，kernel40.591ms、2.852GFLOP/call、17.99TFLOP/s；`[M16,N17408,K5120]` gate/up合计512次，kernel116.242ms、2.852GFLOP/call、12.56TFLOP/s。总 kernel156.833ms，约2.190TFLOP工作量；与E115 157.407ms在不同trace间相差约0.37%。
+- 用`2MNK`、BF16 2-byte流量模型得算术强度15.94FLOP/byte。硬件探针本机大buffer copy为1256.66GB/s、M512 BF16 GEMM为238.91TFLOP/s；据此经验memory roof约20.03TFLOP/s，两个shape效率分别89.8%和62.7%。若每次完整读一次权重，估算streaming floor总109.38ms，实测高47.45ms；这是理想流量预算而非已证明的实现浪费，因为trace没有实测HBM/L2字节。
+- 相同`[16,17408,5120]`形状拆op后，gate 256调用核时76.549ms，中位303.14us；up 256调用39.693ms，中位155.16us，跨层约1.95x差异；down接近经验memory roof。匹配的`torch.mm`基准31.34TFLOP/s使用连续[K,N]右操作数，而模型Linear存储[N,K]并使用转置view，故只作有利参考，不能称严格布局上界。硬件属性未提供910B3官方BF16理论峰值，不能由20个Cube core推算；报告明确留空。
+- 唯一下一步假设：gate/up同形状核时差可能跟随权重身份或MLP调用位置。用相同真实激活、原始gate/up权重做交替顺序交叉，记录各 Matmul event 与bit-exact输出；若慢跟随调用位置，检查先后/缓存状态；若慢跟随权重，再检查地址对齐、真实stride/格式及tile选择。按“gate达到up当前中位数”计算四步上限约37.88ms，未验证前不做算子实现改动。down_proj不作为当前候选。
+
+## E130 gate/up 调用位置交叉实验（局部诊断，不接入）
+
+- 新增 `scripts/e130_gate_up_crossover.py`，对 E100 捕获的 layer8/55 三组真实 BF16 `[16,1,5120]` 激活，使用原始 ND gate/up/down 权重，保持 gate→SiLU→up→down 语义，做100组同激活交叉顺序，连续提交后一次同步。所有 gate/up/MLP 输出 bit-exact，输入输出 stride一致，两个权重 NPU format=`2`、stride=`[5120,1]`、data_ptr mod512均为0。
+- 连续提交下差异跟随调用位置而不是权重：layer8 gate first/second=`203/161us`、up first/second=`205/187us`；layer55 gate=`201/157us`、up=`200/175us`。完整两投影MLP wrapper 的 up→gate 相对 gate→up 中位差分别`-24.3us`和`-16.7us`，bootstrap95% CI分别`[-29.3,-21.9]us`、`[-17.9,-12.9]us`；100对中分别92/93对 up→gate更快。输出bit-exact，输入/权重形状、dtype、stride固定；weights stride `[5120,1]`，format2，data pointer mod512均为0。
+- 现有完整模型trace里 layer8 gate/up MatMulV2分别`300.2/158.3us`，layer55为`277.6/154.6us`；host Linear span只差约14us，二者之间正常有SiLU dispatch，没有显式CPU同步。kernel名称相同；当前trace不能证明缓存或带宽原因，也没有提供完整operand物理layout/traffic。位置相关现象在轻量probe里成立，但全模型gap幅度仍未解释。
+- 追加 `scripts/e130_same_weight_reuse.py`、`results/e130_same_weight_reuse.json`：相同真实激活下对 gate/up、gate/gate、up/up 交替，检查重复调用。重复相同权重的第二次 Matmul 从首调用约`377–389us`降到`64–66us`且输出exact；不同权重的第二次约`182–188us`。为隔离缓存，另加512MiB scratch read/write并在每对前同步（L2为192MiB）。这证明probe可观察到同权重驻留带来的明显局部复用，也显示任意首个调用比第二个调用慢；不证明实际 gate/up 的 full-model流量命中模式相同。
+- E125 trace上下文：gate前最近操作为RMSNorm，up前有SiLU；CPU Linear span相近，NPU kernel名同为MatMulV2；被捕获的异步NPU任务均在stream47，未见MLP Matmul跨stream并行。Profiler没有物理cache hit/miss计数、调用级operand format，也不证明同stream队列外无资源竞争。
+- 原先用孤立 gate/up 中位数相减得到的`37.88ms`不可作为可回收预算。E130真实交叉差按64层×4步粗略外推约`4.3–6.2ms`，约为相应四步stage窗口的`0.4–0.7%`，低于2%筛选门槛。当前设备仅约44GB可用，而E100完整模型需约54.7GB权重/分配且生成峰值约62.1GB，因此未做 full Decode A/B。该候选在2%门槛下停止，不改MLP实现；这轮没有形成端到端收益结论。
+- E130 scripts/artifact/report: `scripts/e130_gate_up_crossover.py`、`results/e130_gate_up_crossover.json`、`results/e130_gate_up_crossover_report.md`。NZ路线仍封存。
+
+## E123 generation-stage timing（诊断，未启用异步调度）
+
+- 用户要求先测每步 scheduler/model forward/sampling/postprocess 的 host wall 与设备区间，再决定跨步异步调度。新增 `scripts/generation_stage_timing.py`（源码级 HF `_sample` 插桩）、`scripts/time_generation_stages.py`（E100 首批16题、交替未插桩/插桩、前32 token）和 `scripts/analyze_generation_stages.py`。契约与边界见 `results/e123_stage_timing_contract.md`；只使用原始 HF 调用、BF16、SDPA、fused RMSNorm/Gated RMSNorm、single-step recurrent，不改变协议、模型、cache 或调度。
+- 三次插桩运行均与未插桩及 E100 保存的首轮 token IDs 完全一致（16/16×32），peak allocation=`59,173,664,768` bytes；设备事件在生成末尾统一读取，避免阶段间同步。插桩/相邻控制 wall 差分别`+0.91%/+0.63%/+0.20%`，相邻未插桩漂移`0.61%/0.38%/0.57%`，测量扰动低于1%。
+- 32 decode steps 的 host wall 汇总中，model forward `4,078.9–4,181.6 ms`（约`96.8–96.9%`），scheduler `96.1–99.2 ms`（约`2.24–2.35%`；其中循环条件约`87.7–91.1 ms`，输入准备约`8.1 ms`），postprocess `29.4–32.4 ms`（约`0.70–0.76%`），sampling `6.7–6.9 ms`（约`0.16%`）。设备区间对应 forward `4,143.3–4,245.3 ms`，scheduler `13.4–14.1 ms`，postprocess `2.9–3.8 ms`，sampling `7.4 ms`。阶段设备区间包含队列等待/host间隙，不能解释为 kernel busy 或可直接重叠预算。
+- 分布稳定但 scheduler 与 postprocess 合计约3%，低于“稳定关键路径”且依赖逐 token cache/next-token 顺序；没有证据支持跨步异步调度实现。按停止条件不改 Agent scheduler、不做 graph/capture 或 overlap patch；E100 保持`265.030128 s / 122/128`。若运行时/缓存语义改变，优先重新测完整 Agent tool-loop 的 scheduler 和 postprocess，而不是根据本诊断盲改。

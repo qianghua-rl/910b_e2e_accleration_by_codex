@@ -1,0 +1,33 @@
+{
+  "name": "gdn_prefill_chunk_cumsum_pto_low_ceiling",
+  "operator": "gdn_prefill.chunk_cumsum",
+  "mode": "prefill",
+  "device": "Ascend910B3",
+  "dtype": "float32_gate_accumulator",
+  "status": "rejected",
+  "contract": {
+    "input": "[B=16,T=459,H=48] FP32 gate logits, stride [22032,48,1]",
+    "output": "[B,T,H] FP32 inclusive chunk-local cumsum, C=64",
+    "state": "stateless",
+    "cu_seqlens": "packed contiguous int32 [0,T,...,B*T]",
+    "layout": "dense HF [B,T,H] reference; PTO packed [1,B*T,H]",
+    "workspace": "no explicit workspace; 68-byte cu_seqlens metadata"
+  },
+  "mechanism": ["PTO Vec cumsum kernel", "one-stage replacement only"],
+  "evidence": ["results/gdn_cumsum_e100_batch16.pt", "results/gdn_cumsum_probe.json", "scripts/gdn_cumsum_probe.py"],
+  "gates": {
+    "python_vs_hf": "exact",
+    "current_vs_reference": {"max_abs_error": 0.000152587890625, "tolerance": 0.0002},
+    "pto_vs_current": "exact",
+    "pto_vs_reference": {"max_abs_error": 0.000152587890625, "finite": true},
+    "current_device_ms": 0.9222899973392487,
+    "pto_kernel_launch_device_ms": 0.30163000524044037,
+    "pto_full_wrapper_device_ms": 0.3580300062894821,
+    "pto_peak_delta_bytes": 1410560,
+    "extreme_upper_bound_seconds": 4.4545533657073975,
+    "e100_fraction_upper_bound": 0.01680772444413724,
+    "two_percent_ceiling": "failed",
+    "e100_logits_and_trajectory": "not run; stopped before model expansion"
+  },
+  "lesson": "A stage can match the current NPU implementation and be locally faster, yet remain invalid when its absolute end-to-end ceiling is below the required 2%."
+}

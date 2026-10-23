@@ -1,0 +1,111 @@
+{
+  "scope": "E125 fixed replay, four decode steps, MLP-labelled calls only",
+  "matched_calls": 768,
+  "groups": [
+    {
+      "M": 16,
+      "N": 5120,
+      "K": 17408,
+      "dtype": "bfloat16",
+      "layout": "ND(original)",
+      "calls": 256,
+      "op_calls": {
+        "down_proj": 256
+      },
+      "op_kernel_us": {
+        "down_proj": 40590.72
+      },
+      "op_kernel_median_us": {
+        "down_proj": 157.96
+      },
+      "op_ideal_memory_ms": {
+        "down_proj": 36.460458948567975
+      },
+      "flops_per_call": 2852126720,
+      "total_flops": 730144440320,
+      "kernel_us_sum": 40590.72,
+      "kernel_us_median": 157.96,
+      "kernel_us_min": 152.36,
+      "kernel_us_max": 166.6,
+      "bytes_lower_bound_per_call": 178978816,
+      "bytes_lower_bound_total": 45818576896,
+      "ideal_memory_floor_ms": 36.460458948567975,
+      "ideal_compute_floor_ms": 3.056100010871887,
+      "time_above_roof_ms": 4.130261051432029,
+      "effective_tflops": 17.98796474465099,
+      "lower_bound_gbps": 1128.7943868943441,
+      "arithmetic_intensity_flop_per_byte": 15.935554741852801,
+      "measured_memory_roof_tflops": 20.025651387163283,
+      "memory_roof_fraction": 0.8982461742134152,
+      "measured_compute_ceiling_tflops": 238.91379134274277,
+      "measured_shape_ceiling_tflops": null,
+      "ceiling_fraction": null,
+      "gap_reason": "no shape-matched BF16 ceiling in local probe"
+    },
+    {
+      "M": 16,
+      "N": 17408,
+      "K": 5120,
+      "dtype": "bfloat16",
+      "layout": "ND(original)",
+      "calls": 512,
+      "op_calls": {
+        "gate_proj": 256,
+        "up_proj": 256
+      },
+      "op_kernel_us": {
+        "gate_proj": 76548.92,
+        "up_proj": 39693.12
+      },
+      "op_kernel_median_us": {
+        "gate_proj": 303.14,
+        "up_proj": 155.16
+      },
+      "op_ideal_memory_ms": {
+        "gate_proj": 36.460458948567975,
+        "up_proj": 36.460458948567975
+      },
+      "flops_per_call": 2852126720,
+      "total_flops": 1460288880640,
+      "kernel_us_sum": 116242.04,
+      "kernel_us_median": 271.52,
+      "kernel_us_min": 148.44,
+      "kernel_us_max": 314.96,
+      "bytes_lower_bound_per_call": 178978816,
+      "bytes_lower_bound_total": 91637153792,
+      "ideal_memory_floor_ms": 72.92091789713595,
+      "ideal_compute_floor_ms": 6.112200021743774,
+      "time_above_roof_ms": 43.32112210286404,
+      "effective_tflops": 12.562484972218314,
+      "lower_bound_gbps": 788.3305712115858,
+      "arithmetic_intensity_flop_per_byte": 15.935554741852801,
+      "measured_memory_roof_tflops": 20.025651387163283,
+      "memory_roof_fraction": 0.6273196676274431,
+      "measured_compute_ceiling_tflops": 238.91379134274277,
+      "measured_shape_ceiling_tflops": 31.338718192443352,
+      "ceiling_fraction": 0.40086148051988557,
+      "gap_reason": "shape-matched ceiling available"
+    }
+  ],
+  "total_kernel_ms": 156.83276,
+  "ideal_memory_floor_ms": 109.38137684570393,
+  "excess_over_empirical_roof_ms": 47.45138315429607,
+  "hardware": {
+    "device": "Ascend910B3",
+    "properties": "see results/hardware.stdout.log",
+    "bf16_theoretical_tflops": null,
+    "bf16_ceiling_reason": "No authoritative BF16 peak field was available in local device/properties output; do not infer it from cube_core_num."
+  },
+  "source": {
+    "ledger": "results/e126_matmul_ledger.csv",
+    "trace": "results/e125_profile_nd/06f2b62264eb_207408_20261023051936010_ascend_pt/ASCEND_PROFILER_OUTPUT/trace_view.json",
+    "hardware_probe": "results/hardware.stdout.log"
+  },
+  "limitations": [
+    "Kernel CSV duration is device kernel interval, not complete wrapper or end-to-end time.",
+    "Lower-bound bytes count one BF16 read of activation and weight plus one BF16 output write; cache reuse, NZ physical traffic and intermediate tensors are not measured.",
+    "The 31.34 TFLOP/s same-shape probe used a contiguous [K,N] right operand, while Linear stores [N,K] and supplies its transpose view; it is a favorable local reference, not strict layout-matched ceiling.",
+    "The empirical roofline combines a large-buffer copy bandwidth and a separate M=512 BF16 GEMM throughput; it is not a vendor theoretical peak.",
+    "No optimization was enabled; no next candidate was implemented."
+  ]
+}

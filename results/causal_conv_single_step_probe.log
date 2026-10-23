@@ -1,0 +1,12 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+{"batch": 1, "bias": false, "max_abs_error": 0.0, "equal": true, "cache_equal": true, "finite": true, "reference_median_ms": 0.4983646795153618, "candidate_median_ms": 0.30942074954509735}
+{"batch": 1, "bias": true, "max_abs_error": 0.0, "equal": true, "cache_equal": true, "finite": true, "reference_median_ms": 0.5131000652909279, "candidate_median_ms": 0.405958853662014}
+{"batch": 16, "bias": false, "max_abs_error": 0.0, "equal": true, "cache_equal": true, "finite": true, "reference_median_ms": 0.7783845067024231, "candidate_median_ms": 0.3350982442498207}
+{"batch": 16, "bias": true, "max_abs_error": 0.0, "equal": true, "cache_equal": true, "finite": true, "reference_median_ms": 0.8436432108283043, "candidate_median_ms": 0.4035690799355507}

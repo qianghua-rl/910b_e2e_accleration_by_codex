@@ -1,0 +1,3 @@
+[2026-10-22-12:04:42.933] [INFO] [AscendProfiler_TracePreParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_e2e_accleration_by_codex/results/profile_e100_decode_only/06f2b62264eb_146457_20261022120439762_ascend_pt/logs/profiler_20261022120442_146848_TracePreParser.log
+[2026-10-22-12:04:42.933] [INFO] [AscendProfiler_TracePreParser:36] TracePreParser start.
+[2026-10-22-12:04:44.501] [INFO] [AscendProfiler_TracePreParser:50] TracePreParser finish.

@@ -1,0 +1,14 @@
+{
+  "name": "generation_stage_timing_no_overlap_budget",
+  "operator": "generation_runtime",
+  "mode": "decode",
+  "device": "Ascend910B3",
+  "dtype": "bfloat16",
+  "status": "diagnostic_no_change",
+  "contract": {"batch": 16, "steps": 32, "protocol": "E100 concise greedy", "stateful": true},
+  "stages": {"scheduler": "HF loop condition and decode input preparation", "model_forward": "original model call", "sampling": "logits copy/processors/greedy argmax", "postprocess": "cache metadata, EOS, concat, stopping criteria"},
+  "evidence": ["results/e123_generation_stages.json", "results/e123_generation_stages_analysis.json", "results/e123_stage_timing_contract.md"],
+  "measurements": {"host_fraction": {"model_forward": [0.9679, 0.9690], "scheduler": [0.0224, 0.0235], "postprocess": [0.0070, 0.0076], "sampling": [0.0016, 0.0016]}, "tokens": "16/16 x 32 exact", "peak_bytes": 59173664768},
+  "gates": {"stable_critical_overlap_stage": "not demonstrated", "expand": "stop"},
+  "lesson": "Measure stage wall and device intervals before async scheduling; a small scheduler/postprocess fraction and state dependency do not justify blind cross-step overlap."
+}

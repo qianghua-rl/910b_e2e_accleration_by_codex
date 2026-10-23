@@ -1,0 +1,141 @@
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1 owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/remote-home/S45160/miniforge3/envs/ascend-e2e/lib/python3.12/site-packages/torch_npu/utils/collect_env.py:58: UserWarning: Warning: The /usr/local/Ascend/cann-8.5.1/aarch64-linux/ascend_ops_install.info owner does not match the current owner.
+  warnings.warn(f"Warning: The {path} owner does not match the current owner.")
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/asc_op_compile_base/asc_op_compiler/ascendc_compile_gen_code.py:161: SyntaxWarning: invalid escape sequence '\w'
+  match = re.search(f'{option}=(\w+)', ' '.join(compile_options))
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/classifier/transdata/transdata_classifier.py:223: SyntaxWarning: invalid escape sequence '\B'
+  Return BN\BH SCH Result
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:146: SyntaxWarning: invalid escape sequence '\c'
+  2. In forward, tiling would not split c1 and c0, find c1\c0 based on t2.
+/usr/local/Ascend/cann-8.5.1/python/site-packages/tbe/dsl/unify_schedule/vector/transdata/common/graph/transdata_graph_info.py:172: SyntaxWarning: invalid escape sequence '\c'
+  1. Forward: tiling would not split c1\c0\h0, find c1\c0\h1\h0 based on t2
+/usr/local/Ascend/cann-8.5.1/opp/built-in/op_impl/ai_core/tbe/impl/ops_legacy/dynamic/gelu_grad_v2.py:97: SyntaxWarning: invalid escape sequence '\h'
+  gelu_grad_erf = erfc(-\hat{x}) / 2 + (1 /sqrt(Pi)) * (\hat{x}) * exp(-\hat{x}^2)
+/usr/local/Ascend/cann-8.5.1/opp/built-in/op_impl/ai_core/tbe/impl/ops_legacy/dynamic/gelu_grad_v2.py:157: SyntaxWarning: invalid escape sequence '\h'
+  gelu_grad_erf = erfc(-\hat{x}) / 2 + (1 /sqrt(Pi)) * (\hat{x}) * exp(-\hat{x}^2)
+/usr/local/Ascend/cann-8.5.1/python/site-packages/asc_op_compile_base/asc_op_compiler/ascendc_compile_gen_code.py:161: SyntaxWarning: invalid escape sequence '\w'
+  match = re.search(f'{option}=(\w+)', ' '.join(compile_options))
+/usr/local/Ascend/cann-8.5.1/python/site-packages/asc_op_compile_base/asc_op_compiler/ascendc_compile_gen_code.py:161: SyntaxWarning: invalid escape sequence '\w'
+  match = re.search(f'{option}=(\w+)', ' '.join(compile_options))
+/usr/local/Ascend/cann-8.5.1/python/site-packages/asc_op_compile_base/asc_op_compiler/ascendc_compile_gen_code.py:161: SyntaxWarning: invalid escape sequence '\w'
+  match = re.search(f'{option}=(\w+)', ' '.join(compile_options))
+/usr/local/Ascend/cann-8.5.1/python/site-packages/asc_op_compile_base/asc_op_compiler/ascendc_compile_gen_code.py:161: SyntaxWarning: invalid escape sequence '\w'
+  match = re.search(f'{option}=(\w+)', ' '.join(compile_options))
+/usr/local/Ascend/cann-8.5.1/python/site-packages/asc_op_compile_base/asc_op_compiler/ascendc_compile_gen_code.py:161: SyntaxWarning: invalid escape sequence '\w'
+  match = re.search(f'{option}=(\w+)', ' '.join(compile_options))
+/usr/local/Ascend/cann-8.5.1/python/site-packages/asc_op_compile_base/asc_op_compiler/ascendc_compile_gen_code.py:161: SyntaxWarning: invalid escape sequence '\w'
+  match = re.search(f'{option}=(\w+)', ' '.join(compile_options))
+/usr/local/Ascend/cann-8.5.1/python/site-packages/asc_op_compile_base/asc_op_compiler/ascendc_compile_gen_code.py:161: SyntaxWarning: invalid escape sequence '\w'
+  match = re.search(f'{option}=(\w+)', ' '.join(compile_options))
+/usr/local/Ascend/cann-8.5.1/python/site-packages/asc_op_compile_base/asc_op_compiler/ascendc_compile_gen_code.py:161: SyntaxWarning: invalid escape sequence '\w'
+  match = re.search(f'{option}=(\w+)', ' '.join(compile_options))
+{"torch": "2.9.1+cpu", "torch_npu": "2.9.1", "jit_compile_false": true, "input": "E100 layer8 three real decode activations BF16 [16,1,5120]", "checks": [{"mode": "baseline", "checks": [{"exact": true, "finite": true, "max_abs_error": 0.0}, {"exact": true, "finite": true, "max_abs_error": 0.0}, {"exact": true, "finite": true, "max_abs_error": 0.0}]}], "timings": [{"mode": "baseline_control", "median_ms": 0.47780689783394337, "samples_ms": [0.478110508993268, 0.4776478745043278, 0.4791221581399441, 0.47868932597339153, 0.47780689783394337, 0.4767044447362423, 0.47717802226543427]}, {"mode": "baseline", "median_ms": 0.47806184738874435, "samples_ms": [0.47749909572303295, 0.47904415987432003, 0.47806184738874435, 0.4758918657898903, 0.47768931835889816, 0.4785829223692417, 0.4782453179359436]}], "transpose_setup_ms": 155.23616410791874, "nz_setup_ms": 15409.739822149277, "nz_actual_formats": [29, 29, 29]}
+{"torch": "2.9.1+cpu", "torch_npu": "2.9.1", "jit_compile_false": true, "input": "E100 layer8 three real decode activations BF16 [16,1,5120]", "checks": [{"mode": "baseline", "checks": [{"exact": true, "finite": true, "max_abs_error": 0.0}, {"exact": true, "finite": true, "max_abs_error": 0.0}, {"exact": true, "finite": true, "max_abs_error": 0.0}]}, {"mode": "physical_transpose", "checks": [{"exact": false, "finite": true, "max_abs_error": 0.0001220703125}, {"exact": false, "finite": true, "max_abs_error": 6.103515625e-05}, {"exact": false, "finite": true, "max_abs_error": 6.103515625e-05}]}], "timings": [{"mode": "baseline_control", "median_ms": 0.47780689783394337, "samples_ms": [0.478110508993268, 0.4776478745043278, 0.4791221581399441, 0.47868932597339153, 0.47780689783394337, 0.4767044447362423, 0.47717802226543427]}, {"mode": "baseline", "median_ms": 0.47806184738874435, "samples_ms": [0.47749909572303295, 0.47904415987432003, 0.47806184738874435, 0.4758918657898903, 0.47768931835889816, 0.4785829223692417, 0.4782453179359436]}, {"mode": "baseline_control", "median_ms": 0.4773882683366537, "samples_ms": [0.47652795910835266, 0.47978153452277184, 0.4791503306478262, 0.4773882683366537, 0.4786520730704069, 0.4765843041241169, 0.4757505375891924]}, {"mode": "physical_transpose", "median_ms": 0.46289036981761456, "samples_ms": [0.4621951375156641, 0.46300655230879784, 0.4670938942581415, 0.46289036981761456, 0.46332902275025845, 0.46244869008660316, 0.4623373970389366]}], "transpose_setup_ms": 155.23616410791874, "nz_setup_ms": 15409.739822149277, "nz_actual_formats": [29, 29, 29]}
+{"torch": "2.9.1+cpu", "torch_npu": "2.9.1", "jit_compile_false": true, "input": "E100 layer8 three real decode activations BF16 [16,1,5120]", "checks": [{"mode": "baseline", "checks": [{"exact": true, "finite": true, "max_abs_error": 0.0}, {"exact": true, "finite": true, "max_abs_error": 0.0}, {"exact": true, "finite": true, "max_abs_error": 0.0}]}, {"mode": "physical_transpose", "checks": [{"exact": false, "finite": true, "max_abs_error": 0.0001220703125}, {"exact": false, "finite": true, "max_abs_error": 6.103515625e-05}, {"exact": false, "finite": true, "max_abs_error": 6.103515625e-05}]}, {"mode": "nz_weight", "checks": [{"exact": true, "finite": true, "max_abs_error": 0.0}, {"exact": true, "finite": true, "max_abs_error": 0.0}, {"exact": true, "finite": true, "max_abs_error": 0.0}]}], "timings": [{"mode": "baseline_control", "median_ms": 0.47780689783394337, "samples_ms": [0.478110508993268, 0.4776478745043278, 0.4791221581399441, 0.47868932597339153, 0.47780689783394337, 0.4767044447362423, 0.47717802226543427]}, {"mode": "baseline", "median_ms": 0.47806184738874435, "samples_ms": [0.47749909572303295, 0.47904415987432003, 0.47806184738874435, 0.4758918657898903, 0.47768931835889816, 0.4785829223692417, 0.4782453179359436]}, {"mode": "baseline_control", "median_ms": 0.4773882683366537, "samples_ms": [0.47652795910835266, 0.47978153452277184, 0.4791503306478262, 0.4773882683366537, 0.4786520730704069, 0.4765843041241169, 0.4757505375891924]}, {"mode": "physical_transpose", "median_ms": 0.46289036981761456, "samples_ms": [0.4621951375156641, 0.46300655230879784, 0.4670938942581415, 0.46289036981761456, 0.46332902275025845, 0.46244869008660316, 0.4623373970389366]}, {"mode": "baseline_control", "median_ms": 0.4773105029016733, "samples_ms": [0.47849840484559536, 0.47659059055149555, 0.4773105029016733, 0.4767891950905323, 0.47783576883375645, 0.4764364566653967, 0.4783992189913988]}, {"mode": "nz_weight", "median_ms": 0.39812223985791206, "samples_ms": [0.39943098090589046, 0.39617856964468956, 0.4022647626698017, 0.39731431752443314, 0.3966819494962692, 0.39978581480681896, 0.39812223985791206]}], "transpose_setup_ms": 155.23616410791874, "nz_setup_ms": 15409.739822149277, "nz_actual_formats": [29, 29, 29]}

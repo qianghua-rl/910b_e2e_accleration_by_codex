@@ -1,0 +1,14 @@
+{
+  "protocol_equal": true,
+  "complete": true,
+  "common_tasks": 16,
+  "mismatching_task_ids": [],
+  "greedy_bit_equal": true,
+  "accuracy_guardrail_pass": true,
+  "speedup": 0.9880875138885165,
+  "status": "rejected_no_measured_gain",
+  "baseline_makespan_seconds": 81.1459217555821,
+  "candidate_makespan_seconds": 82.12422545067966,
+  "scope": "matched fixed 16 tasks; not full128 acceptance",
+  "decision": "Do not enable or expand to 128; local savings below budget, matched smoke no gain"
+}

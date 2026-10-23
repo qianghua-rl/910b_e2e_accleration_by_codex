@@ -7,6 +7,7 @@ import time
 import torch
 import torch_npu
 from transformers import AutoTokenizer, Qwen3_5ForConditionalGeneration
+import transformers.models.qwen3_5.modeling_qwen3_5 as qm
 from transformers.models.qwen3_5.modeling_qwen3_5 import (
     Qwen3_5RMSNorm,
     Qwen3_5RMSNormGated,
@@ -69,9 +70,22 @@ def main():
                     _original=original, **keyword):
             if not captured and query.shape[1] > 1:
                 captured["g"] = g.detach().float().cpu().contiguous()
+                use_qk_l2norm = keyword.get("use_qk_l2norm_in_kernel", False)
+                key_stage = (
+                    qm.l2norm(key, dim=-1, eps=1e-6) if use_qk_l2norm else key
+                )
+                captured["key"] = key_stage.detach().cpu().contiguous()
+                captured["beta"] = beta.detach().cpu().contiguous()
                 captured["shape"] = list(g.shape)
                 captured["stride"] = list(g.stride())
                 captured["dtype"] = str(g.dtype)
+                captured["key_shape"] = list(key_stage.shape)
+                captured["key_stride"] = list(key_stage.stride())
+                captured["key_dtype"] = str(key_stage.dtype)
+                captured["beta_shape"] = list(beta.shape)
+                captured["beta_stride"] = list(beta.stride())
+                captured["beta_dtype"] = str(beta.dtype)
+                captured["use_qk_l2norm"] = use_qk_l2norm
             return _original(query, key, value, g, beta, *positional, **keyword)
 
         module.chunk_gated_delta_rule = capture
@@ -88,11 +102,20 @@ def main():
     token_ids = generated[:, inputs["input_ids"].shape[1]:].squeeze(-1).cpu().tolist()
     record = {
         "g": captured["g"],
+        "key": captured["key"],
+        "beta": captured["beta"],
         "task_ids": TASK_IDS,
         "token_ids": token_ids,
         "shape": captured["shape"],
         "stride": captured["stride"],
         "dtype": captured["dtype"],
+        "key_shape": captured["key_shape"],
+        "key_stride": captured["key_stride"],
+        "key_dtype": captured["key_dtype"],
+        "beta_shape": captured["beta_shape"],
+        "beta_stride": captured["beta_stride"],
+        "beta_dtype": captured["beta_dtype"],
+        "use_qk_l2norm": captured["use_qk_l2norm"],
         "elapsed_seconds": time.perf_counter() - started,
         "prompt_lengths": inputs["attention_mask"].sum(-1).cpu().tolist(),
         "padded_prompt_length": int(inputs["input_ids"].shape[1]),
@@ -104,7 +127,8 @@ def main():
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     torch.save(record, output)
-    print(json.dumps({key: value for key, value in record.items() if key != "g"}))
+    tensor_fields = {"g", "key", "beta"}
+    print(json.dumps({key: value for key, value in record.items() if key not in tensor_fields}))
 
 
 if __name__ == "__main__":

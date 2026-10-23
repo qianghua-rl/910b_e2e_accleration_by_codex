@@ -1,5 +1,5 @@
 {
-  "name": "gdn_prefill_chunk_cumsum_device_occupied",
+  "name": "gdn_prefill_chunk_cumsum_device_unavailable",
   "operator": "gdn_prefill.chunk_cumsum",
   "mode": "prefill",
   "device": "Ascend910B3",
@@ -21,8 +21,11 @@
     "npu_reference": "not run",
     "stage_output": "not run",
     "e100_token_trajectory": "not run",
-    "device": "npu-smi reported ~61.8GiB/64GiB used and active AICore with no visible process IDs",
+    "device": "npu-smi fails DCMI initialization ret=-8005/exit 187; direct torch_npu checks report npu_available=false and device_count=0; only /dev/davinci6 and /dev/davinci7 are visible",
+    "CPU_reference_semantics": "validated by `python scripts/gdn_cumsum_probe.py --cpu-self-test`; does not validate NPU/PTO kernel",
+    "python_environment": "capture uses ascend-e2e Python 3.12; probe uses vllm-ascend-py310 Python 3.10",
+    "kernel_source": "editable package points to missing /tmp/megagdn-pto; source not found in repo or searched roots",
     "expand": "stop until exclusive device is available"
   },
-  "lesson": "A reference and kernel probe cannot be trusted while the device has unexplained active allocation/compute; do not load the 27B or compile a candidate into shared state."
+  "lesson": "Device state changed since the prior audit, but telemetry is unavailable. Do not load the 27B or compile a candidate until DCMI works and exclusive free HBM can be established."
 }

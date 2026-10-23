@@ -1,0 +1,330 @@
+{
+  "groups": {
+    "other": {
+      "aclnnArange": {
+        "count": 20,
+        "device_us": 101.03999999999999,
+        "flow_delay_median_us": 12.5
+      },
+      "aclnnAdd": {
+        "count": 844,
+        "device_us": 4386.68,
+        "flow_delay_median_us": 185.25
+      },
+      "aclnnAdds": {
+        "count": 656,
+        "device_us": 1153.6200000000001,
+        "flow_delay_median_us": 9.25
+      },
+      "aclnnCat": {
+        "count": 1040,
+        "device_us": 6232.740000000001,
+        "flow_delay_median_us": 3.5
+      },
+      "aclnnInplaceFillScalar": {
+        "count": 20,
+        "device_us": 29.000000000000004,
+        "flow_delay_median_us": 1225.5
+      },
+      "aclnnInplaceCopy": {
+        "count": 1004,
+        "device_us": 13669.859999999971,
+        "flow_delay_median_us": 9.5
+      },
+      "aclnnArgMax": {
+        "count": 8,
+        "device_us": 911.36,
+        "flow_delay_median_us": 1363.0
+      },
+      "aclnnMul": {
+        "count": 904,
+        "device_us": 5715.999999999998,
+        "flow_delay_median_us": 189.0
+      },
+      "aclnnRsubs": {
+        "count": 4,
+        "device_us": 11.96,
+        "flow_delay_median_us": 1495.25
+      },
+      "aclnnBitwiseOrTensor": {
+        "count": 8,
+        "device_us": 12.5,
+        "flow_delay_median_us": 1081.25
+      },
+      "aclnnEqTensor": {
+        "count": 8,
+        "device_us": 56.68,
+        "flow_delay_median_us": 1135.25
+      },
+      "aclnnAny": {
+        "count": 4,
+        "device_us": 23.68,
+        "flow_delay_median_us": 1114.0
+      },
+      "aclnnBitwiseNot": {
+        "count": 4,
+        "device_us": 4.38,
+        "flow_delay_median_us": 1014.25
+      },
+      "aclnnBitwiseAndTensor": {
+        "count": 16,
+        "device_us": 39.68000000000001,
+        "flow_delay_median_us": 729.75
+      },
+      "aclnnMax": {
+        "count": 4,
+        "device_us": 10.42,
+        "flow_delay_median_us": 962.5
+      },
+      "aclnnEqScalar": {
+        "count": 4,
+        "device_us": 7.9399999999999995,
+        "flow_delay_median_us": 937.75
+      },
+      "aclnnEmbedding": {
+        "count": 4,
+        "device_us": 17.86,
+        "flow_delay_median_us": 16.0
+      },
+      "aclnnAll": {
+        "count": 4,
+        "device_us": 12.180000000000001,
+        "flow_delay_median_us": 41.5
+      },
+      "aclnnLeTensor": {
+        "count": 4,
+        "device_us": 12.04,
+        "flow_delay_median_us": 47.5
+      },
+      "aclnnIndex": {
+        "count": 4,
+        "device_us": 1333.74,
+        "flow_delay_median_us": 40.25
+      },
+      "aclnnMatmul": {
+        "count": 8,
+        "device_us": 56.720000000000006,
+        "flow_delay_median_us": 15.0
+      },
+      "aclnnCos": {
+        "count": 4,
+        "device_us": 9.719999999999999,
+        "flow_delay_median_us": 92.5
+      },
+      "aclnnMuls": {
+        "count": 8,
+        "device_us": 10.74,
+        "flow_delay_median_us": 41.0
+      },
+      "aclnnSin": {
+        "count": 4,
+        "device_us": 9.02,
+        "flow_delay_median_us": 24.75
+      },
+      "RmsNorm": {
+        "count": 836,
+        "device_us": 7815.059999999992,
+        "flow_delay_median_us": 10.75
+      },
+      "aclnnConvolution": {
+        "count": 1344,
+        "device_us": 116823.26000000001,
+        "flow_delay_median_us": 69.0
+      },
+      "aclnnSilu": {
+        "count": 640,
+        "device_us": 5434.360000000007,
+        "flow_delay_median_us": 555.5
+      },
+      "aclnnSigmoid": {
+        "count": 256,
+        "device_us": 745.2800000000002,
+        "flow_delay_median_us": 456.5
+      },
+      "aclnnExp": {
+        "count": 192,
+        "device_us": 227.39999999999995,
+        "flow_delay_median_us": 402.5
+      },
+      "aclnnNeg": {
+        "count": 448,
+        "device_us": 762.0600000000007,
+        "flow_delay_median_us": 9.0
+      },
+      "aclnnSoftplus": {
+        "count": 192,
+        "device_us": 376.90000000000015,
+        "flow_delay_median_us": 311.75
+      },
+      "aclnnRepeatInterleaveIntWithDim": {
+        "count": 1152,
+        "device_us": 4326.2599999999775,
+        "flow_delay_median_us": 252.25
+      },
+      "SwiGlu": {
+        "count": 192,
+        "device_us": 1153.22,
+        "flow_delay_median_us": 2.75
+      },
+      "aclnnContiguous": {
+        "count": 64,
+        "device_us": 170.45999999999998,
+        "flow_delay_median_us": 58.5
+      },
+      "aclnnLogicalNot": {
+        "count": 64,
+        "device_us": 124.01999999999997,
+        "flow_delay_median_us": 9.0
+      },
+      "aclnnFlashAttentionScore": {
+        "count": 64,
+        "device_us": 9097.000000000004,
+        "flow_delay_median_us": 14.75
+      },
+      "EVENT": {
+        "count": 64,
+        "device_us": 1.2800000000000007,
+        "flow_delay_median_us": 60.75
+      },
+      "MEMCPY": {
+        "count": 4,
+        "device_us": 2.18,
+        "flow_delay_median_us": 1075.25
+      }
+    },
+    "projection": {
+      "aclnnMatmul": {
+        "count": 1216,
+        "device_us": 71686.87999999999,
+        "flow_delay_median_us": 8.25
+      }
+    },
+    "recurrent": {
+      "aclnnMul": {
+        "count": 1728,
+        "device_us": 43199.94000000002,
+        "flow_delay_median_us": 16.0
+      },
+      "aclnnReduceSum": {
+        "count": 768,
+        "device_us": 14776.319999999989,
+        "flow_delay_median_us": 44.75
+      },
+      "aclnnAdds": {
+        "count": 384,
+        "device_us": 450.72000000000065,
+        "flow_delay_median_us": 56.25
+      },
+      "aclnnRsqrt": {
+        "count": 384,
+        "device_us": 418.5600000000006,
+        "flow_delay_median_us": 36.0
+      },
+      "aclnnInplaceCopy": {
+        "count": 1344,
+        "device_us": 9113.359999999986,
+        "flow_delay_median_us": 2.25
+      },
+      "aclnnMuls": {
+        "count": 192,
+        "device_us": 1268.9399999999978,
+        "flow_delay_median_us": 3.25
+      },
+      "aclnnExp": {
+        "count": 192,
+        "device_us": 189.17999999999975,
+        "flow_delay_median_us": 4.0
+      },
+      "aclnnSub": {
+        "count": 192,
+        "device_us": 1350.139999999999,
+        "flow_delay_median_us": 32.75
+      },
+      "aclnnAdd": {
+        "count": 192,
+        "device_us": 5983.740000000002,
+        "flow_delay_median_us": 28.25
+      }
+    },
+    "mlp": {
+      "aclnnMatmul": {
+        "count": 768,
+        "device_us": 157407.02,
+        "flow_delay_median_us": 120.0
+      }
+    },
+    "unlinked": {
+      "EVENT": {
+        "count": 64,
+        "device_us": 6634.740000000001,
+        "flow_delay_median_us": null
+      }
+    },
+    "lm_head": {
+      "aclnnMatmul": {
+        "count": 4,
+        "device_us": 8448.36,
+        "flow_delay_median_us": 14.5
+      }
+    }
+  },
+  "device_busy_union_us": 495062.0,
+  "device_window_us": 952157.25,
+  "cpu_marked_duration_us": {
+    "projection": 134030.75,
+    "mlp": 82799.5,
+    "lm_head": 498.5,
+    "recurrent": 201993.0
+  },
+  "limitations": [
+    "flow delay includes queueing and device backlog; not pure launch cost",
+    "device family sums can overlap",
+    "CPU marked intervals include nested dispatch; not additive to device time",
+    "four early decode steps only"
+  ],
+  "recurrent_cpu_aclnn_dispatch": {
+    "aclnnMul": [
+      1728,
+      9550.429999999995
+    ],
+    "aclnnReduceSum": [
+      768,
+      4086.3900000000012
+    ],
+    "aclnnAdds": [
+      384,
+      2071.3599999999988
+    ],
+    "aclnnRsqrt": [
+      384,
+      1849.3200000000008
+    ],
+    "aclnnInplaceCopy": [
+      1344,
+      8305.149999999996
+    ],
+    "aclnnMuls": [
+      192,
+      1177.1200000000006
+    ],
+    "aclnnExp": [
+      192,
+      905.05
+    ],
+    "aclnnSub": [
+      192,
+      913.1
+    ],
+    "aclnnAdd": [
+      192,
+      1005.3499999999996
+    ]
+  },
+  "recurrent_logical_state_bytes": 50331648,
+  "recurrent_logical_state_pass_estimate": {
+    "passes": 12,
+    "bytes_per_layer": 603979776,
+    "bytes_per_decode_step_48_layers": 28991029248,
+    "scope": "source-level eager state-sized intermediates, not measured HBM traffic; ignores cache hits, compiler fusion, vector-sized tensors and casts"
+  }
+}

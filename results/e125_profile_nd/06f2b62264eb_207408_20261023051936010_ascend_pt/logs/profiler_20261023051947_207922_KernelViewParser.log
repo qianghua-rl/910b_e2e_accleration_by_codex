@@ -1,0 +1,3 @@
+[2026-10-23-05:19:47.183] [INFO] [AscendProfiler_KernelViewParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_e2e_accleration_by_codex/results/e125_profile_nd/06f2b62264eb_207408_20261023051936010_ascend_pt/logs/profiler_20261023051947_207922_KernelViewParser.log
+[2026-10-23-05:19:47.184] [INFO] [AscendProfiler_KernelViewParser:38] KernelViewParser start.
+[2026-10-23-05:19:47.473] [INFO] [AscendProfiler_KernelViewParser:46] KernelViewParser finish.

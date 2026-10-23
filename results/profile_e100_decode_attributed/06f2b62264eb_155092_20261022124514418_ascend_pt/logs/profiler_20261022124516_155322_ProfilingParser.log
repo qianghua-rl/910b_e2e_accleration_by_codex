@@ -1,0 +1,55 @@
+[2026-10-22-12:45:16.040] [INFO] [AscendProfiler_ProfilingParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_e2e_accleration_by_codex/results/profile_e100_decode_attributed/06f2b62264eb_155092_20261022124514418_ascend_pt/logs/profiler_20261022124516_155322_ProfilingParser.log
+[2026-10-22-12:45:16.088] [INFO] [AscendProfiler_ProfilingParser:100] TorchOpParser start.
+[2026-10-22-12:45:16.088] [INFO] [AscendProfiler_ProfilingParser:82] TaskQueueParser start.
+[2026-10-22-12:45:16.148] [INFO] [AscendProfiler_ProfilingParser:162] CANNTimelineParser start.
+[2026-10-22-12:45:17.181] [INFO] [AscendProfiler_ProfilingParser:106] TorchOpParser finish.
+[2026-10-22-12:45:17.629] [INFO] [AscendProfiler_ProfilingParser:88] TaskQueueParser finish.
+[2026-10-22-12:45:17.630] [INFO] [AscendProfiler_ProfilingParser:118] DbPreParser start.
+[2026-10-22-12:45:17.630] [INFO] [AscendProfiler_ProfilingParser:62] TreeBuildParser start.
+[2026-10-22-12:45:19.312] [INFO] [AscendProfiler_ProfilingParser:70] TreeBuildParser finish.
+[2026-10-22-12:45:19.364] [INFO] [AscendProfiler_ProfilingParser:62] MemoryPrepareParser start.
+[2026-10-22-12:45:19.510] [INFO] [AscendProfiler_ProfilingParser:129] DbPreParser finish.
+[2026-10-22-12:45:19.568] [INFO] [AscendProfiler_ProfilingParser:75] MemoryPrepareParser finish.
+[2026-10-22-12:45:23.376] [INFO] [AscendProfiler_ProfilingParser:172] CANNTimelineParser finish.
+[2026-10-22-12:45:23.451] [INFO] [AscendProfiler_ProfilingParser:31] RelationParser start.
+[2026-10-22-12:45:25.202] [INFO] [AscendProfiler_ProfilingParser:40] DbParser start.
+[2026-10-22-12:45:25.386] [INFO] [AscendProfiler_ProfilingParser:38] RelationParser finish.
+[2026-10-22-12:45:25.454] [INFO] [AscendProfiler_ProfilingParser:27] BasicDbParser start.
+[2026-10-22-12:45:25.725] [INFO] [AscendProfiler_ProfilingParser:40] BasicDbParser finish.
+[2026-10-22-12:45:25.726] [INFO] [AscendProfiler_ProfilingParser:27] FwkApiDbParser start.
+[2026-10-22-12:45:25.726] [INFO] [AscendProfiler_ProfilingParser:32] FwkApiDbParser get fwk api data finish.
+[2026-10-22-12:45:26.024] [INFO] [AscendProfiler_ProfilingParser:34] FwkApiDbParser get api data for db finish.
+[2026-10-22-12:45:26.559] [INFO] [AscendProfiler_ProfilingParser:36] FwkApiDbParser save api data to db finish.
+[2026-10-22-12:45:26.559] [INFO] [AscendProfiler_ProfilingParser:40] FwkApiDbParser finish.
+[2026-10-22-12:45:26.562] [INFO] [AscendProfiler_ProfilingParser:82] MemoryDbParser start.
+[2026-10-22-12:45:26.563] [INFO] [AscendProfiler_ProfilingParser:95] MemoryDbParser finish.
+[2026-10-22-12:45:26.563] [INFO] [AscendProfiler_ProfilingParser:33] GCRecordDbParser start.
+[2026-10-22-12:45:26.563] [INFO] [AscendProfiler_ProfilingParser:41] GCRecordDbParser finish.
+[2026-10-22-12:45:26.563] [INFO] [AscendProfiler_ProfilingParser:36] StepInfoDbParser start.
+[2026-10-22-12:45:26.793] [INFO] [AscendProfiler_ProfilingParser:43] StepInfoDbParser finish.
+[2026-10-22-12:45:26.793] [INFO] [AscendProfiler_ProfilingParser:80] CommunicationDbParser start.
+[2026-10-22-12:45:26.794] [INFO] [AscendProfiler_ProfilingParser:88] CommunicationDbParser finish.
+[2026-10-22-12:45:26.794] [INFO] [AscendProfiler_ProfilingParser:74] TraceStepTimeDbParser start.
+[2026-10-22-12:45:26.917] [INFO] [AscendProfiler_ProfilingParser:83] TraceStepTimeDbParser finish.
+[2026-10-22-12:45:26.918] [INFO] [AscendProfiler_ProfilingParser:64] DbParser finish.
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:473] ============================================================
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:474] Task execution completed
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:475] ============================================================
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:478] torch_op                  | PTHREAD         | Succeed    | 1.114s | deps: None
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:478] task_queue                | PTHREAD         | Succeed    | 1.541s | deps: None
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:478] trace_prepare             | SUB_PROCESS     | Succeed    | 1.837s | deps: torch_op, task_queue
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:478] build_tree                | PTHREAD         | Succeed    | 1.708s | deps: torch_op, task_queue
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:478] export                    | SUB_PROCESS     | Succeed    | 8.107s | deps: None
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:478] timeline                  | PTHREAD|NON_BLOCKING | Succeed    | 7.231s | deps: None
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:478] relation                  | PTHREAD         | Succeed    | 1.936s | deps: task_queue, timeline
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:478] memory_prepare            | PTHREAD         | Succeed    | 0.231s | deps: build_tree, task_queue, torch_op
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:478] analyze                   | SUB_PROCESS     | Succeed    | 1.112s | deps: timeline
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:478] operator                  | SUB_PROCESS     | Succeed    | 0.829s | deps: build_tree, timeline, relation, torch_op
+[2026-10-22-12:45:27.467] [INFO] [AscendProfiler_ProfilingParser:478] trace                     | SUB_PROCESS     | Succeed    | 3.249s | deps: build_tree, trace_prepare, timeline, task_queue, torch_op
+[2026-10-22-12:45:27.468] [INFO] [AscendProfiler_ProfilingParser:478] kernel                    | SUB_PROCESS     | Succeed    | 0.333s | deps: build_tree, export, relation
+[2026-10-22-12:45:27.468] [INFO] [AscendProfiler_ProfilingParser:478] step_time                 | SUB_PROCESS     | Succeed    | 1.146s | deps: build_tree, timeline, relation, torch_op
+[2026-10-22-12:45:27.468] [INFO] [AscendProfiler_ProfilingParser:478] memory                    | SUB_PROCESS     | Succeed    | 0.138s | deps: export, memory_prepare
+[2026-10-22-12:45:27.468] [INFO] [AscendProfiler_ProfilingParser:478] integrate                 | SUB_PROCESS     | Succeed    | 0.228s | deps: export
+[2026-10-22-12:45:27.468] [INFO] [AscendProfiler_ProfilingParser:478] communication             | SUB_PROCESS     | Succeed    | 0.330s | deps: build_tree, analyze, relation
+[2026-10-22-12:45:27.468] [INFO] [AscendProfiler_ProfilingParser:478] db_prepare                | PTHREAD         | Succeed    | 1.886s | deps: torch_op, task_queue
+[2026-10-22-12:45:27.468] [INFO] [AscendProfiler_ProfilingParser:478] torch_db                  | PTHREAD         | Succeed    | 2.434s | deps: export, memory_prepare, build_tree, analyze, db_prepare

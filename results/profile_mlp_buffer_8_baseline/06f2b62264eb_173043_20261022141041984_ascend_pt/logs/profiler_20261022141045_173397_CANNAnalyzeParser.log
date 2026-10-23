@@ -1,0 +1,3 @@
+[2026-10-22-14:10:45.368] [INFO] [AscendProfiler_CANNAnalyzeParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_e2e_accleration_by_codex/results/profile_mlp_buffer_8_baseline/06f2b62264eb_173043_20261022141041984_ascend_pt/logs/profiler_20261022141045_173397_CANNAnalyzeParser.log
+[2026-10-22-14:10:45.369] [INFO] [AscendProfiler_CANNAnalyzeParser:41] CANNAnalyzeParser start.
+[2026-10-22-14:10:46.395] [INFO] [AscendProfiler_CANNAnalyzeParser:67] CANNAnalyzeParser finish.

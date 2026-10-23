@@ -1,0 +1,19 @@
+{
+  "trace": "results/profile_e100_decode_only/06f2b62264eb_146457_20261022120439762_ascend_pt/ASCEND_PROFILER_OUTPUT/trace_view.json",
+  "gap_groups": {
+    "host_flow_started_before_previous_device_end": {
+      "count": 3847,
+      "gap_us": 8622.25
+    },
+    "host_flow_start_after_previous_device_end": {
+      "count": 4265,
+      "gap_us": 208005.0
+    }
+  },
+  "limitations": [
+    "Host flow start marks dispatch origin, not exact device command availability",
+    "Host started earlier does not prove submitted/ready earlier",
+    "Gaps may include dependencies, device scheduling and profiler overhead",
+    "No pure launch or removable-idle estimate is derived"
+  ]
+}

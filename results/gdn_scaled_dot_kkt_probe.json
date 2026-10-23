@@ -1,0 +1,184 @@
+{
+  "operator": "gdn_prefill.scaled_dot_kkt",
+  "status": "stage_candidate_passed_ceiling_pending_model_gate",
+  "contract": {
+    "key": {
+      "shape": [
+        16,
+        459,
+        48,
+        128
+      ],
+      "stride": [
+        2820096,
+        6144,
+        128,
+        1
+      ],
+      "dtype": "torch.bfloat16"
+    },
+    "beta": {
+      "shape": [
+        16,
+        459,
+        48
+      ],
+      "stride": [
+        22032,
+        48,
+        1
+      ],
+      "dtype": "torch.bfloat16"
+    },
+    "g": {
+      "shape": [
+        16,
+        459,
+        48
+      ],
+      "stride": [
+        22032,
+        48,
+        1
+      ],
+      "dtype": "torch.float32"
+    },
+    "output": {
+      "shape": [
+        16,
+        459,
+        48,
+        64
+      ],
+      "dtype": "torch.float32",
+      "layout": "[B,T,H,C=64]"
+    },
+    "state": "stateless stage",
+    "cu_seqlens": "PTO packed rows [0,459,...,7344], int32; reset chunk index at each sequence",
+    "workspace": "PTO [2*BLOCK_DIM,64,64] FP16 plus A output FP16"
+  },
+  "python_fp32_reference": {
+    "equal": false,
+    "max_abs_error": 4.76837158203125e-07,
+    "mean_abs_error": 3.491632094565489e-09,
+    "max_relative_error": 0.0013646968873217702,
+    "finite": true
+  },
+  "pto_vs_reference": {
+    "equal": false,
+    "max_abs_error": 0.0005227327346801758,
+    "mean_abs_error": 8.32666592032183e-06,
+    "max_relative_error": 0.004000685177743435,
+    "finite": true
+  },
+  "numerical_tolerance": 0.002,
+  "independent_ascend_triton_reference": {
+    "implementation": "scripts/gdn_scaled_dot_kkt_reference.py (standalone FLA Ascend Triton port)",
+    "gate_argument": "g_cumsum",
+    "timing": {
+      "host_median_ms": 148.03478494286537,
+      "device_median_ms": 147.25668334960938,
+      "host_samples_ms": [
+        148.03478494286537
+      ],
+      "device_samples_ms": [
+        147.25668334960938
+      ]
+    }
+  },
+  "pto_candidate": {
+    "kernel_launch_timing": {
+      "host_median_ms": 0.7200632244348526,
+      "device_median_ms": 0.5751799941062927,
+      "host_samples_ms": [
+        0.7200632244348526
+      ],
+      "device_samples_ms": [
+        0.5751799941062927
+      ]
+    },
+    "full_wrapper_timing": {
+      "host_median_ms": 1.200871542096138,
+      "device_median_ms": 1.0525599718093872,
+      "host_samples_ms": [
+        1.200871542096138
+      ],
+      "device_samples_ms": [
+        1.0525599718093872
+      ]
+    },
+    "peak_delta_bytes": 139136000,
+    "conversion": "BF16 key/beta to FP16; g_sum stays FP32; pack dense rows and transpose gate metadata"
+  },
+  "cost_ceiling": {
+    "shape": [
+      1,
+      4096,
+      48,
+      128
+    ],
+    "reference_device_ms_per_prefill_call": 73.9891586303711,
+    "reference": "independent FLA Ascend Triton backend, not the installed vLLM kernel",
+    "assumption": "all 48 GDN layers across 16 prefill calls run at max_model_len and the full KKT stage cost is removable",
+    "seconds": 56.823673828125,
+    "fraction_of_E100": 0.21440458182837122,
+    "passes_2_percent": true
+  },
+  "e100_reference": {
+    "task_ids": [
+      640,
+      1137,
+      214,
+      1030,
+      950,
+      428,
+      866,
+      175,
+      1130,
+      445,
+      1161,
+      611,
+      108,
+      1288,
+      554,
+      249
+    ],
+    "token_ids": [
+      248058,
+      248058,
+      248058,
+      248058,
+      248058,
+      248058,
+      248058,
+      248058,
+      248058,
+      248058,
+      248058,
+      248058,
+      248058,
+      248058,
+      248058,
+      248058
+    ],
+    "prompt_lengths": [
+      459,
+      410,
+      386,
+      436,
+      380,
+      396,
+      373,
+      389,
+      405,
+      395,
+      396,
+      397,
+      404,
+      380,
+      378,
+      390
+    ]
+  },
+  "model_logits_and_token_replay": "not run by stage probe"
+}

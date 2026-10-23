@@ -7,12 +7,6 @@ import time
 from pathlib import Path
 
 import torch
-import torch_npu
-
-sys.path.insert(0, "/tmp/megagdn-pto")
-from megagdn_pto.kernel_libs import run_chunk_cumsum
-from vllm.model_executor.layers.fla.ops.cumsum import chunk_local_cumsum
-
 
 CHUNK = 64
 
@@ -34,6 +28,37 @@ def hf_reference(g):
     return padded.view(batch, -1, CHUNK, g.shape[-1]).cumsum(dim=2).view(
         batch, -1, g.shape[-1]
     )[:, :length]
+
+
+def cpu_self_test():
+    torch.manual_seed(42)
+    batch, length, heads = 3, 130, 5
+    g = torch.randn(batch, length, heads, dtype=torch.float32)
+    py_ref = python_reference(g)
+    hf_ref = hf_reference(g)
+
+    packed = g.reshape(1, batch * length, heads)
+    cu_seqlens = torch.arange(batch + 1, dtype=torch.int32) * length
+    packed_ref = torch.empty_like(packed)
+    for row in range(batch):
+        begin = int(cu_seqlens[row])
+        end = int(cu_seqlens[row + 1])
+        packed_ref[0, begin:end] = py_ref[row]
+
+    result = {
+        "scope": "CPU reference semantics only; no NPU kernel validation",
+        "input": {"shape": list(g.shape), "stride": list(g.stride()),
+                  "dtype": str(g.dtype), "layout": "dense [B,T,H]"},
+        "chunk_size": CHUNK,
+        "cu_seqlens": cu_seqlens.tolist(),
+        "python_equals_hf": bool(torch.equal(py_ref, hf_ref)),
+        "packed_rows_equal_dense_rows": bool(
+            torch.equal(packed_ref.view(batch, length, heads), py_ref)
+        ),
+    }
+    if not result["python_equals_hf"] or not result["packed_rows_equal_dense_rows"]:
+        raise SystemExit(json.dumps(result))
+    print(json.dumps(result, indent=2))
 
 
 def timing(fn, repeats):
@@ -86,7 +111,22 @@ def main():
     parser.add_argument("--artifact", default="results/gdn_cumsum_e100_batch16.pt")
     parser.add_argument("--output", default="results/gdn_cumsum_probe.json")
     parser.add_argument("--repeats", type=int, default=30)
+    parser.add_argument("--cpu-self-test", action="store_true")
     args = parser.parse_args()
+
+    if args.cpu_self_test:
+        cpu_self_test()
+        return
+
+    import torch_npu
+    pto_root = Path("/tmp/megagdn-pto")
+    if not pto_root.exists():
+        raise SystemExit(
+            "PTO source checkout is missing at /tmp/megagdn-pto; restore the pinned checkout before NPU validation"
+        )
+    sys.path.insert(0, str(pto_root))
+    from megagdn_pto.kernel_libs import run_chunk_cumsum
+    from vllm.model_executor.layers.fla.ops.cumsum import chunk_local_cumsum
 
     record = torch.load(args.artifact, map_location="cpu", weights_only=False)
     g_cpu = record["g"].float().contiguous()
@@ -127,7 +167,13 @@ def main():
     current_check = compare(current_out, expected)
     pto_check = compare(pto_out, expected)
 
-    if not python_hf["equal"] or not current_check["equal"] or not pto_check["equal"]:
+    candidate_matches_current = compare(pto_out, current_out)
+    reference_tolerance = 2e-4
+    reference_ok = (
+        current_check["max_abs_error"] <= reference_tolerance
+        and pto_check["max_abs_error"] <= reference_tolerance
+    )
+    if not python_hf["equal"] or not reference_ok or not candidate_matches_current["equal"]:
         result = {
             "operator": "gdn_prefill.chunk_cumsum",
             "status": "rejected_correctness",
@@ -135,6 +181,8 @@ def main():
             "python_vs_hf_reference": python_hf,
             "current_vllm_npu": current_check,
             "pto_single_stage_candidate": pto_check,
+            "candidate_vs_current": candidate_matches_current,
+            "reference_tolerance": reference_tolerance,
             "timing": "not run because a stage output differed",
             "e100_capture": {
                 "task_ids": record["task_ids"],
@@ -189,6 +237,7 @@ def main():
         },
         "pto_single_stage_candidate": {
             "correctness": pto_check,
+            "matches_current_vllm": candidate_matches_current,
             "kernel_with_launch_wrapper": timing(pto_kernel, args.repeats),
             "full_wrapper": timing(pto_wrapper, args.repeats),
             "peak_delta_bytes": peak_delta(pto_wrapper),
