@@ -1,0 +1,108 @@
+{
+  "verified": true,
+  "checks": {
+    "four_trials": true,
+    "device0": true,
+    "source_hashes": true,
+    "trial0/audit": true,
+    "trial0/selection": true,
+    "trial0/time": true,
+    "trial0/memory": true,
+    "trial1/audit": true,
+    "trial1/selection": true,
+    "trial1/time": true,
+    "trial1/memory": true,
+    "trial2/audit": true,
+    "trial2/selection": true,
+    "trial2/time": true,
+    "trial2/memory": true,
+    "trial3/audit": true,
+    "trial3/selection": true,
+    "trial3/time": true,
+    "trial3/memory": true
+  },
+  "performance_passed": true,
+  "mean_gain_fraction": 0.020689686230189016,
+  "paired_gains": [
+    0.02244388853048291,
+    0.01890984750961401
+  ],
+  "range_fractions": [
+    0.014614289513139578,
+    0.01095948927852574
+  ],
+  "trials": [
+    {
+      "kind": "baseline",
+      "seconds": 289.41098515689373,
+      "strict_exact": true,
+      "score_v3": 122,
+      "failed_ids": [
+        1161,
+        423,
+        952,
+        1035,
+        552,
+        1048
+      ],
+      "token_count": 15961,
+      "tool_count": 128,
+      "allocated": 59972823040,
+      "reserved": 61863886848
+    },
+    {
+      "kind": "candidate",
+      "seconds": 282.91547726653516,
+      "strict_exact": true,
+      "score_v3": 122,
+      "failed_ids": [
+        1161,
+        423,
+        952,
+        1035,
+        552,
+        1048
+      ],
+      "token_count": 15961,
+      "tool_count": 128,
+      "allocated": 59972823040,
+      "reserved": 61863886848
+    },
+    {
+      "kind": "candidate",
+      "seconds": 279.8484808411449,
+      "strict_exact": true,
+      "score_v3": 122,
+      "failed_ids": [
+        1161,
+        423,
+        952,
+        1035,
+        552,
+        1048
+      ],
+      "token_count": 15961,
+      "tool_count": 128,
+      "allocated": 59972823040,
+      "reserved": 61863886848
+    },
+    {
+      "kind": "baseline",
+      "seconds": 285.24237057194114,
+      "strict_exact": true,
+      "score_v3": 122,
+      "failed_ids": [
+        1161,
+        423,
+        952,
+        1035,
+        552,
+        1048
+      ],
+      "token_count": 15961,
+      "tool_count": 128,
+      "allocated": 59972823040,
+      "reserved": 61863886848
+    }
+  ]
+}
