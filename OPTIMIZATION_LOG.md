@@ -1,5 +1,104 @@
 # 单卡 Qwen3.5-27B / GSM8K 优化实验记录
 
+> 2026-11-02 证据复盘与路线建议见 [E2E_OPTIMIZATION_REVIEW.md](E2E_OPTIMIZATION_REVIEW.md)。已离线汇总 E251 原始 ABBA：当前 HF 候选均值 248.202 s，首轮 generation 占 84.77%；并纳入 E255、E275/E276 与 graph 后续证据。下方“当前路线（E130）”及历史“下一步”均是当时记录，不代表最新状态。此次未运行新 NPU 实验或更改默认实现。
+
+## E210 EOS admission (2026-10-30)
+
+The callback was inserted after HF greedy token selection and EOS padding, so
+it observes the existing `next_tokens` and post-forward cache without repeating
+argmax or changing stopping semantics. First16 correctness was exact against
+E100, scored 15/16, and stayed within the allocated-memory cap. Physical-device1
+ABBA was 75.815478 s baseline, 76.118037 s candidate, 73.993160 s candidate,
+75.885775 s baseline: 1.048% mean gain, pair gains -0.399% and 2.494%, and
+2.872% candidate variation. This is below the 2% admission gate and not stable;
+E210 is not accepted or expanded. B1 tensor differences remain diagnostic only.
+
+## E211 cached GDN append diagnostic (2026-10-31)
+
+The installed HF branch uses saved recurrent state for cached T=1, but cached
+T>1 selects chunk recurrence with `initial_state=None` and rebuilds convolution
+state from the suffix. A tiny CPU real-HF-layer probe against repeated cached
+single-token calls is exact at T=1; at T=2 output/conv/recurrent relative L2 are
+1.431/0.884/1.007. At T=5/50 final conv state is exact and recurrent-state
+relative L2 is below 6e-8, while output relative L2 is 0.979/0.372. These random
+tiny-weight results mix state-routing and chunk-vs-step arithmetic effects;
+they only justify a real-state layer-boundary intervention, not a full-model
+claim. No trajectory or performance gate ran. B1 differences remain diagnostic.
+
+The follow-up replay used E193 real task640 layer-0 hidden/state captures and
+real layer-0 safetensors on CPU. Stock cached chunk append vs repeated cached
+T=1 had output relative L2 0.295/0.223/0.189 and recurrent-state relative L2
+0.953/0.726/0.655 at T=2/5/8. The E168 history-aware adapter reduced output
+relative L2 to 0.000118/0.000235/0.000264 and recurrent-state relative L2 to
+0.00228/0.00332/0.00427. These are diagnostic cross-shape differences; E180
+already provides full128 trajectory and performance validation for that path.
+See `results/e211_real_layer_replay.json`.
+
+## E212 EOS cache packing probe (2026-10-31)
+
+Real E168 B16 snapshots were packed on NPU without loading weights. A
+preallocated per-row copy variant was exact but warm timings were 76–86 ms
+versus 29 ms for current `torch.cat`/KV-pad packing. Current pack costs about
+0.09% of E180 full128 makespan across eight batches, below the 2% screen even
+if removed entirely. Close this variant without workflow integration. B1
+tensor differences remain diagnostic only; see `results/e212_report.md`.
+
+## E213 shared first-turn prefix audit (2026-10-31)
+
+Tokenized the frozen 128-task E100 first-turn prompts using the actual local
+tokenizer, protocol and tools. Every B16 batch has a 315-token common prefix;
+across eight batches this represents 37,800 repeated token rows, 76.66% of
+49,310 logical prompt tokens. This is workload-size evidence only, not a time
+estimate. Contract freezes a B1 shared-prefix prefill, per-row independent
+cache replication, B16 ragged suffix prefill and the E100 trajectory/quality/
+memory/performance gates; B1 tensor differences remain diagnostic. Physical
+device1 had only about 8.5 GB free versus the existing 60 GB preflight, so that
+attempt stopped before weight loading. The later card0 first16 result is
+recorded below. See `results/e213_contract.md` and
+`results/e213_shared_prefix_audit.json`.
+
+Implemented opt-in `scripts/e213_shared_prefix_gate.py` for prefix B1 prefill,
+cache replication, ragged B16 suffix prefill and greedy first-turn generation.
+CPU helper tests pass for non-aliased state replication and exact suffix IDs,
+masks and positions. A real E168 DynamicCache CPU replay checked all 64 layers
+and 128 tensor fields exact and verified row-0 mutation did not affect row 1.
+Its live fail-closed preflight wrote
+`results/e213/preflight.json` and stopped before model load at 8,142,966,784 B
+free (required 60,000,000,000 B). Real first16 trajectory remains untested.
+
+HF `_sample` semantics review found that already-finished rows must receive the
+configured pad token on subsequent forwards. E213 now pads those rows, keeps
+their query mask zero and freezes GDN state. `scripts/test_e213_contract.py`
+covers the transition. The follow-up preflight stopped before model load at
+8,142,741,504 B free; artifact `results/e213/preflight_followup.json`. The user
+then released physical card0; an initial vllm-ascend environment attempt failed
+before load because its Transformers package lacks the Qwen3.5 class. The
+correct `ascend-e2e` environment completed the first16 gate on card0.
+The full128 offline suffix packing audit then passed all eight B16 groups with
+exact prompt reconstruction, right-padding masks and logical positions. See
+`results/e213_shared_prefix_pack_audit.json`; model trajectory/performance is
+still not implied by this offline check.
+
+The real first16 gate completed without device/OOM failure at allocated peak
+57,692,080,640 B and reserved peak58,728,644,608 B. First-turn trajectory was
+exact for10/16 tasks; tool code was exact for10/16 and tool output for13/16.
+Tool outputs changed for640,428,1288. No second turn or scorer-v3 run was made.
+Close E213 before ABBA/expansion on actual trajectory/tool drift, not tensor
+differences. B1 differences remain diagnostic. Audit/report:
+`results/e213/first16_audit.json`, `results/e213_report.md`.
+
+## E214 combined E210 + E181
+
+Combined the E210 existing-sample EOS observer and E181 last-valid suffix
+LM-head gather in one first16 workflow. Correctness trial and four physical
+card0 ABBA raw trials all preserved E100 tokens/tools, scored15/16 with the
+same failure `{1161}`, and passed allocated memory. Baseline seconds were
+72.225412/71.515572; candidate 71.538631/72.446790. Mean gain was -0.170%,
+paired gains +0.951%/-1.302%, and baseline/candidate ranges 0.993%/1.269%.
+Performance not proven; no expansion. Independent raw audit passed all checks
+in `results/e214/audit.json`; detailed result `results/e214_report.md`. B1
+differences remain diagnostic only.
+
 ## 当前优化路线（更新至 2026-10-23；E130 与归因证据矩阵后）
 
 本节是后续工作的执行入口。下方历史实验按当时认识保留；历史“下一步”、初步归因和估算若与本节冲突，以本节及其引用的最终证据为准。探索允许边做边改，不要求事前预知所有接口、数值和编译问题；规则的作用是降低实验成本并防止把弱证据当成果。
@@ -1073,3 +1172,776 @@ E100若仍有1,258个batch16 decode步骤，节省2% makespan需平均每步**�
 - 三次插桩运行均与未插桩及 E100 保存的首轮 token IDs 完全一致（16/16×32），peak allocation=`59,173,664,768` bytes；设备事件在生成末尾统一读取，避免阶段间同步。插桩/相邻控制 wall 差分别`+0.91%/+0.63%/+0.20%`，相邻未插桩漂移`0.61%/0.38%/0.57%`，测量扰动低于1%。
 - 32 decode steps 的 host wall 汇总中，model forward `4,078.9–4,181.6 ms`（约`96.8–96.9%`），scheduler `96.1–99.2 ms`（约`2.24–2.35%`；其中循环条件约`87.7–91.1 ms`，输入准备约`8.1 ms`），postprocess `29.4–32.4 ms`（约`0.70–0.76%`），sampling `6.7–6.9 ms`（约`0.16%`）。设备区间对应 forward `4,143.3–4,245.3 ms`，scheduler `13.4–14.1 ms`，postprocess `2.9–3.8 ms`，sampling `7.4 ms`。阶段设备区间包含队列等待/host间隙，不能解释为 kernel busy 或可直接重叠预算。
 - 分布稳定但 scheduler 与 postprocess 合计约3%，低于“稳定关键路径”且依赖逐 token cache/next-token 顺序；没有证据支持跨步异步调度实现。按停止条件不改 Agent scheduler、不做 graph/capture 或 overlap patch；E100 保持`265.030128 s / 122/128`。若运行时/缓存语义改变，优先重新测完整 Agent tool-loop 的 scheduler 和 postprocess，而不是根据本诊断盲改。
+
+### H3 关闭与下一轮等待成因实验选择（2026-10-25）
+
+- H3 正式标记为“主要瓶颈假设未获支持”，停止当前 padding 优化线；E142 设计状态改为已结束，不追加变体。默认实现保持现有 baseline。
+- 审计原始 Phase A JSONL：128 task、16 call，280.574228 s makespan 中 call wall 合计 274.854577 s；这定位 generation 边界，不能证明设备忙碌。核对 E131 三个原始控制/插桩 summary，并重新执行 `python scripts/audit_phase_c_trace.py`，确认旧 trace 的覆盖与时钟限制仍成立。
+- 唯一下一轮选择见 `results/e143_wait_cause_design.md`：b00-r0 稳定 decode 窗口，同运行关联 host 提交、设备执行与依赖，并在固定 GDN 入口施加 0/0.5/2 ms host 延迟探针。联合零剂量队列状态、剂量响应和完整执行覆盖，区分供给不足、已提交依赖/运行时等待、设备执行及 unknown。明确正确性、时钟、扰动和停止门槛。
+- 本轮完成的是证据审计与实验选定；E143 尚未运行、没有性能收益声明。后续实现须由因果证据与未插桩完整 Agent A/B 支持。
+
+## E144 GDN 单步卷积与布局整体替换（关闭，不接纳）
+
+- 先审计E114失败实现与当前契约。新候选用单个ND Triton kernel融合4项有序FP32 FMA、BF16输出与原位卷积state更新，保留框架SiLU；不是裁窗F.conv1d或输出端格式转换。目标48层trace baseline528 kernels（48Conv2D、288转换相关任务）→candidate96（48nd_update、48SiLU），转换0、无额外copy；I/O/state ND。该trace不提供各中间operand物理格式，不能仅由名称断言具体FZ格式。
+- 正确性exact通过：捕获48层卷积输出/state全部一致；完整模型prefill+16decode共17步logits、2176个conv/recurrent/KV cache tensor签名、tokens全部一致，768次实际候选调用。没有放宽容差。
+- 首次模型动态切换遗漏实例缓存函数引用，模型计时无效并单独标记；修正逐48实例切换且每窗口强制768次调用后，8对交替结果candidate全部更慢：16步decode中位2549.72→3492.02ms，配对回退中位36.96%（33.63%–38.25%），基线相邻波动中位1.14%。48层完整目标路径12对全部更慢，中位31.33→121.17ms。decode allocated峰值均56,717,264,896B；目标路径额外分配峰值3,279,872→656,384B。独立trace候选nd_update列示核时120.772ms，确实删除转换但新增实现更慢。
+- 按局部失败停止：不追加第二个性能轮次、不运行128题Agent、不扩展卷积变体、不接入默认实现。没有全量census或重开host/device等待研究。报告results/e144/report.md，原始有效paired_fixed0.json、paired_summary.json、path_trace_summary.json；无效测量见invalid_measurements.md。
+
+## 非对齐 hybrid cache 原型（语义路由契约，未接入默认 runner）
+
+- `scripts/nonaligned_hybrid_cache.py` 保存每个 agent 的精确 `token_ids`、conv/recurrent/KV state 摘要并允许任意 token 边界追加；只有已消费 token 前缀逐项匹配才 reuse，mismatch 直接 fresh。追加后 state 使用实际更新 cache，fresh 路径保存完整新 prompt，空 suffix 不调用模型。
+- `scripts/test_nonaligned_hybrid_cache_contract.py` 的 CPU-only 三项契约测试通过，覆盖 886→936 非对齐边界、mismatch fresh cache 和短/不匹配 prompt。已有 `results/nonaligned_hybrid_cache_gate.json` 保留 task640 tokenwise logits/final-state exact 证据，该证据来自既有 E145 artifact。
+- 增加 `AgentHybridStateStore`，按 agent ID 独立持有 `AgentHybridState`，并提供 route/update/discard；新增隔离测试确认 task640 的 936-token 边界更新不会修改 task99 的 419-token state。当前仍是 tokenwise caller adapter，不做 cache compaction 或 batch 调度改动。
+- operator case `010_nonaligned_hybrid_cache_routing_rejected.json` 记录了当前边界：本机 Python 缺少 torch，无法重新执行真实 HF/vLLM gate；因此不测性能、不启用 batch16、不声称 full 48-layer 等价。E100 baseline 不变。
+- 复验命令 `source scripts/env.sh && python scripts/verify_nonaligned_hybrid_cache.py` 已在 `ascend-e2e` 环境通过；该环境的 torch 为 CPU build，因此复验的是既有 E145 task640 artifact 的 tensor exactness 和路由契约，不是重新加载 27B/NPU 的运行时结果。真实 NPU runner 仍需恢复可用的 torch-npu/driver 状态后才能推进。
+- task640 实际 NPU runner gate 已于 E154 完成，详见后续条目。task99/785 的工具轮 token 审计确认执行前缀在 token 424/418 处 mismatch；dummy-model integration test 验证 fresh 调用不传旧 `past_key_values` 并以完整 prompt 更新状态。真实 task99/785 fresh-prefill logits/state 仍待模型 gate，未进入 batch16。
+
+## E154 自有 tokenwise runner：task640 实际 NPU 语义 gate
+
+- task640 采用真实首轮 prompt、真实 tool-call token/tool output，保存 cache 时逻辑长度 886；下一轮 prompt 长 936，suffix 为50 token，无1536对齐。`e145_real_gate.py` multi 分支使用 `AgentHybridStateStore` 和 `TokenwiseHybridRunner.continue_agent`，模型逐 token forward，sequential/full 控制不变。
+- 命令：`source scripts/env.sh && python scripts/e145_real_gate.py --mode sequential|multi|full --task 640 --suffix _e154`（分别运行），之后 `python scripts/analyze_e145_real_gate.py --task 640 --suffix _e154`。`results/e145/task640_comparison_e154.json`：sequential 对 runner multi 的48层 GDN suffix 输入/输出、最终全部 cache tensor、50个 suffix logits 均bit-exact，teacher-forced greedy argmax序列 exact；初始 cache也exact。以逐token HF路径为参考，task640 runner semantic gate通过。
+- full-recompute 相对 sequential/multi 从 layer1 GDN 输入开始有 BF16 shape 路径差异；全路径 logits及128个 cache tensor不同，但50位置 greedy argmax仍相同。此对照不推翻逐token参考，且不能宣称与full prefill数值exact。无性能测量、无batch16接入、E100 baseline不变。
+- fresh mismatch CPU/integration 契约测试通过，覆盖无旧cache调用与新prompt边界更新；task99/785真实 fresh logits/state gate尚未执行。5项原纯路由测试与新增 fallback 测试共6项通过。
+- 设备恢复后完成真实 task640 三方 E153/E154 诊断：`e145_real_gate.py --mode sequential|multi|full --task 640 --suffix _e154`。`results/e145/task640_comparison_e154.json` 显示 initial cache exact；`sequential_vs_multi` 在 48 层 GDN suffix 输入/输出、全部最终 cache tensor、50 个 suffix logits 和 teacher-forced argmax 上全部 exact。multi 分支实际经过 `TokenwiseHybridRunner.continue_agent` 与 `AgentHybridStateStore`，因此 task640 单题语义 runner gate 通过。full-prefill 对照从 layer1 GDN 输入开始出现 BF16 shape 路径差异，虽 argmax 保持一致，不能宣称 full-recompute exact。未测性能，batch16 未启用。
+
+## E155 task99/785 fresh fallback 实际 NPU gate
+
+- 命令：`source scripts/env.sh && python scripts/e155_fresh_fallback_gate.py --tasks 99,785`。基于真实 tool-call/tool-output 重建第二轮完整 prompt；每题分别执行 HF full prefill 与 tokenwise runner fresh prefill。
+- task99（538 tokens）和 task785（497 tokens）均 route=fresh。两题 runner 与 HF full prefill 的下一-token logits、全部 cache tensor、state token_ids、greedy next-token argmax 均 exact，结果 `results/e155/fresh_fallback_gate.json`。仅验证 correctness，不测性能，也未启用 batch16。
+- E154 task640 reuse 与 E155 task99/785 fallback 的单题语义门槛均通过；下一门槛是固定 batch16 完整工具轮 A/B，必须先证明轨迹 exact、peak memory 不增且有稳定净收益。
+
+## E156 固定 batch16 prefix-route 预审
+
+- 命令：`source scripts/env.sh && PYTHONPATH=scripts python scripts/batch16_hybrid_route_audit.py --output results/e156_batch16_hybrid_route_audit.json`。从 E140 matched baseline trial0 读取首批16条真实 task row，以 tokenizer 从问题、tool-call和tool output重建 prompt，并用实际生成 token IDs计算 cache 已消费前缀；结果与 `tool_round_prefix_audit.json` 逐 task一致，16/16 route=reuse，suffix长度19–74。
+- 该预审只证实 batch16 workload 的 token route 和既有轨迹来源，不执行模型，不是 runtime replay或A/B。仍未证明 padded batch 中每行 cache 状态、EOS/pad演化及逐token续算 logits。route artifact明确标记 `full_tool_round_ab=false`、`performance_measured=false`；未启动性能测试。
+
+## E157 固定16题集合逐token state/logits replay
+
+- 新增 `scripts/e157_batch16_semantic_replay.py`，对 E100/E140 首批固定16个 task row，逐题重建真实 prompt、记录首轮真实 tool-call/tool-output，并建立 exact consumed-prefix cache；随后分别走 `TokenwiseHybridRunner` 和独立 reference 的逐token suffix 更新，保存 per-task logits/cache/state exact 结果 `results/e157_batch16_semantic_replay_rerun.json`。
+- 首次运行 harness 复用了同一个 mutable Cache，reference 更新污染 candidate 初态；该次输出不作为证据。修复为两次独立 prefix prefill 后重跑。最终16/16的所有 suffix logits、greedy argmax、全部最终 cache tensors 和 token边界exact；suffix长度19–74。该实验是16题集合的逐题B=1语义 replay，不是 B=16 forward、完整工具轮运行或性能 A/B。
+- B=16共享 cache 的实际 pad/EOS state 生命周期仍未验证，因此没有基于这份逐题 replay启动完整工具轮性能 A/B，也未扩大到32/128；需先对 B=16真实 batch cache 和每行掩码/结束行为作 runtime gate。E100 baseline不变。
+
+## E158 batch16 首轮真实 cache capture（不接入）
+
+- 命令：`source scripts/env.sh && python scripts/e158_batch16_cache_capture.py --output results/e158_batch16_cache_capture.json`，固定 E140 首批16题、concise、SDPA、fused RMSNorm/Gated RMSNorm、single-step recurrent、greedy。
+- 首轮生成 token 与 E100 trial0 逐行 exact（16/16）；生成长度172–428，padded batch shape `[16,428]`。返回 cache 的48个 GDN 层均为 conv `[16,10240,4]`、recurrent `[16,48,128,128]`；16个 full-attention 层 KV 为 `[16,4,886,256]`，其中886是最长 row 的 prompt+generation 逻辑长度。
+- 该结果确认 batch cache 物理上按最长 row 扩展，短 row 的 EOS/pad 生命周期仍未证明不会写入其 conv/recurrent state；`batch_select_indices` 只能选 row，不能恢复各 row 的历史 token长度。因此不把该 cache 直接接到 hybrid suffix runner，不做性能 A/B。peak allocation记录为59,175,628,800 B，仅作状态诊断，不能与E100生成峰值作候选比较。
+- 因此在 `TokenwiseHybridRunner` 增加 `continue_many` 上层请求调度入口：以 agent 独立 cache 执行 exact-prefix reuse/fresh fallback，每个 suffix 仍逐 token处理，不把 ragged suffix pad 到共享 recurrent cache。该入口目前顺序调用 agent model forwards，不声称批量 NPU forward 或吞吐收益；7项纯契约测试通过。完整batch16 workflow A/B 尚未运行。
+- `AgentHybridStateStore.import_batch_cache` 增加 fail-closed 保护：拒绝 tuple/list 共享 batch cache、重复 cache object 和长度不匹配输入，只接受每 agent 独立 cache 与显式 token boundary；8项契约测试通过。这样 E158 的共享 padded cache 不会被误导入 candidate。
+- 增加 `TokenwiseHybridRunner.generate_agent/generate_many`：greedy decode 每 agent 持有自己的 cache、逐 token append，EOS sampled token 不写入 cache（与 HF generate 的最后 sampled token 边界一致），上层可以提交 agent request 列表；没有共享 padded recurrent state。dummy-model generation/EOS 测试通过，契约测试共9项。该 API 目前顺序执行模型调用，尚未接入完整 E100 workflow，也没有性能结论。
+
+## E161 task640 自有 runner greedy + tool-round continuation gate
+
+- 命令：`source scripts/env.sh && python scripts/e161_task640_runner_generation_gate.py`。真实 Qwen3.5-27B、BF16、SDPA、fused RMSNorm/Gated RMSNorm、single-step recurrent；runner 自回归生成首轮 tool-call，再从实际 886-token cache 边界续接 50-token 第二轮 suffix。
+- 结果 `results/e161_task640_runner_generation_gate.json`：首轮 428 token 与 E100 exact；prompt 和 consumed boundary exact；route=`reuse`；50 个 suffix logits、greedy argmax、全部最终 cache/state tensor exact。单题 correctness gate 通过，无 timing/performance 测量。
+- 这证明 per-agent runner 可以覆盖真实 greedy 首轮到非对齐工具轮，不依赖预先保存的 teacher-forced suffix。batch16 仍受共享 padded cache 状态问题阻断，未做完整工具轮 A/B。
+
+## E163 task640 完整两轮 tool workflow correctness gate
+
+- 新增 `generate_continuation`，先对完整下一轮 prompt 做 exact-prefix route；reuse 时只逐 token append suffix，再继续 greedy decode；fresh 时完整 prefill 后继续生成。10项 runner 契约测试通过。
+- 命令：`source scripts/env.sh && python scripts/e163_task640_full_tool_round_gate.py`。task640 首轮真实生成428 token并解析/执行 tool call，第二轮 route=reuse、suffix50 token，最终生成10 token；两轮 token IDs 与 E100 exact，tool call 解析成功，最终 cache token boundary exact。结果 `results/e163_task640_full_tool_round_gate.json`，仅 correctness。
+- 单题 runner 已覆盖实际两轮工具链；batch16 仍需 per-agent generation cache ownership 后再做完整工具轮 A/B，未测性能。
+
+## E164 batch16 workflow replay 首差异与停止
+
+- 新增 `scripts/e164_batch16_runner_workflow_gate.py`，尝试对 E100 首批16题执行私有 cache 两轮工具链；按停止规则在第一个失败 task 后中止剩余任务，并新增 task filter/partial artifact 支持。
+- task640 通过；task1137 首轮 singleton private-cache runner 生成271 token，而 E100 batch16 首轮记录为286 token，首轮轨迹不一致；其第二轮7 token与E100 exact，route=reuse、boundary exact。结果 `results/e164_task1137_gate.json`。
+- 该失败不能归因于 suffix runner：E158 已证明 E100 batch16 首轮 token exact，但 B=1 和 B=16 的 BF16/padding shape 路径不同。未继续跑其余14题，未测性能。下一步必须从真实 batch generation 在每行结束边界导出独立 cache/attention mask，再交给 per-agent continuation；不能用 B=1 首轮生成替代 E100 batch16 轨迹。
+
+## E162 task99/785 fresh fallback greedy gate
+
+- 命令：`source scripts/env.sh && python scripts/e162_fresh_generation_gate.py`。每题用真实首轮 tool-call/tool-output 重建完整第二轮 prompt，预置不匹配旧 state 触发 route=fresh；runner 与独立 HF `generate(return_dict_in_generate=True)` 分别执行 greedy generation。
+- task99（prompt 538，生成7 token）和 task785（prompt 497，生成8 token）均通过：runner token IDs 与 E100 记录及 HF exact，最终 cache tensor keys/values exact，state token boundary exact。结果 `results/e162_fresh_generation_gate.json`。未测性能。
+- 结合 E161，task640 reuse 与 task99/785 fresh 的真实 greedy correctness 均通过。下一门槛仍是 batch16 完整工具轮 A/B；共享 padded cache 的 row state 问题未解决前不扩大验收。
+
+## E165 batch-shape 轨迹根因与 E166 per-row EOS cache gate
+
+- task1137 singleton runner 对照原生 HF B=1 greedy exact，但与 E100 B=16 在第27个首轮生成 token首次分歧；第二轮仍exact。确认这是 batch shape BF16 greedy 轨迹变化，不能用单题首轮替代 E100 batch16 轨迹。
+- 新增 `AgentHybridState.cache_attention_mask`，记录每 agent cache 的物理 mask（包含 left pad），append 时对 mask 追加 suffix 的有效位；`import_batch_cache` 校验物理 mask 长度与 cache KV sequence length。
+- 新增 `scripts/e166_batch16_row_cache_workflow_gate.py`，在真实 E100 B=16 `generate` forward hook 中，于每行预测 EOS 时快照独立 conv/recurrent/KV state，KV 保留物理左 padding并附 mask，再迁至 NPU逐行做 per-agent second-turn continuation。
+- task640 smoke 和固定首批16题 gate 均通过。16/16 首轮 E100 token IDs exact；physical cache/mask长度630–886，logical boundaries552–886；16/16 reuse、第二轮 token IDs exact、最终边界 exact。artifact `results/e166_batch16_row_cache_workflow_gate.json`。这是 correctness/state replay，无 performance 或 peak-memory A/B。
+- batch16 exact correctness 现在有可行实现路径；正式采纳仍要求 candidate memory 不高于 E100 且完整工具轮稳定节省，未达到前不进32/128验收。
+
+## E167 batch16 memory/correctness + first end-to-end A/B
+
+- E166 candidate gate 记录 16/16 两轮 token exact，candidate 首轮 peak allocated `59,175,628,800 B`，private continuation peak allocated `59,109,444,608 B`、reserved `60,104,376,320 B`。同配置 E100 首轮 baseline peak allocated `59,175,628,800 B`、reserved `60,037,267,456 B`；candidate 未超过 allocated 护栏，reserved 高约67 MiB。
+- 修正 `agent_batch_bench.py --task-ids` 保持用户给定 task 顺序后，matched E100 首批16题 baseline 命令为 `--task-ids 640,1137,214,1030,950,428,866,175,1130,445,1161,611,108,1288,554,249 --batch-size 16 --final-max-new-tokens 12 --fused-rmsnorm --fused-gated-rmsnorm --single-step-recurrent --attention sdpa --protocol concise --schedule fifo`；结果 `results/e167_batch16_baseline_workflow_ordered.jsonl`，makespan `78.7205306738615 s`，peak `62,094,008,832 B`。
+- E166 candidate 同一16题集合/协议完整两轮 workflow 为 `163.2956424858421 s`，16/16 token exact，peak allocated `59,109,444,608 B`，结果 `results/e167_batch16_candidate_ab.json`。candidate 比 baseline 慢约`107.6%`，远未达到稳定节省/2%门槛；因此性能 gate rejected，不能进入32/128验收。correctness prototype 保留，不接入默认 runner。
+- 早先未保持 task 顺序的 `results/e167_batch16_baseline_workflow.jsonl` 不用于结论；E100 task order 是 correctness/performance 实验变量。
+- 逐题审计 `results/e167_batch16_baseline_workflow_ordered.jsonl` 与 E140 trial0：16/16 baseline 两轮 token IDs、tool outputs 全部 exact；与 E166 candidate artifact 的16个 task ID一致，candidate 两轮 token exact 16/16。baseline/candidate correctness 前提闭合，性能拒绝结论有效。
+- Final disposition: `results/e167_batch16_final_decision.json` records semantic correctness pass, allocated-memory gate pass, performance gate fail, and no32/128 expansion. Operator case010 status changed to `rejected_performance`; the reusable tokenwise state mechanism remains available for future scheduling designs but is not accepted as an optimization.
+
+## E160 batch16 hybrid gate（blocked before A/B）
+
+- `python scripts/e160_batch16_hybrid_gate.py` 汇总 E156/E158 prerequisite。首轮 token exact、route audit exact 均通过，但16条首轮生成长度全部不同（172–428），shared cache padded 到428；candidate 没有每行独立的 EOS 后 conv/recurrent state。
+- gate 明确标记 `full_tool_round_ab=false`、`performance_measured=false`、`status=blocked`，不伪造 batch16 性能结论。解除条件是 generation 阶段自有 per-agent cache ownership，或设备实验严格证明 finished-row padding 不更新 state；此前不进入32/128验收。
+
+## E144 后路线收敛：跨工具轮增量续算契约诊断（未实现优化）
+
+## E155 task99/785 fresh fallback 实际 NPU gate
+
+- 命令：`source scripts/env.sh && python scripts/e155_fresh_fallback_gate.py --tasks 99,785`。task99（538 tokens）和 task785（497 tokens）均因 prefix mismatch route=fresh；runner full-prompt prefill 与独立 HF full prefill 的下一-token logits、全部 cache tensor、state token_ids、greedy argmax 均 exact，结果 `results/e155/fresh_fallback_gate.json`。
+- 本轮只做 state/logits/轨迹 correctness，不测性能、不启用 batch16。E154 task640 reuse 与 E155 task99/785 fallback 的单题语义门槛均通过；下一门槛是固定 batch16 完整工具轮 A/B。
+
+- 汇总E131/E140–E144最终证据，报告results/next_optimization_direction.md。现有算子/重排/padding线无可接入端到端收益；E143仅证实局部host敏感，不足以直接开发通用异步优化。
+- 本轮新增CPU实证：现装HF GDN仅seq_len==1读取旧conv/recurrent state；已有cache的T=2/50追加均走chunk initial_state=None且从suffix更新conv state。脚本scripts/probe_gdn_cached_append_contract.py，结果results/gdn_cached_append_contract.json。它为E055旧cache复用失败提供具体契约缺口，但不证明修正后数值或性能通过。
+- CPU重建128题全部16次真实prompt，长度与未插桩原始记录逐行一致；128个工具轮转换中126个已消费逻辑前缀完整匹配，task99/785不匹配须fallback。后轮67,068有效token中，安全匹配前缀63,208，含fallback剩余3,860；不将token比例当时间收益。结果results/tool_round_prefix_audit.json。
+- 下一步唯一主线是先定位/验证真实48层“带历史state多token续算”的首处分歧，未通过前不重开旧cache runner；通过后再评估固定batch跨工具轮cache保留，显式处理EOS/pad状态、最后未消费token、mask/position、fallback及内存，不做admission/compaction。最终仍按16→32→128未插桩验收。当前没有新NPU优化、端到端加速或接纳声明。
+
+## E168 异长历史单次批量 forward：B2 单 token 通过，50＋22 数值失败（2026-10-30）
+
+- 运行前冻结 `results/e168_contract.md`：cache 搬运、旧KV、mask/position/有效长度、隔离、inactive pad及源快照必须exact；整模型logits和各state/新增KV要求finite、relative L2≤0.02、scaled max≤0.10；E100完整生成轨迹另外要求exact。引用cases001/003/004/010，不把同batch自洽或teacher-forced top1当作完整轨迹证据。
+- 新增隔离实现`scripts/e168_batched_history.py`及验证器`scripts/e168_ragged_history_gate.py`。把不同物理历史KV左补齐并携带原mask，真实suffix右补齐，GDN在整个batch上按时间更新并冻结inactive行，每token按原cache dtype舍入。单次B×T模型forward，不是vLLM原生chunk/fused kernel；默认runner及安装包不变。
+- `source scripts/env.sh`后分别运行`python -u scripts/e168_ragged_history_gate.py --stage capture|b2_one|b2_suffix|diagnose`（四条独立命令）。真实B16首轮16/16 token及tool output与E100/E140 trial0 exact，保存约2.004GB EOS边界快照，逻辑552–886、物理630–886，suffix19–74。
+- B2 histories logical886/695、physical886/744，各追加1个真实token：语义门槛通过。task640 logits及128个cache tensor exact；task1137 logits relative L2=0.01510681、cache最大relative L2=0.00943986，满足预设门槛，top1相同。一次主模型forward、64次decoder调用和48对conv/recurrent均B2，没有逐题模型调用。
+- B2真实50＋22 suffix：位置/有效长度、源快照、旧KV、行隔离、inactive-pad不变性均exact；主forward依然一次B2。整模型数值门槛失败：task640/1137 logits relative L2=0.03983587/0.02380213；task640 max_abs=4.90625、scaled_max=0.11476608；最终state/新增KV两题均存在超门槛tensor。teacher-forced suffix argmax首差异offset20/11；这些不是实际自回归轨迹的失败证明。
+- 同一失败输入的GDN ordinal0/47固定projected tensors独立逐行HF对照：conv/recurrent output与final state均exact；仅覆盖首/末GDN，不能称全48层证明。固定首层归一化输入仅改变QKV Linear矩阵shape，最大差0.015625/0.0078125，证明BF16 shape差异存在，但未证明全部累积误差来自这一个投影。
+- B2单token/50＋22插桩append wall=1.335978/4.296979s；50＋22 peak allocated/reserved=55,090,144,768/55,209,623,552B。不是kernel或端到端性能测量，未做A/B或收益声明，不能用B2内存证明B16预算。
+- 结论`rejected_numerical_at_b2_50_22`；冻结停止条件生效，不扩大B16/32/128、不运行完整E100续算轨迹、不放宽阈值。首轮16/16 exact和第二轮首top1一致也不能代替完整轨迹验收。`scripts/audit_e168.py`审计明确区分已验收、实测失败、未运行；报告`results/e168_report.md`，case011记录新负结果。E100参考保持不变。
+
+## E169–E171 B2 失败后的固定输入接口诊断（2026-10-30）
+
+- 前一轮E168是实际进展但未完成原B16目标：B2单token通过、50＋22整模型数值失败；原契约与负结果保留。继续前核对当前artifact和设备0空闲状态，没有把停止条件作为通过证据，也没有运行B16或E100完整续算轨迹。
+- E169先写`results/e169_contract.md`，对相同真实B2输入捕获full-attention层3/63的q/k/v/mask。实际`python -u scripts/e169_attention_boundary.py`：多queryB2与逐queryB2（全masked KV、因果prefix KV）两题两层输出均exact，因此不实施逐query SDPA替换。移除额外历史padding后的B1对照，task1137层3/63相对L2=8.24988e-5/2.57008e-7；这是采样层固定输入证据，不是所有层或全部误差来源的证明。
+- E170先写`results/e170_contract.md`，在真实首层QKV输入[100,1,5120]和共享原BF16权重上，分别单次调用torch.matmul broadcast与npu_bmmV2 broadcast，保留M=1每token矩阵，候选不逐token调用Linear。实际`python -u scripts/e170_shared_weight_projection.py`：两接口都支持BF16，额外peak allocated=106,956,800/107,981,312B，但相对独立HF tokenwise Linear两题最大差均0.03125，相对L2约2.24e-5，未达到事前“精确复现M=1算术”的局部机制准入，未进入模型。
+- E171先写`results/e171_contract.md`，测试不同native接口npu_grouped_matmul(group_type=-1,split_item=0)：100个独立M=1矩阵、重复引用同一份权重，一个group调用。实际`python -u scripts/e171_grouped_projection.py`：BF16可运行、额外peak allocated=18,877,440B，但误差与E170相同，仍未达到局部exact准入。未复制每token权重，未更换dtype，未退回逐题模型执行，不继续该接口参数变体。
+- 局部误差小于E168整模型容差，不意味着模型一定通过；局部不exact也未被解释为完整模型必然失败。E170/E171只否定提出的“并行批量接口精确复现HF单token Linear”机制。没有性能A/B或端到端收益声明。
+- `python scripts/audit_e169_e171.py`、`python scripts/audit_e168.py`、`python scripts/operator_case.py verify`和`git diff --check`均通过；审计明确原目标的B16和E100完整轨迹尚未完成。新增case012和`results/e169_e171_report.md`，原始probe JSON/SDPA tensors/log均保留。默认推理实现不变，E100参考不变。
+
+## E172 原目标三档状态语义与 E100 轨迹分开验收（2026-10-30）
+
+- 重新审视E169–E171准入的范围：局部“singleton Linear exact”机制失败并不能替代完整状态语义或实际轨迹验收。运行前新增`results/e172_contract.md`，明确这是科学诊断分支，不重开E168部署/性能准入。E168原跨shape B1整模型relativeL2≤2%/scaledMax≤0.10门槛及50＋22失败保持不变，没有调阈值或将旧结果改为pass。
+- 新增`scripts/e172_state_semantics.py`：candidate仍为一次完整BxT forward、无逐题model/GDN fallback；独立参考保持NN投影/norm/attention/MLP的相同BxT shape，在全部48层分别按行/按token调用安装的HF conv/recurrent函数并按native cache dtype逐token舍入。参考自行计算输入，candidate捕获值只用于比较。它不是B1整模型参考；固定shape状态语义、跨shape数值和E100实际轨迹三个范围分别报告。
+- B2 [1,1]、真实[50,22]、B16真实suffix19–74三个阶段均通过全部48层逐行输入/conv-recurrent输出/final state exact验收；最终logits和每行128个cache tensor exact。B16共768个GDN行检查、512项独立KV拼接、2048个最终cache tensor exact。源快照、旧KV、真实position/mask/有效和物理长度、row0输入扰动后的其他行、inactive pad替换均exact。实际传给根模型的IDs/position/mask保存并逐元素审计。主append各一次model forward，64个decoder调用和48对GDN均完整B；隔离/pad/独立参考调用分开记录。
+- 临时KV观察method最初被浅拷贝带进raw cache archive，发现后改为forward结束先cleanup再unpack，并重跑三个阶段。旧文件保存在`results/e172/initial_observer_artifacts/`，不作重载证据；当前三个raw outputs均可torch.load(map_location=cpu)，无实例update hook。共同helper只增加可清理observer，不改candidate数值算法。CPU独立参考正例/主动篡改conv输出和recurrent最终state的负例两项测试通过。
+- 按契约实际运行`python -u scripts/e172_state_semantics.py --stage trajectory`：16/16第二轮greedy token与E100 exact。另用`scripts/e172_trajectory_gate.py`独立复验EOS状态：仍16/16 exact，共12次模型调用，首[16,74]后11次[16,1]，全部decoder保持B16。首轮token和实际tool output直接核对冻结capture/E100基线16/16 exact；snapshot/baseline SHA256相符。全部行预测EOS，较早结束的15行在后续调用中有效conv/recurrent/KV内容hash不变；最后结束的task611无后续调用。最终raw cache/mask重载后hash及消费长度再次核对通过，EOS采样token未写入有效state。
+- 修复后B2单token/50＋22/B16插桩主append wall=1.673/5.136/10.218s；含加载/验证wall=16.069/33.434/112.104s，peak allocated=55,059,772,416/55,090,144,768/57,648,947,712B，reserved=55,140,417,536/55,209,623,552/59,630,419,968B。轨迹+EOS插桩wall33.383s，allocated/reserved=57,648,624,640/59,615,739,904B。这些均不是纯kernel/model稳定性能或e2e A/B，不能与E167完整workflow相减当收益，也不证明全workflow/128题预算。
+- 实际命令均先`source scripts/env.sh`：`python -u scripts/e172_state_semantics.py --stage b2_one|b2_suffix|b16|trajectory`（四条独立命令）、`python -u scripts/e172_trajectory_gate.py`、`PYTHONPATH=scripts python -u scripts/test_e172_reference.py`、`python -u scripts/audit_e172.py`、`python scripts/operator_case.py verify`。完成审计核对全部行/层、raw archive可重载、源hash、完整轨迹及所有EOS冻结证据；case库13项验证通过，diff whitespace检查通过。
+- 结论：原请求的B2→50＋22→B16独立状态语义和独立实际E100轨迹实验已完成，两个范围均通过；E168跨shape数值失败仍保留，优化部署/性能未接纳，不进32/128。报告`results/e172_report.md`、权威结构化审计`results/e172/completion_audit.json`及case013记录分范围结论。默认runner与E100参考保持不变。
+
+## E173–E175 跨shape数值来源与因果干预（2026-10-30）
+
+- 原目标是解释E168跨shape数值失败与E172固定shape语义/实际轨迹通过，并明确保持E100轨迹的路径。运行前分别冻结`results/e173_contract.md`、`e173_padding_contract.md`、`e174_contract.md`、`e175_contract.md`；不修改旧阈值、不重开部署/性能准入。参考cases003/010/011/012/013，避免把同输入算子、跨shape模型和实际token轨迹混作一个门槛。
+- 设备0外部占用使常驻27B加载在allocator warmup OOM（约8.3GiB free），未终止外部进程。改为CPU常驻原BF16权重、逐层迁移NPU；原始完整加载OOM日志保留。B1参考按层执行给定suffix各token并维持独立时间状态，最终logits误差精确复现E168的0.0398358665/0.0238021314，另审计raw candidate logits与原E168 exact。
+- E173对全部497个Linear位置做相同输入/权重singleton重放，312个不exact：GDN qkv48/48、out48/48、a24/48、b15/48；MLP gate/up各64/64；attention k/v/o各16/16；lm_head1/1。GDN z48、MLP down64、attention q16在此输入均exact，不外推任意shape。161个RMSNorm、48个gated RMSNorm均exact。原始逐位置shape/stride/dtype、变化数量和误差见census.json。
+- 首差异layer0 QKV [2,50,5120]×[10240,5120]，M100对M1：737,280个有效输出仅42个不同，最大0.015625；41个为相邻BF16编码，1个跨两个编码。全部42处FP64点积诊断与两输出中点距离最大约1.012e-6；35处M100更接近FP64的BF16舍入、6处M1更接近，1处因近零抵消两者均不同。证明shape相关有限精度点积/输出舍入，不把singleton当更准确真值。host trace两者都aten::linear→aten::matmul；未观测CANN tile、累加dtype/树、split-K，不编造底层归因。
+- 全16层固定输入SDPA对照：多queryB2→单queryB2或B1只要保留padded KV均exact；恢复task1137原历史宽度/causal prefix时16/16层不exact，task640仍exact。独立padding补充层3/63：仅删未来masked slots exact；移除额外142左pad不exact；总宽仍936但把142 masked key移到右端也不exact。说明masked-key物理位置/对齐是来源，不仅总长度。现有接口没有暴露内部QK/softmax/PV中哪一段归约，不把softmax tree当已确认事实。
+- 其余纯算术272项（MLP activation64、beta sigmoid48、g exp/softplus48、attention sigmoid16、q/k l2norm各48）固定输入均exact。原census的RoPE hook未覆盖动态forward globals，0条记录不能作为通过；最终审计发现后专用探针实际覆盖16层q/k并全部exact。修正E169报告query heads笔误20→24，不改raw数据。首个streaming hook卸载顺序及一次padding探针heads误设触发异常，均修正重跑并保留失败日志，未用于结论。
+- E174仅以singleton Linear输出作诊断干预：task640全64层/最终logits exact；task1137层0–2 exact，从首attention层3再次分歧，最终logits relativeL2=0.02263685。E175再恢复每行原始KV范围的B1 SDPA，两题全64层及最终logits均exact。raw输出重载逐tensor确认，证明这两类来源对真实B2 [50,22]的充分联合解释，不声称任意输入/设备普遍成立。
+- 干预每个Linear实际72次singleton算子，E175每个attention层亦72次；根模型虽仍一次B2，但内部算子串行，明确只作因果oracle，不伪装并行候选或推荐性能方案。E172保持B16算术的路径已测首批16题两轮实际token/tool exact，说明tensor差异不必改变该轨迹；原E168跨shape2%/0.10数值门槛仍失败，未证明并行B1-tensor-exact修复、全128题轨迹或e2e收益。
+- 实际命令（均先source scripts/env.sh）：`python -u scripts/e173_arithmetic_census.py`、`python -u scripts/e173_projection_rounding.py`、`python -u scripts/e173_kv_padding_probe.py`、`python -u scripts/e173_rotary_probe.py`、`python -u scripts/e174_linear_intervention.py`、`python -u scripts/e175_joint_intervention.py`、`python -u scripts/audit_e173_e175.py`。报告`results/e173_e175_report.md`、审计`results/e173_e175_audit.json`和case014记录因果来源、未知后端细节及解决路径边界。无kernel/model/e2e性能声明，默认推理路径未修改。
+
+## E176 新规则下的真实两轮批量续算 A/B（2026-10-30）
+
+- 用户明确更新准入：B1 tensor差异保留诊断，不再单独否决；新增OPTIMIZATION_ACCEPTANCE.md并同步readme/PROFILE_BASELINE。旧E168失败不回填pass。保持独立状态语义、实际E100 tokens/tools、显存及稳定e2e收益硬约束。
+- 新增精简HistoryRuntime（删除E172逐层捕获/events、保留原算术）、共用continue_batched、完整first16 workflow和ABBA驱动。计时覆盖真实首轮、逐行EOS cache快照、实际工具、prompt重建、pack/搬运、第二轮及结果序列化；加载单列，reference比较在计时外。CPU两项边界/算术测试通过。设备0streamed gate通过但不作性能证据。
+- 用户授权结束设备1占用进程13137（occupy_gpu_memory.py），核对命令后TERM并确认进程消失。ASCEND_RT_VISIBLE_DEVICES=1映射逻辑npu:0，设备1预检报告65.077GB free。常驻权重B16运行时gate通过：16/16原始append logits及2048 cache tensors与E172 exact、实际第二轮16/16 exact、12 model/768 decoder calls全B16、最终有效mask/conv/recurrent/KV exact。运行中误启动一份重复streamed gate，已终止重复进程；保留原始日志，性能trial期间无重复模型。
+- 物理设备1完成两组ABBA共8 trial，原始目录results/e176/abba_device1及abba_device1_repeat1。全部trial首批16题完整两轮tokens、真实tool outputs exact，旧scorer字段均15/16与匹配基线一致；未当作128题scorer v3新结果。baseline allocated/reserved=62,094,008,832/64,655,196,160B；candidate=59,175,628,800/60,643,344,384B。
+- baseline makespan=76.039499、76.101442、76.621638、75.811457s；CPU快照candidate=73.384216、75.562906、74.818424、75.517916s。总体mean gain1.737%，candidate range2.969%，baseline range1.069%。第一block mean2.099%但candidate波动更大；复测block mean1.376%。无稳定≥2%收益，不扩大32/128，E176性能拒绝。
+- 阶段证据：首block baseline第一轮62.821/63.167s、第二轮12.489/12.209s；candidate第一轮含snapshot64.941/66.912s、tool+prepare+pack1.424/1.614s、第二轮6.935/6.954s。复用节省第二轮但CPU snapshot/搬运抵消收益。不是仅凭热点推断收益，决定只改变快照驻留位置研究E177。
+- E176第一次设备0streamed诊断在lm_head OOM，改为只对诊断stream embedding后通过；原OOM日志保留，计时始终resident。设备1streamed gate完成后又运行resident gate通过。source env拼写错误及hook参数遮蔽失败均保留为未执行/无结果记录，不计性能或数值结果。当前权威JSON=results/e176/runtime_gate.json、两组driver及trial原始文件。
+
+## E177 NPU快照驻留：first16 ABBA通过（2026-10-30）
+
+- E176总体收益1.737%不扩展。E177事前契约只改真实EOS行cache snapshot驻留CPU→NPU，保留E172批量算术、实际工具、prompt/mask/position/长度/EOS语义和E100配置。快照/pack/所有搬运计入workflow，不改权重驻留或kernel。新增共享入口snapshot-device选项与correctness-only标签；B1差异不作否决。
+- correctness-only完整16题两轮轨迹与tool output exact，预测正确15/16，allocated/reserved=59,228,705,280/60,683,190,272B；不以此运行时间作为性能。首次hook参数名遮蔽CLI args导致AttributeError，未产生结果，修复并保留错误日志后重跑。旧partial transcript保留，存在文件退出的无效启动不算trial。
+- 物理设备1常驻ABBA：A79.140840s、B71.736916s、B72.235945s、A78.235487s。全部16/16完整两轮tokens与实际tool outputs exact；candidate allocated/reserved=59,228,705,280/60,683,190,272B，低于E100预算。mean gain8.5168%，paired9.3554%/7.6686%，baseline range1.1572%、candidate range0.6956%，first16性能门槛通过。保留前block负结果，未把不同时间基线波动当CPU→NPU精确收益。
+- candidate阶段：first generation含snapshot64.019/64.431s、tool+prepare+pack0.688/0.675s、second generation6.941/7.044s。粗同步wall不是纯kernel时间，未做128题或scorer v3新结果。新增audit_e177重读raw source tokens/tools、time/peak及物理卡命令，独立复算收益，case016及results/e177_report.md记录范围。
+- 实际命令先source scripts/env.sh，再export ASCEND_RT_VISIBLE_DEVICES=1；`python -u scripts/e176_workflow_bench.py --snapshot-device npu --correctness-only --output results/e177/correctness.json`、`python -u scripts/e176_ab.py --candidate-snapshot-device npu --output-dir results/e177/abba`、`python scripts/audit_e177.py`。通过后启动E178原E100前32题两个B16 batch的真实correctness smoke（每batch独立resident进程，不把时间合计作32题性能），不变成B32。full128还需persistent模型及fresh/reuse分组支持，默认runner不接入。
+
+## E178 前32题实际workflow correctness smoke通过（2026-10-30）
+
+- E177 first16 ABBA通过后，事前声明results/e178_contract.md；保持原E100 batch16及前32题顺序，物理卡1两个顺序resident进程，参数只增加one-batch task IDs与统一E100128参考。两个进程的时间不合计当32题性能，performance_measured=false。
+- 实际`source scripts/env.sh && export ASCEND_RT_VISIBLE_DEVICES=1 && python -u scripts/e178_smoke32.py`；随后`python scripts/audit_e178.py`。32/32真实首轮tokens、实际tools、第二轮tokens和预测均与E100逐题exact。批次正确字段15/16及13/16与基线一致，不冒充新scorer v3结果；task route全部通过消费前缀reuse检查，无singleton回退。两个batch allocated/reserved分别59,228,705,280/60,683,190,272B和59,193,009,152/60,135,833,600B，均在预算内。
+- 12项raw数据审计全部通过，manifest/results/e178/{batch0,batch1,smoke32,audit}.json及完整workflow JSONL保留；报告results/e178_report.md。设备1进程全部结束且保持释放，未重启占用程序。下一步是persistent全128题runner和显式fresh/reuse分组，尚无128题轨迹、scorer或makespan新结论，不接默认路径。
+
+## E179 persistent128任务完整轨迹/质量/内存gate通过（2026-10-30）
+
+- E177 first16收益及E178前32任务smoke通过后，新增事前契约results/e179_contract.md和persistent单模型runner scripts/e179_full_workflow.py。保持原E100 generation_length顺序、B16、BF16/SDPA/greedy/concise/fused norms/recurrent/cap512/12，仅使用E177 NPU snapshot续算。
+- 显式batch transactional routing：重建真实工具轮prompt，任何行消费前缀不匹配就释放该批全部历史state、同16行执行原HF fresh second prefill，保留batch形状，不singleton回退。实际batch2/task99、batch3/task785走fresh，其余6batch复用。未声称mixed-state native算子或所有可复用prefix都获得收益。
+- 物理设备1、一次加载常驻模型，8batch完整执行。`source scripts/env.sh && export ASCEND_RT_VISIBLE_DEVICES=1 && python -u scripts/e179_full_workflow.py --output-dir results/e179/gate`，随后`python scripts/audit_e179.py`重读raw：128/128首/第二轮tokens、实际tool outputs、预测exact，总tokens15,961；scorer v3=122/128，失败集1161/423/952/1035/552/1048与E100一致。allocated/reserved=59,972,823,040/61,863,886,848B，预算内。
+- correctness-only parent wall252.626s包含reference检查，不作为性能。报告results/e179_report.md，权威gate/audit及batch0..7 raw全部保存，派生tasks_v3.jsonl保留原文。旧结果不改写。默认runner未接入。
+- 通过后启动E180事前合同下的完整128 ABBA：baseline原agent_batch_bench，不改timed body；candidate同resident128路径、reference及v3全部延后总计时之外，加载单列。任一轨迹/内存/质量失败停止，性能要求均值≥2%、双方向positive且超过两组range并快于历史E100。当前E180尚未产生成果声明。
+
+## E180 完整128题resident ABBA通过（2026-10-30）
+
+- E179先在物理卡1常驻单模型完成全128正确性/内存：实际tokens/tools/predictions128/128 exact、15,961 tokens、scorer v3 122/128且原6个失败ID相同，allocated/reserved59,972,823,040/61,863,886,848B。对99/785 mismatching prefixes使用整批16题fresh，其余6批reuse。
+- E180四个独立resident process ABBA，原E100数据/任务顺序/batch16/generation_length/协议/BF16/SDPA/greedy/cap512/12/实际tools；候选一模型跨8批，性能模式参考与scorer在总计时后。baseline时间284.341862、272.187345s；候选262.392853、262.561818s。四trial均128/128原始token/tool/pred exact、15,961 tokens、scorer v3 122/128和同失败集合。baseline allocated/reserved62,094,008,832/64,655,196,160B，候选59,972,823,040/61,863,886,848B。
+- Candidate mean262.477335s，baseline mean278.264603s，mean gain5.6735%；paired gain7.7192%/3.5364%；baseline range4.4655%、candidate range0.0644%。候选平均还快于历史E100 265.030128s，所有配对为正、收益超过range。E180实测全128性能/质量/内存门槛通过。`scripts/audit_e180.py`从raw独立比较128题每轮tokens/tools/prediction、重新算v3/token count、源码hash、设备及性能gate，审计通过；报告results/e180_report.md，case017记录候选接纳边界。
+- E180命令（先source scripts/env.sh，export ASCEND_RT_VISIBLE_DEVICES=1）：`python -u scripts/e179_full_workflow.py --output-dir results/e179/gate`、`python scripts/audit_e179.py`、`python -u scripts/e180_full_ab.py`、`python scripts/audit_e180.py`。没有profile/逐算子event/shadow reference/CPU权重卸载进入timed trial。默认runner未改，结论是全128 candidate通过并保留opt-in，不是用户未要求的自动部署；E168原历史B1拒绝记录不改写。
+
+## E181 suffix LM head feasibility (2026-10-30)
+
+- Isolated `scripts/e181_suffix_head.py` gathers each row's last valid hidden position before the suffix LM head; decoder/state and E180 sources remain unchanged. Contract frozen in `results/e181_contract.md` before execution.
+- Physical device1 first16 real workflow passed; independently reopened tokens/tools are 16/16 E100 exact. Peak allocated/reserved 59,228,705,280/60,093,890,560 B; 12 second-turn model calls. Diagnostic wall 74.521269 s, second generation 7.057357 s; no speed claim from a single correctness run.
+- E180 independent audit rerun: all34 checks passed. E181 raw evidence and hashes: `results/e181/first16.json`, `first16_audit.json`; report `results/e181_report.md`. Next: matched E180/E181 first16 ABBA before expansion. B1 differences diagnostic only; performance acceptance remains open.
+- Matched E181 ABBA completed on physical device1. All four trials preserved first16 tokens/tools and memory. Baseline 77.892039/75.753760 s; candidate 78.488571/73.068207 s. Mean gain 1.3596%, paired gains -0.7658%/3.5451%; baseline/candidate ranges 2.8227%/7.4182%. Performance rejected, no 32/128 expansion. Independent audit `results/e181/abba/audit.json`; case018 records the negative result.
+
+## E182 isolated vLLM-Ascend capability audit (2026-10-30)
+
+- Read-only inspection of `vllm-ascend-py310`: vLLM/vllm-ascend 0.18.0 registers Qwen3.5 and its Ascend GDN patch, with Qwen3Next chunk GDN, `cu_seqlens`, ragged `seq_lens`, indexed conv state and indexed recurrent state. Local config matches Qwen3_5ForConditionalGeneration, 64 layers / 48 linear / 16 full attention, BF16.
+- New environment imports `Qwen3_5ForConditionalGeneration` and `AscendQwen3_5GatedDeltaNet`; the older vllm-npu environment alone lacks `mindie_llm`. No weights or end-to-end execution yet. Artifact `results/e182_capability.json`, report `results/e182_report.md`, case019. P2 now passes source/import/config capability and requires a weight-backed minimal runtime probe; B1 differences remain diagnostic only.
+- No-weight `ModelConfig`/`ModelRegistry` probe resolved the local model to `vllm.model_executor.models.qwen3_5.Qwen3_5ForConditionalGeneration`, `is_hybrid=true`, BF16, max length 262144. Optional Triton import warns that `triton.language.target_info` is missing; registration still succeeds. Artifact `results/e182_runtime_probe.json`; no weights, trajectory, or performance executed.
+
+## E183 vLLM weighted-probe loader boundary
+
+- 只读检查 local safetensors index：权重55,562,872,800 B、11 files。vLLM DefaultModelLoader 遍历完整权重迭代器并严格检查所有 named parameter loaded，没有单层过滤入口。相对E100 allocated预算仅剩约6.53 GB给activation/runtime/cache，不能把全模型load误称为单层受控probe。
+- 未启动权重加载，未据预算推断OOM。结果`results/e183_loader_boundary.json`，合同与case020。下一步需采用单独验证过的权重切片注入+层级module probe，或在有明确独立内存预算时另设双卡runtime实验；当前不报kernel/trajectory/performance结果。B1差异仍只作诊断。
+- `safe_open` 真实读取layer-0 GDN shard metadata，不物化参数；核对9个参数名、shard位置、shape和BF16 dtype。结果`results/e183_layer_metadata.json`，用于界定下一步切片module probe的参数契约。
+
+## E184 real-weight Ascend conv kernel probe (2026-10-30)
+
+- 只加载真实layer0 `conv1d.weight` 81,920 B，在vllm-ascend-py310物理NPU执行`causal_conv1d_update_npu`，B2 T1、state indices `[0,1]`，第三pad slot保持不变。NPU kernel实际运行，pad隔离通过。
+- 与显式HF depthwise conv+SiLU reference相比，output max_abs=0.001953125、state max_abs=6.484375，exact失败。首轮3D输入改为kernel声明的2D `[batch,dim]` 后仍有state/layout差异；没有放宽阈值或进入模型。case021记录诊断负结果，B1差异仍只作诊断。
+- 进一步检查发现 wrapper 先 `conv_state.transpose(1,2).contiguous()`，只返回output，不把kernel更新的临时state copy回caller cache；原始state storage保持不变。该state ownership缺陷是具体阻断，不把它归因于B1 tensor差异。
+
+## E185 caller-state commit follow-up (2026-10-30)
+
+- 首轮E185 adapter诊断错误地使用了kernel原位覆盖后的x和调用后cache；修正为保存pre-call state/input后重跑。两步state exact、pad隔离通过；output max_abs均0.00390625。说明wrapper临时state问题可由正确caller-side commit修复，仍未进入整层/模型/性能，case022改为diagnostic_state_commit_verified。
+- 进一步按vLLM真实caller cache shape `[batch,state_len,dim]` 重跑，wrapper传入transpose view、commit写回caller cache；两步state exact、pad隔离和output诊断结果保持通过。此前shape误读已消除。
+
+## E186 Ascend custom causal-conv op (2026-10-30)
+
+- 直接调用Qwen3.5 patch实际使用的`_C_ascend.npu_causal_conv1d_custom`，真实layer0 conv weight、caller cache `[B,state_len,dim]`、`query_start_loc=[0,1,2]`、indices `[0,1]`和pad line。NPU执行成功，caller state exact、pad unchanged，output max_abs=0.00390625（BF16诊断）。
+- 这验证了custom prefill conv state路径的基本契约；尚未执行projection/GDN recurrent/整层/trajectory/performance，不接纳候选。结果`results/e186_conv_custom_op.json`，case023；B1差异仍只作诊断。
+
+## E187-E188 layer0 projection→custom conv path
+
+- E187从真实shards抽取QKV/Z/B/A权重，B2 hidden真实NPU linear执行均finite；QKV/Z CPU-NPU BF16 max_abs=0.015625/0.0078125，B/A exact，作为诊断记录，不作B1硬门槛。结果`results/e187_gdn_projection.json`。
+- E188将真实NPU QKV projection输出直接送入Qwen3.5 patch真实`_C_ascend.npu_causal_conv1d_custom`，以相同投影输出作为conv reference；caller state exact、pad unchanged，output max_abs=0.00390625。整层GDN/recurrent、trajectory和性能仍未测试；case024/025记录当前范围，B1差异仅诊断。
+
+## E189 real-weight fused recurrent GDN (2026-10-30)
+
+- 使用真实layer0 QKV/B/A/A_log/dt_bias投影，在NPU构造Q16/K16/V48、T1×B2输入，调用Ascend fused sigmoid-gating delta-rule kernel；caller recurrent state `[3,48,128,128]`，indices `[0,1]`，pad row隔离。
+- 输出finite、valid rows state changed、pad unchanged，shape `[1,2,48,128]`；未加载完整模型、未做reference trajectory或性能。case026与`results/e189_gdn_recurrent.json`记录诊断通过，B1差异仍只作诊断。
+- No-weight `ModelConfig`/`ModelRegistry` probe resolved the local model to `vllm.model_executor.models.qwen3_5.Qwen3_5ForConditionalGeneration`, `is_hybrid=true`, BF16, max length 262144. Optional Triton import warns that `triton.language.target_info` is missing; registration still succeeds. Artifact `results/e182_runtime_probe.json`; no weights, trajectory, or performance executed.
+
+## E197 matching-B16 first16 workflow (2026-10-30)
+
+- Baseline is E100 exact. Candidate all48 GDN, 21,024 decode calls; four first-round token trajectories differ, tools/final rounds agree. Both15/16.
+- Allocated baseline/candidate62,095,446,528/62,099,476,992B exceed cap. Single observed107.955336/101.802723s has changed output lengths; no speed acceptance. No32/128 expansion.
+- `results/e197_audit.json` and `results/e197_report.md` record rejection and next component isolation. B1 tensor differences diagnostic only.
+
+## E198 baseline gated norm intervention (2026-10-30)
+
+- Replaced only E197 manual gated norm with baseline live fused norm and flattened128-head shape. Tasks1030/428/1288 first-round tokens differ;428/1288 tool strings differ. Final-round tokens agree. Allocated62,099,478,528B fails cap.
+- Manual norm is not the sole cause. E199 custom-conv-only actual B16 gate launched next; no32/128 expansion, B1 diagnostic only. See `results/e198_report.md`.
+
+## E199 custom-conv-only intervention (2026-10-30)
+
+- Original HF forward/recurrent/norm retained, custom conv only: five actual first-round trajectories differ (640/1137/428/1130/445), two tool strings differ. Custom conv alone causes actual trajectory mismatch. Candidate allocated61,372,379,136B passes its own cap; matching baseline fails. Single89.498070s not comparable due changed output lengths.
+- E200 recurrent-only gate launched next. No32/128 expansion. B1 diagnostic only. See `results/e199_report.md`.
+
+## E200 fused-recurrent-only intervention (2026-10-30)
+
+- Baseline conv/original forward retained: fused recurrent alone changes six first-round token trajectories (1137/1030/428/1130/1161/1288), tool strings change428/1288. Final rounds agree.21,024 calls across48 layers; allocated62,095,495,680B fails cap. Single100.467868s has changed work, not accepted speedup.
+- E199/E200 prove each custom component independently can change actual trajectories. Next concrete mechanism: retain baseline BF16 QK normalization/beta and FP32 framework g, investigate installed recurrent-only single-kernel entry. Not the rejected E116 two-kernel design. No32/128 expansion, B1 diagnostic only. See `results/e200_report.md`.
+
+## E201 baseline-prepared recurrent-only kernel (2026-10-30)
+
+- Indexed B16/reversed/inactive/resumed probes pass structural state checks in FP32 and actual HF BF16 cache dtype. Initial FP32-only assumption failure preserved. Independent baseline errors diagnostic only.
+- Actual first16: five first-round trajectories differ, task640 final round differs; runner14/16 vs15/16. Candidate allocated62,050,672,128B passes own cap. No acceptance.
+- Seeded-B16 complete recurrent wrapper ABBA mean medians baseline0.960391ms vs candidate0.993559ms,3.45% slower with both candidate groups slower. Stop expanding this implementation; no unchanged tile/numerical-error sweeps. Different execution mechanism plus wrapper budget required to reopen. `results/e201_report.md`. B1 diagnostic only.
+
+## E202–E205 history continuation optimization (2026-10-30)
+
+- E202 shared immutable active masks and elided all-active selections; seeded output/state exact and local wrapper gain7.59%. E203 per-token active gather/scatter exact but10.95% slower; stopped. E204 one-time descending length sort/pack exact and local wrapper gain13.35% (3-sample bounded probe).
+- Valid E205 first16 NPU snapshot correctness workflow matched all E100 tokens/tools, score15/16, peak59,228,705,280B, workflow75.189606s. Earlier harness reference failures preserved/excluded. No performance acceptance yet; matched ABBA is next. B1 diagnostic only. See `results/e205_report.md`.
+
+## E205 sorted recurrent packing ABBA (2026-10-30)
+
+- E202 exact mask reuse; E203 per-step compaction exact but10.95% slower; E204 one-time row sort/pack exact, directional local gain13.35%.
+- E205 first16 and all four device1 ABBA trials exact E100, score15/16, peak59,228,705,280B. Workflow baseline mean72.806629s, candidate71.862134s, net1.297%; candidate range3.523% > net and below2% target. Independent raw audit at `results/e205/abba/independent_audit.json`; performance not proven, no32/128 expansion.
+- E180 remains best validated full128 opt-in (5.673%). Do not repeat E204 layout tuning; next distinct measured workflow cost. B1 diagnostic only. `results/e205_report.md`.
+
+## E206 device-side EOS admission (2026-10-30)
+
+- Kept argmax/EOS mask on NPU; host row/token transfer only on EOS hits. First16 and four device1 ABBA trials all E100 exact,15/16, allocated59,228,705,280B.
+- Candidate mean77.991558s vs baseline76.149008s:2.420% slower; both pairs regress. Duplicate device argmax/EOS compare outweighs avoided `.tolist()` transfer. Reject/no expansion. E180 remains validated full128 opt-in optimum,5.673% gain. `results/e206_report.md`; B1 diagnostic only.
+
+## E207 batched prompt budget audit (2026-10-30)
+
+- Batched chat-template render/tokenization preserved all16 frozen E100 token ID sequences. Median serial0.048091s vs batched0.015588s, local67.59% reduction.
+- Eight-batch upper bound0.100% of E180 full128 makespan, far below2% target before padding/integration overhead. Do not full-workflow test this low-impact direction. E180 remains validated optimum; B1 diagnostic only. `results/e207_report.md`.
+
+## E208 per-row fresh fallback (2026-10-30)
+
+- E180 discarded all16 rows on one prefix mismatch. E208 split mismatched rows from reusable rows. Real task99 batch2 (B15 reuse+B1 fresh) and task785 batch3 both E100 token/tool exact, memory pass; second generation5.610/5.042s vs original fresh6.684/7.529s.
+- Batch-level evidence is correctness plus directional cost only; no summed full128 claim. Next first16 process-isolated ABBA with E208, then expand only if all gates pass. B1 diagnostic only. See `results/e208_report.md`.
+
+## E208/E209 per-row fallback full128 ABBA (2026-10-30)
+
+- E208 split task99/785 mismatches into B1 fresh + B15 reuse; isolated exact. E209 full128 correctness exact, scorer122/128, peak59,228,705,280B.
+- Full ABBA baseline263.604769s vs candidate260.422335s, net1.207%; pair gains1.150%/1.265%, candidate range1.229%, below2% and variation. Correctness-preserving directional gain, performance gate not proven; E180 remains accepted5.673% optimum. Independent audit `results/e209/abba2/independent_audit.json`; B1 diagnostic only.
+
+## E209 stage attribution correction (2026-10-30)
+
+- Stage audit shows per-row split fallback is slower in affected second generation:10.27–11.69s vs original whole-B16 fresh6.68–7.65s. Full ABBA1.207% positive result is first-generation/environment variation, not attributable split gain. Close E208/E209 split path; do not tune it further. `results/e209_stage_audit.json`. B1 diagnostic only.
+
+## E209 prefix boundary follow-up
+
+- task99/785 prior prompts exact, generated-text tokenization diverges at token424/418 (`_ledge`, `_twenties` BPE boundary). Preserving generated token IDs and appending empty-assistant template suffix still fails exact prompt reconstruction (785 length off2). Close simple token-boundary repair; retain full fresh fallback. `results/e209_stage_audit.json`, `results/tool_round_prefix_audit.json`. B1 diagnostic only.
+
+## E215 weight-backed vLLM-Ascend runtime probe (2026-10-31)
+
+- The E214 combined candidate was independently rejected on performance (mean -0.170%); E180 remains the accepted full128 opt-in path.
+- E182 source/import/config capability was followed by a real weight-backed probe on physical device0. The first attempt preserved a forked-NPU failure; the corrected `spawn` probe loaded the complete local Qwen3.5-27B BF16 model through vLLM-Ascend 0.18.0 with `max_model_len=128`, `max_num_seqs=1`, and eager mode.
+- Raw result: `results/e215_weighted_probe_spawn.json`, weights_loaded=true, 78.8875s initialization, 65,057,206,272B free before and 8,971,980,800B free after startup; `npu-smi` observed 55,909MiB engine residency. This passes only the P2 weight-backed runtime capability gate. No request trajectory, state handoff, or performance claim; next work requires a separate request-level contract with measured remaining-memory budget.
+
+## E216 minimal request probe (2026-10-31)
+
+- The same spawn/eager/BF16 one-device vLLM-Ascend configuration executed a real request (`2+2=`) successfully. Raw output `results/e216_request_probe.json`: generated IDs `[19,11,220,17]`, text `4, 2`, request time 1.482883s after 74.163977s startup, and 8,867,516,416B free after the request.
+- This advances P2 to executable request runtime. It is not HF trajectory equivalence, hybrid state correctness, tool execution, or an end-to-end speed result. A matched prompt/state probe is the next required experiment.
+
+## E217 minimal B2 request probe (2026-10-31)
+
+- The same runtime accepted two prompts in one batch. `2+2=` reproduced E216 IDs `[19,11,220,17]`; the second prompt generated `[11751,13,271,248068]`. Batch request time was 1.942870s after 75.343369s startup, with 8,867,520,512B free afterward.
+- This confirms a B2 request path and repeatability only. It does not establish HF equivalence, recurrent state handoff, tool rounds, or performance acceptance. Next is a matched prompt/state comparison before any integration claim.
+
+## E218 HF/vLLM short-prompt reference (2026-10-31)
+
+- Ran both E217 prompts through the existing HF Transformers/NPU reference. `The capital of France is` matched vLLM exactly: `[11751,13,271,248068]`.
+- `2+2=` diverged at the first token: HF `[17,17,10,17]` (`22+2`) versus vLLM `[19,11,220,17]` (`4, 2`). The vLLM path is executable but not behaviorally equivalent yet; no state handoff or performance claim may use it as an equivalent candidate. Evidence: `results/e218_hf_prompt_probe.json`, `results/e218_audit.json`.
+
+## E219 unpadded HF follow-up (2026-10-31)
+
+- Re-running each prompt independently without left padding changed HF `2+2=` to `[19,11,220,19]`; vLLM `[19,11,220,17]` now shares the first three tokens. The second prompt remains exact. E218's initial mismatch was therefore largely an input-layout artifact, but a late fourth-token divergence remains. Evidence: `results/e219_hf_unpadded_probe.json`, `results/e219_audit.json`.
+
+## E220 explicit mask/position follow-up (2026-10-31)
+
+- HF was rerun with explicit attention masks and current-token position IDs on every cached decode step. It reproduced E219 exactly: `[19,11,220,19]` versus vLLM `[19,11,220,17]`; the capital prompt remained exact.
+- The fourth-token mismatch is therefore not caused by the comparison harness's omitted mask/position arguments. vLLM remains executable but unqualified for equivalent end-to-end use. Evidence: `results/e220_hf_explicit_mask_probe.json`, `results/e220_audit.json`.
+
+## E221-E222 near-tie diagnosis (2026-10-31)
+
+- vLLM top-8 logprobs show the fourth-step tokens 17 and 19 tied at approximately -1.2536517, with 17 selected. HF top logits select 19 at 16.25 versus 17 at 16.125. Earlier selected tokens agree.
+- The remaining mismatch is precision/implementation-sensitive greedy ordering at a near tie, not a gross weight or prompt failure. Exact trajectory equivalence remains rejected; evidence is `results/e221_vllm_logprob_probe.json`, `results/e222_hf_logit_probe.json`, and `results/e222_audit.json`.
+
+## E223 chunked-prefill isolation (2026-10-31)
+
+- vLLM with `enable_chunked_prefill=False` produced the same `[19,11,220,17]` output as the default E217 path. The model warns that this setting is unsupported, so it is diagnostic only. The fourth-token mismatch is not explained by this scheduling toggle. Evidence: `results/e223_vllm_no_chunk_probe.json`, `results/e223_audit.json`.
+
+## E224 runtime sampling source audit (2026-10-31)
+
+- vLLM computes logits through `VocabParallelEmbedding.quant_method.apply` and local `max(dim=-1)`, while HF uses its `nn.Linear` language head followed by caller `argmax`. Source hashes and the exact boundary are recorded in `results/e224_runtime_sampling_audit.json`.
+- This explains where the near-tie can be introduced but does not identify a safe equivalent patch. No dependency modification or performance claim was made.
+
+## E225-E227 real Agent semantic probes (2026-10-31)
+
+- E225 task640 single-request vLLM matched all 428 frozen E100 first-turn tokens exactly, but this did not generalize.
+- E226 B2 task640/task1137 diverged: task640 at token343 (455 vs428 tokens), task1137 at token92 (273 vs286). E227 task1137 alone reproduced the token92 divergence, proving it is task-specific rather than only cross-row batching contamination.
+- The vLLM runtime therefore fails the real Agent semantic gate on 1 of 2 representative tasks. No state handoff or performance ABBA is admissible. Evidence: `results/e226_e227_audit.json`, `results/e226_report.md`, `results/e227_report.md`.
+
+## E228-E229 task1137 semantic propagation (2026-10-31)
+
+- task1137's vLLM first-turn formatting difference still parses to the same Python call and exact tool output `68.0\n`.
+- Rebuilding the second prompt from vLLM's own first-turn text and that tool output produced all 7 E100 second-turn tokens exact. This is one complete two-turn semantic success despite strict first-turn token mismatch; it does not yet waive the token gate or qualify B16/performance. Evidence: `results/e228_e229_audit.json`, `results/e228_report.md`, `results/e229_report.md`.
+
+## E230 B2 tool-semantic audit (2026-10-31)
+
+- Decoding and executing E226's B2 tool calls shows task1137 still exact (`68.0`), but task640's B2 call prints labelled lines and changes the tool output from the E100 numeric-only output. This is an Agent-visible behavior change, not merely token formatting. Evidence: `results/e230_audit.json`, `results/e230_report.md`.
+
+## E231 duplicate task640 B2 isolation (2026-10-31)
+
+- Two identical task640 prompts in one batch produced asymmetric results: row0 diverged at token343 and ended at455 tokens, while row1 matched all428 E100 tokens. Identical 459-token inputs rule out ragged length/content as the sole cause; the evidence points to row-specific hybrid-cache/state scheduling in the batch path. Evidence: `results/e231_audit.json`, `results/e231_report.md`.
+
+## E232 task640 row1 follow-up (2026-10-31)
+
+- Putting a one-token `Hello` request in row0 and task640 in row1 made task640 exact (all428 tokens). This localizes the observed failure to the first active batch row's hybrid state initialization/scheduling path, but adding a dummy request is not a deployable fix. Evidence: `results/e232_audit.json`, `results/e232_report.md`.
+
+## E233 GDN batch metadata audit (2026-10-31)
+
+- The installed runner has separate unpadded `gdn_query_start_loc`, `seq_lens` reset/rebind logic, and regular query-start logits indexing. These concrete metadata boundaries are now the source-review target for the E231/E232 first-row asymmetry; site-packages were not modified. Evidence: `results/e233_audit.json`, `results/e233_report.md`.
+
+## 验收规则更新：严格等价与质量保持两条轨道（2026-10-31）
+
+- 用户明确：端到端加速的主要目标是最终准确率和完整工作流耗时，不要求语言模型每次逐 token 轨迹完全一致。token 差异不再对所有候选自动否决。
+- **严格等价轨道**继续要求每题每轮 token/tool/prediction exact，适用于纯 cache、kernel 或执行替换的等价声明。
+- **质量保持加速轨道**允许 token/工具代码变化，但必须冻结 E100 任务集合和工具协议，最终 scorer 不低于 baseline、失败集合不新增、工具无新增异常/超时、第二轮任务完成，并记录 token 总量、工具次数、prompt 长度和实际工作量。
+- 工具调用次数不是固定不变的硬门槛：通过缓存、合并或结果复用而减少调用可以计入收益，但必须解释减少原因，验证必要工具语义/副作用、准确率和任务完成率，并单独报告工具耗时与工作量变化。减少工作量不能冒充同工作量的纯执行加速。
+- 两条轨道都保留显存、稳定性和完整未插桩 ABBA 门槛：净端到端收益至少2%，且超过基线与候选波动。质量保持候选若改变工具输出或实际工作量，必须单独报告，不能直接称为纯执行加速，也不能未经额外质量批准替换默认实现。
+- E218–E233 的 vLLM 证据按新规则重新解释：部分 token 分叉可能是可接受的质量保持差异，但 E230 task640 B2 已观察到工具输出变化，仍需真实 16/128 题质量与工作量验收；尚无性能接纳结论。
+
+## E234 task640 row-order non-reproduction (2026-10-31)
+
+- In one real vLLM-Ascend process on physical NPU0, task640 was tested in both B2 orders with a one-token `Hello` companion. It matched all 428 frozen E100 first-turn tokens both in row0 and row1. E231's duplicate-task row0 divergence therefore is not explained by a deterministic row0-only defect under this pairing; the cause remains open.
+- The first launch through `scripts/env.sh` selected `ascend-e2e`, which lacks vLLM and exited at import before model execution. The corrected run used the isolated `vllm-ascend-py310` environment and completed; no result is attributed to the failed launch.
+- Evidence: `results/e234_vllm_row_order.json`, `results/e234_report.md`, case034. Next repeat identical task640 B2 batches in one engine to test reproducibility. No quality acceptance, performance claim, or dependency modification.
+
+## E235 repeated identical task640 B2 (2026-10-31)
+
+- Three consecutive B2 batches, each containing two identical 459-token task640 prompts, reproduced the same row asymmetry: row0 diverged at token343 and ended at455 tokens; row1 matched all428 E100 tokens. E234's task640+Hello row0 case was exact, so row position alone is insufficient; the trigger includes duplicate long prompts in the same batch.
+- This narrows the next source/runtime target to duplicate-prompt hybrid cache/state handling and scheduler interactions. Cache-slot aliasing or request deduplication are hypotheses only; neither is proven by generated tokens. No site-package patch, quality acceptance, or timing claim.
+- Evidence: `results/e235_vllm_duplicate_repeat.json`, `results/e235_report.md`, case035. Runner shut down cleanly; physical NPU0 is free. Continue with slot/state metadata capture or a cache-allocation permutation before any vLLM quality gate.
+
+## E236-E237 long-prefill trigger isolation (2026-10-31)
+
+- E236 attempted to break prompt identity with trailing whitespace, but chat-template rendering normalized it: both rendered strings and token ID lists remained identical at459 tokens. Retain as a failed control construction, not evidence for distinct prompts.
+- E237 changed `$30,000` to `$30,001` in row1. Prompt texts and token IDs differ while both lengths stay459; task640 row0 still diverges at token343. Combined with E234's exact task640+`Hello` result and E235's 3/3 exact-duplicate reproduction, the current boundary is two long prefills in one B2 batch, not exact text duplication alone.
+- Evidence: `results/e235_e237_report.md`, `results/e236_vllm_near_duplicate.json`, `results/e237_vllm_same_length_distinct.json`, case036. This is still diagnosis, not quality or performance acceptance. Next capture GDN `cu_seqlens`, initial-state flags and per-row final-state/output for the two-long-prefill batch and a short-companion control.
+
+- **E239 correction:** GDN capture later showed each observed prefill call contains one 459-token sequence, not a packed two-row prefill. The E236-E237 “two long prefills” interpretation above was tentative and is superseded by E238-E239; do not treat it as an established trigger.
+
+## E238-E239 GDN prefill capture correction (2026-10-31)
+
+- E238 reproduced E235 but captured zero tensors because it requested918 on the GDN sequence axis. The environment hook compares `query_non_spec.shape[1]`, not concatenated batch-token count; preserve the failed capture contract and its completed generation result.
+- E239 reran duplicate task640 B2 with capture threshold459. All48 GDN layer files were captured and audited: each Q shape `[1,459,16,128]`, `cu_seqlens=[0,459]`, `has_initial_state=[false]`; all inputs, recurrent outputs and states finite, initial state all zeros. Generation again row0 false at token343 and row1 exact at428.
+- This contradicts the previous tentative description that two long prefills are processed in a single packed GDN call. The observed GDN invocations each carry one sequence. The existing hook does not include request IDs or cache slot IDs, so it cannot map the captured invocation to row0/row1 or validate slot aliasing. Next inspect scheduler request ordering and hybrid cache slot allocation, or add an opt-in runtime capture of request-to-slot metadata without changing dependency files. No quality/performance acceptance.
+- Evidence: `results/e238_e239_report.md`, `results/e238_gdn_prefill_capture.json`, `results/e239_gdn_prefill_capture.json`, `results/e239_gdn_prefill_audit.json`, case037.
+
+## E240 asynchronous scheduler intervention (2026-10-31)
+
+- Repeated identical task640 B2 with `async_scheduling=False`; row0 still diverged at token343 and emitted455 tokens, row1 remained exact at428. Async scheduling alone is not sufficient cause and disabling it is not a correctness fix.
+- Together E239 indicates one GDN sequence per captured prefill call; remaining investigation should map scheduled request IDs to GDN/cache state slots and trace when each slot is zeroed or reused. No performance comparison or quality acceptance.
+- Evidence: `results/e240_report.md`, `results/e240_vllm_sync_scheduler.json`, case038.
+
+## E241 request/state-slot trace (2026-10-31)
+
+- Opt-in `sitecustomize` tracing, without site-package edits, recorded runner batch request IDs, per-row block tables, scheduled tokens and computed lengths for duplicate task640 B2. First iteration only request0 prefills459 tokens. Second iteration schedules request0 decode1 with request1 prefill459. KV/Mamba first-block IDs are distinct across requests; row0 remains first at block12 versus row1 block60 in the tracked group. This gives a concrete mixed decode+prefill iteration and shows no observed first-block alias. E239 GDN capture is single-sequence, matching the call structure.
+- E240 had already shown that disabling async scheduling does not remove the mismatch. No evidence yet maps GDN `ssm_state` indices directly to each request ID in the same forward event; do not claim a cache-slot fault.
+- Evidence: `results/e241_vllm_state_slot_trace.json`, `.jsonl`, `scripts/e241_diag/sitecustomize.py`, case041. Trace was diagnostic and is not a performance measurement.
+
+## E242-E245 scheduler boundaries (2026-10-31)
+
+- E242 attempted `max_num_partial_prefills=2` and `max_long_partial_prefills=2`. vLLM-Ascend explicitly rejects Concurrent Partial Prefill during config validation; no model run or outcome was produced. Record as unsupported configuration in `results/e242_report.md` and case040.
+- E243 disabled chunked prefill with async scheduling disabled. The same schedule remained: request0 prefill459, next iteration request0 decode1 + request1 prefill459; task640 row0 still diverged at343 and row1 matched428. This switch is not a fix.
+- E244 reversed the distinct equal-length pair. Task640 in row1 remained exact428/428; trace again showed row0 prefill then mixed row0 decode + row1 prefill. E245 paired real task595 (347-token prompt) before task640 (459 tokens); both full first-turn outputs were exact to E100 (127 and428 tokens), with schedule short-prefill then mixed short-decode+long-prefill. This confirms stable quality on that real pair, not speed or a general guarantee.
+- E246 scaled sorted prompt order to the frozen first16 two-turn workflow. All16 answers correct, 16/16 tool outputs and second-turn tokens exact, 14/16 first-turn tokens exact; 2060 generated tokens and16 calls match baseline work. Total301.53s including76.81s load; generation224.72s, slower than the corresponding E100 workflow. NPU peak memory counters incorrectly returned zero, so memory is unmeasured. Reject vLLM as an acceleration candidate; no ABBA or32/128 expansion.
+- Evidence: `results/e242_report.md`; E243/E244/E245 raw JSON/trace; E246 raw run, audit and report. Next return to E180's validated resident snapshot path or inspect a separate measured optimization; do not use prompt ordering as a speed claim.
+
+## E247 E180 history activity planning (2026-10-31)
+
+- Returned to E180 after E246 rejection. Isolated candidate caches per-forward row masks and skips conv clones/state and output selections on all-active steps; a new lengths host read is included in timing. Arithmetic/model/tool protocol unchanged.
+- Physical0 original first16 complete workflow passed independent raw E100 audit:16/16 two-round tokens/text/tool outputs/predictions exact; peak allocated59,228,705,280B, reserved60,683,190,272B. Diagnostic77.121959s is not a speed claim.
+- Corrected constructor None handling after stopping the initial run; interrupted log/transcript and preservation-guard exit retained. Corrected run and audit completed. First16 E180/E247 process-isolated ABBA started on physical0; no32/128 expansion before performance gate. Device1 occupancy was left alone.
+- Evidence: `results/e247_contract.md`, `results/e247_first16.json`, `.workflow.jsonl`, `results/e247_first16_audit.json`, `results/e247_report.md`, `results/e247/abba/live.json`. Goal remains active.
+
+## E247 standalone history activity ABBA rejected; E248 bounded conv candidate (2026-10-31)
+
+- Historical review corrected novelty: E202 already validated the mask/all-active mechanism locally and E205 included it in a combined candidate. E247 only adds standalone workflow evidence and introduces a host length read; do not call it new.
+- Physical0 ABBA78.824248/77.936860/76.101508/76.591082s, all16 two-round tokens/tools/predictions exact and memory59,228,705,280B allocated. Independent raw audit verifies all36 checks. Mean gain0.885989%, paired1.125781%/0.639205%, baseline/candidate ranges2.915700%/2.411715%: performance rejected, no32/128 expansion. E172 independent state parity test FP32/BF16 passes all-active/mixed/zero/decode rows.
+- E248 is a different mechanism: one historical-window grouped conv per suffix instead of T token calls, per-row final-window gather, zero padded output, recurrent/decode path unchanged. CPU state/output parity passes; NPU complete conv-wrapper budget probe started only after E247 terminal. Need useful >=2% budget before workflow integration. Contract `results/e248_contract.md`; no speed claim yet.
+
+- E248 NPU0 complete conv-wrapper probe completed: all four activity cases have exact output and final state vs E176; final windows also match independently sliced concatenated history. First16 real-shape B16/C10240/T74/K4 warm ABBA medians56.532629/1.753889/1.743069/56.476431ms, estimated48-layer saving2.628290s exceeds1.576485s screening budget. This is seeded-shape local cost evidence only. Full first16 two-turn correctness/memory run started on physical0 after E247 terminal. Evidence `results/e248_conv_probe.json`, `results/e248_report.md`.
+
+- E248 full first16 completed and independently audited:16/16 two-round tokens/text/tool code/output/predictions exact to E100, allocated59,228,705,280B, reserved60,683,190,272B. Diagnostic workflow72.771934s, first66.716057s, second5.281575s; no speed claim from one run. Same-device E180/E248 first16 ABBA started, raw commands/hashes/PID in `results/e248/abba/live.json`. No32/128 expansion before performance gate. Goal active.
+
+## E248 stability rejected; E250 historical chunk budget (2026-10-31)
+
+- E248 physical0 ABBA77.402160/70.471768/75.433030/76.485413s, all16 trajectories/tools/predictions exact and allocated59,228,705,280B. Independent raw audit verifies36 checks. Mean gain5.187407%, paired8.953745%/1.375926%, baseline range1.198591%, candidate range7.040071%: stability fails, no32/128 expansion, no unchanged retry. Second-generation savings are consistent across trials but do not justify attributing total delta solely to conv.
+- E249 expansion runner/audit and frozen full128 incremental-E180 contract were prepared during verified wait. They remain unexecuted and their prerequisite explicitly rejects the E248 failed stability result.
+- E250 different recurrent execution mechanism: HF chunk64 with saved initial_state and identity padding via zero q/k/v/beta/log-decay, E248 vector conv, original T1 decode. A priori quality track acknowledges changed intermediate rounding; no claim of equivalence to per-token BF16 cache commits. Independent per-row FP32 recurrence/state probes and full-wrapper cost screening required before real first16. Contract `results/e250_contract.md`; CPU probe launched. No dependency/default changes, goal active.
+
+- E250 CPU8/NPU6 state oracle cases passed. Actual B16 BF16 final state relative error0.001659 to independent FP32 oracle and0.004331 to E176 per-token commits (diagnostic); inactive state exact, padding zero, input immutable. Complete conv+recurrent NPU ABBA102.253823/17.118175/17.110474/102.113461ms yields estimated48-layer saving4.083327s, useful screening budget.
+- E250 full first16 on physical0 completed, independent raw quality audit plus prompt-length reconstruction verified:16/16 two-round tokens/tools/predictions exact, v3=15/16, same failure1161,3969 tokens/16 calls, allocated59,228,705,280B, reserved60,683,190,272B. Diagnostic workflow72.559360s, second3.072162s; not a performance claim. Same-device E180/E250 ABBA started; live PID/commands/hashes in `results/e250/abba/live.json`, report `results/e250_report.md`. No expansion before performance gate.
+
+## E250 first16 stable performance passed; E251 expansion (2026-10-31)
+
+- Physical0 E180/E250 ABBA76.326933/73.343201/73.655276/76.524501s. Independent raw audit verified17 checks; all four16-task two-round trajectories exact (3969 tokens/16 tools), v3=15/16 with same1161 failure, allocated59,228,705,280B/reserved60,683,190,272B.
+- Mean incremental gain3.829181%, paired3.909148%/3.749421%, baseline/candidate ranges0.258845%/0.425500%: stable first16 gate passed. Unlike E248, this gain exceeds both ranges; no unchanged retry was used.
+- E251 original32-task resident smoke launched on physical0. Prepared full128 runner uses one model/eight original B16 groups, unchanged whole-batch fresh fallback, same E180 baseline selectable in the same runner. Both paths record actual tool timing within complete workflow, audits reconstruct prompt lengths outside timer. Full128 quality/memory then ABBA still required; no default/dependency change, goal active. Contract `results/e251_contract.md`.
+
+- E251 original32-task physical0 resident smoke passed; independent audit25/25:32/32 raw two-round trajectories exact, v3=29/32 with unchanged failed IDs1161/423/952,6564 tokens/32 actual tools, both batches reuse, allocated59,228,705,280B/reserved60,683,190,272B. Full128 original-order resident candidate correctness/memory/scorer gate started physical0. Only independent full128 audit pass permits incremental-E180 ABBA. Evidence `results/e251/smoke32/audit.json`, `results/e251_report.md`, live log. Goal active.
+
+- E251 audit review confirmed the32 smoke manifest contained source hashes; first concern was a misread of audit summary and was retracted. Strengthened independent auditor to explicitly verify runner and candidate source hashes against present files. Current full128 run started before that edit; edits affect only audit code, not already-loaded runner behavior. Run audit with current script after completion and review its frozen source hash separately; do not use the mid-run edited runner hash as if it described loaded code. Candidate/contract hashes are already captured at process start in progress manifest. If runner differs from captured digest due audit-tool hardening, rerun correctness gate before ABBA so loaded runner identity is unambiguous.
+
+- Prior E251 full128 run raw results were128/128 first-round/tool exact, v3=122/128 unchanged failure set,15961 tokens/128 tools, allocated59,972,823,040B/reserved61,863,886,848B, routes correctly fresh-fallback task99/785. Independent audit rejected only runner source identity because its file had been edited mid-run. Preserve it as diagnostic, do not use for ABBA.
+- Re-ran full128 correctness on physical0 in `results/e251/gate_verified/` after freezing runner/auditor; captured source hashes currently match all present files. First B16 raw output exact; process remains active for remaining batches. This resolves the audit weakness before performance qualification.
+
+- E251 first full128 gate produced exact raw results/quality/memory but audit detected runner source hash changed mid-run. Preserved as diagnostic, not admitted.
+- Frozen-source physical0 full128 rerun completed correctness-only in261.426607s. Independent audit all checks true:128/128 tokens/tools/rounds/predictions exact, v3=122/128 unchanged failures1161/423/952/1035/552/1048,15961 tokens,128 calls, reuse batches0/1/4-7, fresh fallback99/785, allocated59,972,823,040B/reserved61,863,886,848B. Source identity verified.
+- Full128 E180/E250 matched incremental ABBA now starting physical0. Four process-isolated trials and independent raw re-audit required; E180 baseline vs E250 candidate. No performance/default conclusion yet. See `results/e251_report.md` and `results/e251/gate_verified/audit.json`.
+
+- E251 ABBA first launch exited before model load: runner performance prerequisite referenced diagnostic `results/e251/gate/audit.json` rather than passing `gate_verified`. No timed trial. Preserved `results/e251/abba/` failed launch. Corrected runner precondition; to preserve code identity, frozen full128 correctness gate must rerun and audit before using it. Changed ABBA/audit output root to new `results/e251/abba_verified/`; old artifacts untouched.
+
+## E251 full128 E250 incremental acceleration passed (2026-10-31)
+
+- E250 chunk64 history recurrence + E248 vector historical conv passes original128 correctness-only gate with frozen source hashes and independent raw audit: exact15961 tokens/128 tool outputs/predictions, v3=122/128 same failures1161/423/952/1035/552/1048, fallback task99/785, allocated59,972,823,040B/reserved61,863,886,848B.
+- Full physical0 E180/E250 ABBA: baseline261.257287/264.412632s, candidate249.031911/247.372380s. Each trial fresh process/model and same original task order/workflow/tools; load separately recorded. Per-trial raw audits and prompt reconstruction after timer, all source/artifact hashes verified.
+- Independent audit all checks true. Means262.834959 vs248.202145s, incremental gain5.567301%; paired4.679439%/6.444568%, baseline/candidate ranges1.207754%/0.670864%. Both pairs positive; gain>=2% and exceeds both ranges. All four strict E100 token/tool/prediction trajectories exact, v3=122 same failures, allocated peak59,972,823,040B; reserved61,863,886,848B. Candidate is6.349460% below historical E100 265.030128s (supplementary).
+- E250 is a verified opt-in full128 acceleration candidate over E180. No default integration/deployment requested or performed. E246 vLLM remains rejected; E233-E245 scheduler root cause remains unproven. Evidence: results/e251_report.md, results/e251/abba_verified/independent_audit.json, decision.json, and frozen full128 audit results/e251/gate_final/audit.json.
+
+## E252–E254 vLLM full128 follow-up (2026-10-31)
+
+- **E252 max context:** one-variable screen changed `max_model_len` 2048→1024. Full128 took233.485s, v2/v3=122, same E047 failure IDs, 16,148 tokens versus E047 16,629. This is a quality-preserving but trajectory/work amount change, not a strict execution comparison. Two ABBA groups were begun; trial0 baseline239.166s and trial1 candidate232.487s passed v3, while trial2 candidate225.583s introduced task640 as a new failure and scored121. Driver stopped before the final baseline. Candidate rejected. Evidence: `results/e252_contract.md`, `results/e252_audit.json`, `results/e252_abba/decision.json` and raw trials.
+- **E253 chunked prefill:** changed only `max_num_batched_tokens` 8192→16384, keeping context2048. One full128 took250.233s, v3=122 with the E047 failure set, 16,070 output tokens; KV capacity fell from23,040 to19,968 tokens and max full-context concurrency12.20→11.00. Reject and do not sweep. Evidence: `results/e253_contract.md`, `results/e253_screen.json`, full raw JSONL and NPU samples.
+- **E254 tool overlap:** added opt-in `--tool-workers` to the vLLM runner, default1. CPU-only replay of all128 E047 tool programs returned byte-identical outputs in serial and 16-worker modes, taking5.739 and0.429s. Full128 screen with16 workers took231.530s, v3=122, unchanged failures, 16,125 tokens,128 calls, no exception/timeout/context violation, NPU observed HBM peak64,245MB; it is7.664s faster than E047 and generated504 fewer tokens. Tool-batch wall was0.434s (sum worker time6.966s). Task1001 emitted `14:00` instead of `2:00 PM`; v2 sees121 while current v3 normalizes it as equivalent and yields122. The E254 quality gate therefore uses v3 primary and reports v2 diagnostically, as specified in `OPTIMIZATION_ACCEPTANCE.md`.
+- **E254 matched trials:** order baseline/candidate/candidate/baseline. Trials0–2 passed v3 at241.072/236.412/234.436s; tool wall5.586/0.409/0.426s. Trial3 baseline completed at244.131s but task304 exhausted the512-token tool-call cap, yielding v3=121 and127 tool calls. The driver correctly stopped and did not replace the failed baseline. Consequently this is not a valid accepted ABBA. Independent raw/hash audit verifies all four records and marks the matched performance decision unproven. Among the first three quality-passing records, candidate mean235.424s is diagnostic only; first paired gain1.933% and the final ABBA baseline/quality requirement is missing. Evidence: `results/e254_contract.md`, `results/e254_screen_audit.json`, `results/e254_abba/decision.json`, `results/e254_abba/independent_audit.json`.
+- No E252–E254 candidate replaced defaults. The goal remains open; E254’s tool concurrency is a useful mechanism but awaits a complete quality-passing ABBA. Do not claim the E047 objective is achieved from the single231.530-second screen or the incomplete ABBA.
+
+## E255 E254 independent ABBA acceptance (2026-10-31)
+
+- Repeated the bounded Python tool-concurrency experiment with a frozen,
+  independent contract and fresh process for each trial. The order was
+  baseline/candidate/candidate/baseline with `tool_workers=1/16/16/1`,
+  unchanged 128-task vLLM-Ascend workflow, max context 2048, BF16 greedy
+  sampling, and 0.98 GPU memory utilization.
+- All four raw runs passed independent v3/context/tool audits with 128 tool
+  calls and no timeout, exception, malformed round, or context violation.
+  Baselines were `243.020672` and `240.744550 s`; candidates were
+  `233.783608` and `233.868428 s`. Candidate mean was `233.826018 s`,
+  baseline mean `241.882611 s`, stable mean gain `3.330786%`; paired gains
+  were `3.800938%` and `2.856190%`, both above the baseline/candidate spread.
+- Candidate v3 scores were `123/128` and `122/128`; both used the unchanged
+  E047 failure set subset and introduced no new failure. Observed HBM peaks
+  were `64,224–64,245 MB`. Candidate mean beats E047's `239.194363 s` by
+  `5.368345 s` while preserving the strict v3 quality gate.
+- E255 is accepted as an opt-in endpoint optimization for vLLM-Ascend. The
+  default runner remains `tool_workers=1`; no dependency or site-package
+  changes were made. Evidence: `results/e255_contract.md`,
+  `results/e255_abba/decision.json`, and the independently generated
+  `results/e255_abba/independent_audit.json`.
+
+## E256 fresh E047 configuration rerun (2026-10-31)
+
+- Re-ran the E047 vLLM-Ascend configuration on physical NPU 0: one 128-request
+  batch, concise protocol, BF16 greedy, `max_model_len=2048`, serial tools,
+  and `gpu_memory_utilization=0.98`. The fresh workflow time was `239.614236 s`,
+  consistent with the frozen E047 `239.194363 s` reference.
+- This run scored v3 `121/128` with 127 tool calls because task 304 exhausted
+  the first-turn 512-token cap without a tool call. It is preserved as a
+  diagnostic rerun and cannot replace a quality-valid baseline. The result
+  nevertheless confirms the runtime/configuration timing used by E255. See
+  `results/e256_e047_rerun/report.md` and `audit.json`.
+
+## E256/E257 E251 phase-path attribution (2026-10-31)
+
+- Initial E256/E257 dispatch conclusion was wrong. Those hooks observed only
+  `causal_conv1d_update`/`recurrent_gated_delta_rule` and missed that
+  `BatchedHistory.install()` rewrites the GDN cache condition, causing real
+  T>1 suffix prefill to use the history callbacks. E251's `--baseline` and
+  candidate both run `e251_full_workflow.py`/E176 snapshot/pack/continue;
+  baseline selects E176 `HistoryRuntime`, candidate E250 `ChunkHistory`.
+  Therefore E251's full128 ABBA compares the combined phase runtime in the
+  same workflow. The old claim that it compared native `agent_batch_bench` to
+  the snapshot path is superseded.
+- E258 instrumented only the real first16 second-turn window. Raw workflow is
+  trajectory exact: batch0, route reuse, 12 second-turn forwards, suffix
+  lengths `[50,22,19,22,51,74,22,22,22,23,23,27,22,30,20,22]`. All48 GDN
+  layers each invoke history conv, history recurrent and recurrent cache update
+  12 times:576 calls per wrapper. That is one T=74 prefill plus11 T=1 decode
+  calls per GDN. Layer0 prefill operands: conv x `[16,10240,74]` BF16 stride
+  `[757760,74,1]`, state `[16,10240,4]` BF16, weight `[10240,4]` BF16;
+  q/k/v `[16,74,48,128]` BF16 stride `[454656,6144,128,1]`, decay
+  `[16,74,48]` FP32, beta BF16, recurrent state `[16,48,128,128]` BF16.
+  Full operand and kernel/operator profile summary is
+  `results/e258_profile_summary.json`; raw trace is retained in the attempt2
+  profiler directory.
+- E258 instrumented callback host inclusive medians for the T=74 prefill were
+  788us/layer convolution,24.640ms/layer recurrent and119us/layer recurrent
+  cache commit. T=1 decode medians were687us,1.878ms and113us respectively.
+  They include profiler overhead and async launch host time; do not sum or use
+  as savings estimates. Trace had1,265,143 events,392,752 framework operator
+  records and81,781 device kernel records for the second-turn window.
+- E259 complete wrapper ABBA on captured real layer0 T=74 operands included
+  temporary tensors, ragged masks, state/cache commit, launches and final NPU
+  synchronization. E248 conv output/state were exact; baseline/candidate mean
+  56.108/1.612ms, paired gains97.13%/97.13%. E250 recurrent output/state
+  relative L2 to independent per-row HF reference were1.24e-6/0.001692
+  (BF16 limit0.02); candidate padded output zero, initial state immutable,
+  finite. Baseline/candidate mean80.075/16.515ms, paired gains79.32%/79.15%.
+  These are local real-operand budgets, not workflow gains. Evidence:
+  `results/e259_real_suffix_wrapper/result.json`.
+- E260 freezes a single-mechanism candidate: only T>1 recurrence changes to
+  chunk64; conv and T=1 decode remain E176. Conditional 48-layer savings from
+  the layer0 shape exceed the first16 2% target, so proceed to the isolated
+  first16 matched ABBA. E251's combined 32/128 acceptance does not substitute
+  for E260's own 16→32→128 gates. Frozen contract and scripts:
+  `results/e260_recurrent_only_contract.md`,
+  `scripts/e260_chunk_recurrent_only.py`, `scripts/e260_recurrent_only_abba.py`.
+- E257's T=1 real conv negative remains valid only for the path where E248
+  delegates to E176; it does not describe T>1 suffix prefill. Detailed
+  corrected evidence: `results/e256_phase_wrapper_report.md`.
+
+## E260 isolated recurrent-only first16 ABBA (2026-10-31)
+
+- Ran four fresh-process physical NPU0 workflows in the frozen
+  baseline/candidate/candidate/baseline order. All four independent raw audits
+  passed: exact E100 tokens/tool effects/predictions, both rounds complete,
+  scorer v3 `15/16` with the unchanged failure `{1161}`, 16 tool calls, and
+  allocated peak `59,228,705,280 B` (reserved `60,683,190,272 B`). Frozen source
+  hashes matched. Per-trial times were baseline `71.720345/71.483318 s` and
+  candidate `71.763889/70.275508 s`.
+- Mean gain was only `0.813014%`, below the required `2%`; paired gains were
+  `-0.060714%` and `1.689639%`, so both pairs were not positive. The candidate
+  range (`2.117924%`) also exceeds the measured gain. E260 therefore fails its
+  performance gate despite semantic/quality/memory success. Do not expand this
+  mechanism to 32 or 128 tasks and do not replace trials. Continue phase
+  optimization with a new single mechanism and a measured complete-wrapper
+  budget before another workflow ABBA. Evidence: `results/e260_recurrent_only_abba/decision.json`,
+  the four `.audit.json` files, and `results/e260_recurrent_only_contract.md`.
+
+## E261 isolated convolution-only first16 ABBA (2026-10-31)
+
+- After E260 recurrent-only failed the workflow gate, isolated E248's
+  whole-suffix convolution while retaining E176 recurrence and T=1 decode.
+  E259 real T=74 operands established exact candidate output/state and a
+  complete local wrapper mean of 1.612 ms versus 56.108 ms baseline.
+- Four fresh-process NPU0 trials all passed independent raw/hash, E100 token,
+  tool/prediction, v3 and memory audits: 15/16 with unchanged failure `{1161}`,
+  3,969 tokens, 16 tool calls, allocated peak `59,228,705,280 B`, reserved
+  `60,683,190,272 B`. Baseline times were `74.513796/71.713160 s`; candidate
+  times were `70.869618/72.021612 s`.
+- Mean gain was `2.281199%`, but paired gains were `4.890609%` and `-0.430118%`.
+  Baseline and candidate ranges were `3.905331%` and `1.625512%`; the gain did
+  not exceed baseline variation and the second pair regressed. E261 fails the
+  stable performance gate. Do not expand this mechanism to 32 or 128 tasks or
+  replace trials. Continue with a distinct phase mechanism whose full-wrapper
+  budget and expected workflow impact are measured before another ABBA.
+  Evidence: `results/e261_conv_only_abba/decision.json`, all four per-trial
+  `.audit.json` files, and `results/e261_conv_only_contract.md`.
+
+## E262 E258 profile budget audit (2026-10-31)
+
+- Reopened the E258 actual second-turn profiler ledger to bound two apparent
+  residual wrapper opportunities before implementation. All profile-window
+  Slice/Cast/ViewCopy/TensorMove kernels total `287.853 ms`; this includes
+  model work outside GDN wrappers and is therefore an optimistic upper bound
+  for removing phase data movement. It is below the `~1.45 s` required for a
+  2% first16 workflow gain. No cache-copy fusion candidate is justified from
+  this evidence.
+- The trace contains 3,730 `aten::item` and 3,730
+  `aten::_local_scalar_dense`; combined host self time is `24.146 ms` over the
+  complete profile window, with no GDN-attributable call stack. This does not
+  establish removability or critical-path impact. Do not implement a scalar
+  sync cleanup from this evidence.
+- E251 remains the only accepted phase-runtime path from this series: original
+  32 smoke, frozen full128 correctness and independent matched ABBA passed.
+  E260/E261 isolated candidates remain rejected by their own first16 gates.
+  Current profile evidence does not provide a new single-mechanism phase
+  candidate with a credible first16 budget; next phase change needs a new
+  workload/profile finding or distinct measured mechanism. See
+  `results/e256_phase_wrapper_report.md` and
+  `results/e258_profile_summary.json`.
+- E144 is the prior end-to-end counterexample for another tempting response to
+  the same profile: its ND fused conv removed the conversion family and reduced
+  the target trace from 528 to 96 kernels, but the complete decode gate became
+  about 37% slower. Do not reopen that layout-replacement branch without a new
+  backend/execution mechanism.
+- Checked the installed `torch_npu.npu_fused_causal_conv1d` ragged-prefill
+  schema against captured E258 T=74 operands. The op is registered in Python,
+  but the real NPU call fails before producing output with
+  `aclnnFusedCausalConv1d or aclnnFusedCausalConv1dGetWorkspaceSize not in
+  libopapi.so`. This is an unavailable runtime capability, not a correctness
+  or performance result; no integration or A/B was attempted. A stack exposing
+  the declared symbols would be required to revisit this mechanism.
+- The alternative `_C_ascend.npu_causal_conv1d_custom` is also unavailable in
+  the E251 `ascend-e2e` environment: `vllm_ascend.ops` import raises
+  `ModuleNotFoundError` and no custom op is registered. E186/E188 came from a
+  separate vLLM-Ascend environment and only T=1 probes; they are not evidence
+  for the current T>1 workflow.
+- E264 checked the installed `fla_core` Triton-Ascend ragged causal-conv
+  implementation with the real E258 T=74 operands. Its normal decorator first
+  tried a CUDA context despite NPU input; calling the underlying function then
+  reached Triton but failed before compilation with `0 active drivers`. The
+  E251 environment has no registered Triton NPU driver, so no correctness or
+  timing result exists and no monkeypatch was used. Do not start wrapper A/B
+  until the runtime provides that driver.
+
+## E265 direct padded ragged conv Triton gate (2026-11-01)
+
+- Added `scripts/e265_ragged_conv_triton.py`, a direct Ascend Triton kernel reading padded `[B,C,T]`, per-row lengths, and caller-owned `[B,C,K]` state without packing. `scripts/e265_ragged_conv_gate.py` runs it against the captured real E258 layer0 shape `[16,10240,74]` in `vllm-ascend-py310`; `TRITON_ALL_BLOCKS_PARALLEL=1` is required because the `(B,C)` grid exceeds the backend's 65536-block launcher limit.
+- Initial output mismatch was traced with a deterministic B1/C2 test to a one-element state-window offset; after fixing `state_index = pos + K`, the non-fused path is exact on the real workload (output/state max error 0, padded output zero, empty rows unchanged). Fused Triton SiLU is numerically non-exact (`max_abs=0.0625`) and is therefore not accepted.
+- The exact non-fused complete wrapper measured `56.965 ms` baseline versus `101.824 ms` direct kernel (0.559x). The fused path measured `57.047 ms` versus `102.258 ms` and still failed exactness. No workflow ABBA was attempted because the direct kernel is slower and fused output is not exact. Result: `results/e265_ragged_conv_gate.json`; log: `results/e265_ragged_conv_gate.log`. Goal remains active.
+- Channel-tiled follow-up (`BLOCK_C=32`) reduced the grid from ~163k programs to ~5k. Native NPU SiLU after the tiled preactivation restores exact output/state and keeps the gain: baseline median `57.3166 ms`, direct tiled complete wrapper `9.1216 ms` (`6.2836x`, output/state max error `0`). This is still local layer0 evidence; workflow integration/ABBA remains outstanding.
+- Added `scripts/e266_conv_tiled_workflow.py` as the workflow candidate. It routes only T>1, bias-free SiLU suffix convolution to the tiled kernel and preserves the existing T=1 fallback/state ownership. Static checks pass; a full workflow ABBA has not yet run in this turn.
+- Workflow smoke in `vllm-ascend-py310` stops before model/kernel execution because its installed Transformers lacks `transformers.models.qwen3_5`, while the existing E176 harness imports that module. This is an environment compatibility boundary, separate from the verified local Triton kernel. No workflow performance claim is made.
+- A reversible `PYTHONPATH` isolation attempt using only the `ascend-e2e` site-packages was also rejected before Qwen import: it selected the Python 3.12 `transformers` tree and failed in the incompatible `regex` extension (`cannot import name '_regex'`). No packages were modified and no mixed-environment workflow result is claimed.
+- E268 fixed first16 ABBA completed in the isolated environment with order baseline/candidate/candidate/baseline. All four trials passed semantic transcript and memory gates: both candidate transcripts matched baseline per task for two rounds, cache hashes matched same-environment baseline, no mismatch IDs, and every peak allocated was `59,226,212,352 B` under the `62,094,008,832 B` budget. Candidate routing was 48 tiled calls plus 528 T=1 fallbacks per trial, with zero errors.
+- Independent performance calculation rejected the candidate: baseline mean `101.340349 s`, candidate mean `115.175425 s`, gain `-13.652090%`; paired gains `-16.819166%` and `-10.604453%`; baseline/candidate ranges `3.919056%`/`1.635702%`. Evidence: `results/e268_first16_abba/decision.json`, `decision_independent.json`, four raw trial JSON/transcripts/logs and candidate call-count JSON files. No performance expansion or deployment is allowed.
+
+## E069 graph B8 divergence follow-up (2026-11-01)
+
+- Re-audited `recurrent_graph_b8_512_trueeager.json`: eager and steady graph
+  token trajectories are identical, and both differ from the E251 reference
+  on tasks1030 and428. This rules out graph capture as the cause of those
+  observed token/tool divergences, although token equality does not establish
+  bitwise-equal logits or recurrent intermediates.
+- Ran eager-first B1 controls for tasks428 and1030. Task428's B1 trajectory is
+  identical to B8 and diverges from E251 at token84; both execute to tool
+  output `26\n`. E251's exact tool text is multi-line and ends in26, so this is
+  an output-text change with the same numeric result, not a changed numeric
+  answer. Task1030 diverges from E251 at token99 in natural-width B1 (prompt
+  width436), versus token30 in B8 (width459).
+- Added `--pad-to-length` to the graph-call diagnostic and reran task1030 at
+  fixed-width B1/459. It diverges at token17 and does not match B8. This shows
+  that prompt width and batch dimension both affect the generated trajectory;
+  it does not isolate which operator changes or prove an accumulation-order
+  mechanism. The B1 task640 exact result was task-specific, not evidence of
+  general B1 exactness.
+- Evidence: `results/e069_torch_npu_graph_85/b1_task428_diagnostic.json`,
+  `b1_task1030_diagnostic.json`, `b1_task1030_pad459_diagnostic.json`, and
+  `README.md` in the same directory. Next diagnostic must compare eager and
+  replay logits/intermediate tensors for identical inputs and capture operator
+  selection at the first differing boundary before attributing a kernel cause.
+
+## E277 first-turn B16 post-projection qualification (2026-11-02)
+
+- New authorized scope: qualify first-turn decode fusion rather than repeat suffix conv sweeps. Existing E193 B1 and E258 second-turn captures were insufficient. Captured original E251 first16 prefill plus three T=1 forwards on physical0; all16 first-four generated tokens exact. Recorded 144 layout entries across48 GDN layers; saved layer0/30/62 at decode1/3 (six real operand sets).
+- Complete post-projection replay preserves NPU strides, caller state and original math; six core outputs, conv states and recurrent states all exact. Synchronized whole-boundary median1.229ms; separately synchronized components are non-additive. Post-conv tail brackets0.998–1.144ms (median1.033ms); variation precludes inferring a small candidate gain without paired control.
+- E251 accepted full128 mean248.202145s requires4.964043s for2%; inferred1182 first-turn decode forwards×48layers=56,736 calls imply87.494us net reduction/call. Tail-only fusion needs conditional8.47% reduction; copy-only47–53us is insufficient. Early first16 samples do not establish global representativeness or workflow savings.
+- Concrete candidate: normalize16QK-head views while mapping48V heads; fuse beta/g preparation, FP32 recurrent state-tile update/output and direct BF16 caller-state commit, avoiding repeated QK/state intermediates. Preserve BF16 normalization/beta rounding and output-before-state-commit semantics. Leave vendor GEMMs and conv intact. An installed projection+GDN API is not required to write this tail kernel.
+- Decision: conditional budget supports a bounded self-written fused-tail prototype, not workflow A/B or a speedup claim. No kernel implemented under this qualification-only task. E250 remains baseline; old suffix/graph failures remain valid. Report `results/e277_first_decode_boundary/README.md`; capture/timing/tail_budget/audit JSON and operands preserved. Scripts `scripts/e277_first_decode_boundary.py`, `scripts/e277_tail_budget.py`; no default, dependency or site-package changes; existing physical1 process untouched.
+
+## E278 first-turn fused-tail experiment framework (2026-11-02)
+
+- Added a candidate ABI and native eager tail reference (`scripts/gdn_tail_reference.py`) plus a real-capture local gate (`scripts/e278_fused_tail_gate.py`). ABI consumes noncontiguous16QK/48V views, gates and caller-owned BF16 state; output/state commit retains native first-turn boundary. Vendor GEMMs and convolution remain unchanged.
+- Correctness precedes timing: six E277 captured cases match native core/state; candidate fixed-input evolving-state3-step and row-permutation checks, input immutability/storage/shape/dtype/finiteness. Strict exact and explicitly numerical-screen-only quality modes; neither bypasses later independent state/model/workflow gates.
+- Full conv+tail wrapper same-process ABBA measures15 samples after4 warmups per arm/case, restores captured state outside timer, includes candidate bridge/conversions/allocations and synchronization. Candidate must save87.494us/call in everycase, improve bothpairs and exceed group variation. No local pass automatically enables workflow. Sources/capture hashes, raw samples and local allocated/reserved peaks recorded; output directories cannot be overwritten.
+- NPU0 reference/reference control completed at `results/e278_tail_framework_control/`: allsix capture/reference/sequence/permutation gates passed; delta-2.7..+0.8us, no performance qualification; `control_complete_not_a_candidate`, workflow_eligible=false. Six negative/control unit tests passed, including missing state commit, input mutation, wrong dtype, NaN and insufficient/negative-pair budget rejection.
+- Concrete next experiment: implement one fused-tail kernel/bridge, use production captures and the harness; onlyafter local qualification extend late/other-batch coverage, independent state oracle, real model state/logit gate, then E250 first16→32→128 workflow. Plan `FUSED_GDN_EXPERIMENT_PLAN.md`; case042. This turn changes experiment framework only; no fusedkernel or default/model/runtime change.
+- Verification caveat: global `scripts/operator_case.py verify` reports pre-existing schema fields missing in case027–033. New case042 schema/evidence and E278 raw-control/decision consistency were checked separately and pass. Historical case files were not rewritten in this framework change.
+
+## E279 fused-tail prototype rejected (2026-11-02)
+
+- Implemented `scripts/e279_fused_tail.py`, Ascend Triton single launch for native T=1 normalization/head mapping/gates/recurrent output and BF16 caller-state commit, tile16 values×128 keys. Vendor GEMM/conv unchanged; no default/runtime/dependency changes.
+- Physical0 strict capture gate compiled/ran but rejected non-exact output/state on first case. Quality numerical screen passed all six real cases, three evolving-state steps, row reversal, input immutability and caller storage; maximum relative L2 .003752061. This does not prove model quality.
+- Full synchronized conv+tail wrapper ABBA (4 warmups/15 raw samples per arm per case) rejected every case: baseline1.3135–1.3229ms, candidate1.3861–1.3931ms, net saving -79.53..-66.56us versus required+87.494us. Both pairs regress in all six cases; source hashes unchanged. Six harness unit tests pass.
+- Per plan stop this candidate. E250 remains baseline; late/other-batch/state/logit/model and first16→32→128 gates not entered. Objective remains incomplete. Evidence `results/e279_tail_report.md`, `results/e279_tail_strict_v1/`, `results/e279_tail_quality_v1/` and logs.
+- E279 continuation audit independently recomputed six ABBA decisions from raw samples and checked all36 sequence/permutation steps plus current source/capture hashes: evidence integrity passes, every performance gate still fails. Artifact `results/e279_independent_audit.json`. No new NPU run. Asked for next experiment scope because the plan explicitly stops prototypes with no full-wrapper benefit; no model/workflow prerequisite was bypassed.
+
+## E280–E284 single authorized tail redesign (2026-11-02, in progress)
+
+- User explicitly authorized one additional tail redesign with unchanged gates. E280 diagnosis of rejected E279 measured median tail host enqueue239.2us, wall818.5us, event768.4us; profiler shows542.62us kernel. Diagnostic measurements are not wrapper/workflow qualification.
+- E281 fixes value tile64 (1536 programs vs6144 tile16), preserving arithmetic, native views, caller state, one launch and vendor conv/GEMM. No parameter sweep. Protocol `results/e281_redesign_protocol.md` precedes qualification.
+- Strict rejects the same non-exact first case. Quality six-case/36-step checks pass. Complete wrapper ABBA passes every case with319.26–326.07us savings (24.27–24.67%), both pairs improve and exceed variation. Raw evidence `results/e281_tail_{strict,quality}_v1/`; independently recomputed `results/e281_independent_audit.json` also passes all integrity/performance checks. Local qualification only; not workflow acceptance.
+- E282 independent CPU headwise matvec/outer-product oracle passes all27 checks: six captures×3 evolving steps plus B1/4/8×3 on real layer0 operands. Maximum output/state relative L2 .004455089, input immutability/storage preserved. Evidence `results/e282_tail_oracle/`.
+- Added opt-in native T=1 adapter `scripts/e283_native_tail_adapter.py`; E284 fixed-input model state/logit/late-decode gate launched on physical0. No default path changes. Model/workflow outcome not yet known.
+
+- E285 first16 correctness-only native baseline passed independent audit (15/16, only historical failure1161, 16 tools, EOS snapshot alias/freeze). Candidate same-input free-running first16 preserved score15/16 and failure set; six first-round token trajectories changed, but all required tools remained successful. Two tool-output formatting changes (428 and1288) were reviewed by code/output hashes and arithmetic semantics; no new side effects. Initial audit and semantic review are preserved.
+- E286 uninstrumented first16 ABBA passed: baseline mean99.961348s, candidate mean84.931613s, gain15.0355%; paired gains14.5913%/15.4799%, ranges0.0302%/1.0819%. All four quality/memory/tool audits passed; allocated <=59.23GB. Candidate native calls20496 per trial; no profiler or shadow capture in timing. Evidence `results/e286_tail_first16_abba/decision.json` and `independent_audit.json`. First16 qualified only.
+- E287 32-task candidate smoke and same-shape native baseline completed. Independent audit passes all32 task/order/two-round/tool semantics/score/failure/memory checks; candidate allocated59.22GB. Full128 candidate gate stopped fail-closed at batch3 because task99 lacked a real EOS boundary; only48/128 tasks completed. No full128 quality or ABBA result, no deployment. Evidence `results/e287_smoke32/independent_audit.json`, `results/e287_gate128/candidate_v2/decision.json`.
+
+## E288 EOS diagnostic repair and full128 rerun (2026-11-02)
+
+- Repaired `scripts/e176_workflow_bench.py` with a row-level EOS ledger (`task_id`, last token, tokens seen, EOS forward) and per-output `*.eos_failure.json`; fail-closed semantics are unchanged and no synthetic snapshots are created. Recorded old/new runner hashes in `results/e288_eos_diagnostic_migration.json`.
+- Fixed runner native baseline full128 completed all8 batches/128 tasks; peak allocated59.971GB. This proves the prior generic error was observable and the native workload can complete under the contract.
+- Fixed runner candidate full128 stopped at batch3 with a precise failure: row5/task304, `tokens_seen=512`, `last_token=220`, `eos_forward=null`; other15 rows captured EOS. Candidate changed the free-running trajectory so task304 did not terminate within the fixed512-token cap. Evidence `results/e288_full128_candidate_v1/batch3.json.eos_failure.json`.
+- This is a real candidate quality/termination regression, not an unresolved capture bug. Do not raise cap, special-case task304, or run full128 ABBA; that would change E250 workload/semantics. E281 wrapper and E286 first16 remain qualified, but full128 model/workflow acceptance is rejected pending a semantics-preserving candidate fix.
+- E288 independent audit of repaired native full128: 128 unique tasks/order, all two rounds and128 tools, strict exact vs E100, scorer122/128, failure set exactly E100, all8 raw batch checks/timers/memory pass, peak allocated59.971GB. `results/e288_full128_baseline_v2/independent_audit.json`.
+- `scripts/test_e278_fused_tail_gate.py` passes all6 tests in ascend-e2e Python3.12. System Python lacked torch and did not run tests; the correct environment result is authoritative.
+
+## E289–E290 task304 termination investigation (in progress)
+
+- User authorized repairing candidate termination before full128 performance. E289 same-batch native/candidate diagnostic reproduces task304 divergence at generated token index14 (native29393 vs candidate2), candidate noEOS by512. First cached-step GDN outputs show layer0 relative L2 .00044 growing across layers to .07991 at GDN ordinal46. These local diagnostics do not isolate the arithmetic primitive causing the discrepancy.
+- Initial E289 hook collection was disabled inadvertently; preserved empty layer artifacts in original directory. Corrected capture run `results/e289_task304_divergence_v2/` has576 records per arm. CPU tensor extraction does not prove independent state correctness; state extraction code requires further repair.
+- E290 FP32-intermediate arithmetic hypothesis did not change six-case errors or task304 trajectory. This is not an established fix or proof of native FP32 normalization semantics (native reference explicitly uses BF16 tensor operators). E290 unique kernel symbol experiment is running to check whether same-name generated artifacts masked changes. No model/workflow qualification or speedup claimed for E290; E281 remains rejected at full128.
+
+## E292–E297 BF16 rounding repair and remaining task304 divergence
+
+- E292 real-capture intermediate audit exposes non-exact q/k and beta from the apparent BF16 cast-round-trip kernel (all98304 q/k and768 beta elements differ; q relativeL2 .002609, k .002279, beta .001378). Existing native l2norm indeed has BF16 tensor boundaries; prior FP32-intermediate hypothesis was unsupported and did not fix termination.
+- E293 implements explicit IEEE BF16 round-to-nearest-even with integer bit operations, preventing round-trip casts from being optimized away. Six real cases/36 evolving-state/permutation checks pass quality; max relativeL2 .0000373238. Strict still fails on small output/state differences. Complete wrapper ABBA allsix pass with311.24–318.36us net savings/call. Evidence `results/e293_tail_{strict,quality}_v1/`.
+- E297 repeats preparation-stage diagnostics using explicit RNE: q/k/beta are now exact (0 mismatches); g differs on352 entries, maxabs3.72529e-9, relativeL2 1.08831e-9. This establishes repair of those BF16 preparation boundaries on the measured real capture, not all model operands or a full quality pass.
+- E294 same-batch16 task304 free-running test still fails EOS by512 and diverges at index14. Its first cached model step starts with exact GDN output for ordinals0/1/2 but later layers differ. E296 same-local-input shadow test measures small yet non-exact recurrent output/state across all48 GDN layers. No full128 expansion or performance acceptance for E293. Remaining investigation: separate native g/exp versus recurrent sum arithmetic under identical local inputs; preserve single-launch fusion objective and original quality/performance gates.
+- Diagnostic files ending `_after_reference.pt` contain post-reference state, not initial state; do not reuse as initial-state operands. E296 `shadow.json` metrics compare actual and reference from a correctly cloned shared initial state.
+
+## Token-cap continuation policy (user-directed workload reporting change)
+
+- User clarified that original128 tasks should still be attempted and makespan recorded even when a row reaches512 tokens. Added opt-in `--continue-on-token-cap` to E176, with helper `scripts/capped_workflow.py`. No EOS/cap changes and no task exclusion; legacy fail-closed default remains for historical qualification.
+- When a batch has a genuine length-budget stop, record the EOS ledger, release snapshots, parse every row, execute complete tool calls and batch eligible rows into a fresh12-token final generation. Incomplete calls remain task records with null prediction/incorrect status and count in all-task denominators. All spent first-generation work remains inside makespan. Missing snapshot despite returned EOS remains a hard capture error.
+- This is a changed evaluation policy and needs matched baseline/candidate reruns. It does not repair candidate task304 termination or grant quality/performance acceptance. Five CPU/mock regression tests pass, including mixed valid/truncated rows, no fabricated tools for incomplete rows, batched final generation and unchanged12-token cap. Compile checks pass. NPU/full128 validation of the new policy remains outstanding.
+## E287 smoke vs E299 full128 timing interpretation (2026-11-02)
+
+- E287 smoke correctness-only,32 tasks/two B16 batches: native141.334s, candidate117.488s. It excludes task304 and is not the E299 performance protocol.
+- E299 full128 capped-policy performance ABBA completed all four trials: baseline318.461/317.031s; candidate329.062/326.262s. Means317.746s vs327.662s, candidate3.121% slower; paired changes -3.329%/-2.912%, variation0.451%/0.858%, so performance gate rejects. Quality also rejects (candidate task304 reached512 without EOS; completed127/128, score121 vs122).
+- Batch timings identify the cause of the aggregate reversal: candidate batches0,1,2,4,5,6,7 are all faster than paired baseline batches. Batch3 (task IDs945,934,518,265,712,304,23,789,458,467,474,444,487,515,785,319) takes78.84s candidate vs32.76/32.53s baseline. Task304 generates512 without EOS; continue policy then fresh-generates second round for the other15 eligible rows, losing cache reuse. It spends196 more total tokens over all128 than baseline, almost all attributable to task304's extra first-turn generation. Thus equal128 makespan is measured fairly under the declared policy, but the result includes the real termination/fallback cost and is worse; this does not contradict faster local wrapper ABBA. No full128 performance success is claimed.
