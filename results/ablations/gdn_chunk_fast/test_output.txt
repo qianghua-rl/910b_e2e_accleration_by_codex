@@ -1,0 +1,4 @@
+heads=48 Dk=128 Dv=128
+L=  353 out_maxdiff=7.629e-06 (ref max 7.910e-02) state_maxdiff=2.980e-08 ref=    15.3 ms  fast=     7.3 ms  speedup=2.11x
+L= 1024 out_maxdiff=1.526e-05 (ref max 9.961e-02) state_maxdiff=2.980e-08 ref=    18.9 ms  fast=    11.7 ms  speedup=1.62x
+L= 2048 out_maxdiff=6.104e-05 (ref max 1.001e-01) state_maxdiff=5.960e-08 ref=    28.4 ms  fast=    18.9 ms  speedup=1.50x

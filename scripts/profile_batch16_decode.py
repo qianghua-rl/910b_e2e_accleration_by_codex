@@ -1,160 +1,79 @@
-"""Profile a short decode slice from the current sorted batch-16 workload."""
-import argparse
-import json
-import time
-import os
-from pathlib import Path
+"""Profile batch16 decode steps (same batch as scripts/slow_batch_steps.py), optimisations on.
+Warm up, then profile N decode steps. Reports wall time, device-busy union time, and idle gaps."""
+import json, os, sys, time
+import torch, torch_npu  # noqa: F401
+import torch_npu.profiler as tnp
+sys.path.insert(0, "/remote-home/S45160/work/910b_fresh/src")
+from agent_protocol import SYSTEM, TOOLS  # noqa: E402
+from recurrent_single_step import recurrent_single_step  # noqa: E402
+from transformers import AutoTokenizer, Qwen3_5ForConditionalGeneration  # noqa: E402
+from transformers.models.qwen3_5.modeling_qwen3_5 import Qwen3_5GatedDeltaNet, Qwen3_5RMSNorm, Qwen3_5RMSNormGated  # noqa: E402
 
-import torch
-import torch_npu
-from transformers import AutoTokenizer, Qwen3_5ForConditionalGeneration
-from transformers.models.qwen3_5.modeling_qwen3_5 import Qwen3_5RMSNorm
+MODEL = "/remote-home/S45160/work/910b_e2e_accleration_by_codex/model/qwen3.5-27b"
+DATA = "/remote-home/S45160/work/910b_e2e_accleration_by_codex/data/gsm8k_128.jsonl"
+RES = "/remote-home/S45160/work/910b_fresh/results/b16_original_opt/per_task.jsonl"
+OUT = sys.argv[1]
+DEV = "npu:0"
+STEPS = int(sys.argv[2]) if len(sys.argv) > 2 else 8
+BATCH_IDS = {247, 249, 259, 265, 272, 294, 319, 350, 375, 399, 411, 420, 423, 428, 444}
 
-from agent_protocol import CONCISE_SYSTEM, TOOLS
-
-
-parser = argparse.ArgumentParser()
-parser.add_argument('--run', required=True, help='Completed E056-style JSONL run')
-parser.add_argument('--trace-dir', required=True)
-parser.add_argument('--max-new-tokens', type=int, default=32)
-parser.add_argument('--single-step-recurrent', action='store_true')
-parser.add_argument('--fused-rmsnorm', action='store_true')
-parser.add_argument('--fused-gated-rmsnorm', action='store_true')
-parser.add_argument('--decode-only', action='store_true', help='Skip prefill and first decode; profile next four decode steps')
-parser.add_argument('--attribute-decode', action='store_true', help='Label linear modules and recurrent state operations')
-parser.add_argument('--threads', type=int, default=8)
-parser.add_argument('--fixed-replay', action='store_true')
-parser.add_argument('--mlp-nz', action='store_true')
-args = parser.parse_args()
-trace_dir = Path(args.trace_dir)
-if trace_dir.exists():
-    raise SystemExit(f'Trace directory exists: {trace_dir}')
-
-torch.set_num_threads(args.threads)
-torch.manual_seed(42)
-model_path = 'model/qwen3.5-27b'
-data = {row['id']: row for row in
-        (json.loads(line) for line in Path('data/gsm8k_128.jsonl').read_text().splitlines())}
-records = [json.loads(line) for line in Path(args.run).read_text().splitlines()]
-tasks = [row for row in records if row.get('kind') == 'task'][:16]
-if len(tasks) != 16:
-    raise SystemExit('Expected at least 16 task records in the reference run')
-
-tok = AutoTokenizer.from_pretrained(model_path, padding_side='left')
+questions = {str(json.loads(l)["id"]): json.loads(l)["question"] for l in open(DATA)}
+rows = [json.loads(l) for l in open(RES)]
+tasks = [r for r in rows if r.get("kind") == "task" and r["id"] in BATCH_IDS and len(r["rounds"]) >= 2]
+tok = AutoTokenizer.from_pretrained(MODEL, padding_side="left")
 prompts = []
-for row in tasks:
-    task = data[row['id']]
-    messages = [
-        {'role': 'system', 'content': CONCISE_SYSTEM},
-        {'role': 'user', 'content': task['question']},
-    ]
-    prompts.append(tok.apply_chat_template(
-        messages, tools=TOOLS, add_generation_prompt=True,
-        enable_thinking=False, tokenize=False))
-inputs = tok(prompts, add_special_tokens=False, padding=True,
-             return_tensors='pt').to('npu')
+for t in tasks:
+    r0 = t["rounds"][0]
+    msgs = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": questions[str(t["id"])]},
+            {"role": "assistant", "content": r0["text"]}, {"role": "tool", "name": "python", "content": r0["tool_output"]}]
+    prompts.append(tok.apply_chat_template(msgs, tools=TOOLS, tokenize=False, add_generation_prompt=True, enable_thinking=False))
 
 model = Qwen3_5ForConditionalGeneration.from_pretrained(
-    model_path, dtype=torch.bfloat16, attn_implementation='sdpa',
-    device_map={'': 'npu:0'}).eval()
-if args.mlp_nz:
-    from mlp_nz import convert_mlp_nz
-    nz_preparation = convert_mlp_nz(model)
-else:
-    nz_preparation = None
-from transformers.models.qwen3_5.modeling_qwen3_5 import (
-    Qwen3_5GatedDeltaNet, Qwen3_5RMSNorm, Qwen3_5RMSNormGated,
-)
-if args.single_step_recurrent:
-    from recurrent_single_step import recurrent_single_step
-    for module in model.modules():
-        if isinstance(module, Qwen3_5GatedDeltaNet):
-            module.recurrent_gated_delta_rule = recurrent_single_step
-if args.fused_rmsnorm:
-    def fused_rmsnorm(self, x):
-        return torch_npu.npu_rms_norm(x, (1.0 + self.weight).to(x.dtype), self.eps)[0]
-    for module in model.modules():
-        if isinstance(module, Qwen3_5RMSNorm):
-            module.forward = fused_rmsnorm.__get__(module, Qwen3_5RMSNorm)
-if args.fused_gated_rmsnorm:
-    def fused_gated_norm(self, hidden_states, gate=None):
-        normalized = torch_npu.npu_rms_norm(hidden_states, self.weight,
-                                             self.variance_epsilon)[0]
-        return torch_npu.npu_swiglu(torch.cat((gate, normalized), dim=-1))
-    for module in model.modules():
-        if isinstance(module, Qwen3_5RMSNormGated):
-            module.forward = fused_gated_norm.__get__(module, Qwen3_5RMSNormGated)
-for module in model.modules():
-    if isinstance(module, Qwen3_5RMSNorm):
-        def fused_rmsnorm(self, x):
-            return torch_npu.npu_rms_norm(x, (1.0 + self.weight).to(x.dtype), self.eps)[0]
-        module.forward = fused_rmsnorm.__get__(module, Qwen3_5RMSNorm)
-torch.npu.synchronize()
+    MODEL, dtype=torch.bfloat16, attn_implementation="sdpa", device_map={"": DEV}).eval()
 
-if args.attribute_decode:
-    for name, module in model.named_modules():
-        if isinstance(module, torch.nn.Linear):
-            original = module.forward
-            category = 'mlp' if '.mlp.' in name else ('lm_head' if name.endswith('lm_head') else 'projection')
-            def marked_linear(*a, _fn=original, _label=f'decode_cost/{category}/{name}', **kw):
-                with torch.profiler.record_function(_label):
-                    return _fn(*a, **kw)
-            module.forward = marked_linear
-    for module in model.modules():
-        if isinstance(module, Qwen3_5GatedDeltaNet):
-            original = module.recurrent_gated_delta_rule
-            def marked_recurrent(*a, _fn=original, **kw):
-                with torch.profiler.record_function('decode_cost/recurrent'):
-                    return _fn(*a, **kw)
-            module.recurrent_gated_delta_rule = marked_recurrent
+def fused_rmsnorm(self, x):
+    return torch_npu.npu_rms_norm(x, (1.0 + self.weight).to(x.dtype), self.eps)[0]
+def fused_gated_rmsnorm(self, hidden_states, gate=None):
+    normalized = torch_npu.npu_rms_norm(hidden_states, self.weight, self.variance_epsilon)[0]
+    return torch_npu.npu_swiglu(torch.cat((gate, normalized), dim=-1))
+for m in model.modules():
+    if isinstance(m, Qwen3_5RMSNorm):
+        m.forward = fused_rmsnorm.__get__(m, Qwen3_5RMSNorm)
+    elif isinstance(m, Qwen3_5RMSNormGated):
+        m.forward = fused_gated_rmsnorm.__get__(m, Qwen3_5RMSNormGated)
+    elif isinstance(m, Qwen3_5GatedDeltaNet):
+        m.recurrent_gated_delta_rule = recurrent_single_step
 
+inputs = tok(prompts, add_special_tokens=False, padding=True, return_tensors="pt").to(DEV)
+os.makedirs(OUT, exist_ok=True)
 with torch.inference_mode():
-    model.generate(**inputs, max_new_tokens=2, do_sample=False, use_cache=True)
-    torch.npu.synchronize()
-    replay_options = {}
-    if args.fixed_replay:
-        from transformers import LogitsProcessor, LogitsProcessorList
-        replay = torch.tensor([t['rounds'][0]['tokens'][:args.max_new_tokens] for t in tasks], device='npu')
-        class ForceReplay(LogitsProcessor):
-            def __call__(self, ids, scores):
-                pos = ids.shape[1] - inputs['input_ids'].shape[1]
-                scores.fill_(float('-inf'))
-                return scores.scatter_(1, replay[:, pos:pos+1], 0.)
-        replay_options['logits_processor'] = LogitsProcessorList([ForceReplay()])
-    start = time.perf_counter()
-    with torch_npu.profiler.profile(
-        activities=[torch_npu.profiler.ProfilerActivity.CPU,
-                    torch_npu.profiler.ProfilerActivity.NPU],
-        record_shapes=False, profile_memory=False, with_stack=False,
-        schedule=torch_npu.profiler.schedule(wait=1, warmup=1, active=4, repeat=1) if args.decode_only else None,
-        on_trace_ready=torch_npu.profiler.tensorboard_trace_handler(str(trace_dir)),
-    ) as prof:
-        hook = model.register_forward_hook(lambda *unused: prof.step()) if args.decode_only else None
-        with torch.profiler.record_function('batch16_generate_prefill_decode'):
-            output = model.generate(**inputs, max_new_tokens=args.max_new_tokens,
-                                    do_sample=False, use_cache=True, **replay_options)
-            torch.npu.synchronize()
-        if hook is not None:
-            hook.remove()
-    wall_seconds = time.perf_counter() - start
+    # Prefill + warmup decode with the real cache layout, then profile STEPS decode steps.
+    out = model(**inputs, use_cache=True, logits_to_keep=1)
+    past = out.past_key_values
+    mask = inputs["attention_mask"]
+    nxt = out.logits[:, -1].argmax(-1, keepdim=True)
+    for _ in range(2):
+        mask = torch.cat([mask, mask.new_ones(mask.shape[0], 1)], dim=1)
+        out = model(input_ids=nxt, attention_mask=mask, past_key_values=past, use_cache=True)
+        past = out.past_key_values
+        nxt = out.logits[:, -1].argmax(-1, keepdim=True)
+    torch.npu.synchronize(DEV)
+    prof = tnp.profile(
+        activities=[tnp.ProfilerActivity.CPU, tnp.ProfilerActivity.NPU],
+        on_trace_ready=tnp.tensorboard_trace_handler(OUT),
+        record_shapes=False, profile_memory=False, with_stack=False)
+    prof.start()
+    t1 = time.perf_counter()
+    for _ in range(STEPS):
+        mask = torch.cat([mask, mask.new_ones(mask.shape[0], 1)], dim=1)
+        out = model(input_ids=nxt, attention_mask=mask, past_key_values=past, use_cache=True)
+        past = out.past_key_values
+        nxt = out.logits[:, -1].argmax(-1, keepdim=True)
+    torch.npu.synchronize(DEV)
+    wall = time.perf_counter() - t1
+    prof.stop()
 
-row = {
-    'kind': 'batch16_profile', 'tasks': [task['id'] for task in tasks],
-    'prompt_tokens': [int(v) for v in inputs['attention_mask'].sum(-1).cpu().tolist()],
-    'profile_max_new_tokens': args.max_new_tokens,
-    'decode_only': args.decode_only,
-    'attribute_decode': args.attribute_decode,
-    'threads': args.threads,
-    'cpu_affinity': sorted(os.sched_getaffinity(0)),
-    'fixed_replay_equal': bool(torch.equal(output[:, inputs['input_ids'].shape[1]:], replay)) if args.fixed_replay else None,
-    'single_step_recurrent': args.single_step_recurrent,
-    'fused_rmsnorm': args.fused_rmsnorm,
-    'fused_gated_rmsnorm': args.fused_gated_rmsnorm,
-    'profiled_wall_seconds': wall_seconds,
-    'generated_tokens_per_row': int(output.shape[1] - inputs['input_ids'].shape[1]),
-    'peak_bytes': int(torch.npu.max_memory_allocated()),
-    'trace_dir': str(trace_dir),
-    'mlp_nz': args.mlp_nz,
-    'nz_preparation': nz_preparation,
-}
-print(json.dumps(row), flush=True)
+meta = {"steps": STEPS, "batch": inputs["input_ids"].shape[0], "wall_s": wall,
+        "wall_ms_per_step": wall * 1000 / STEPS}
+json.dump(meta, open(os.path.join(OUT, "profile_meta.json"), "w"), indent=2)
+print("PROFILE_META " + json.dumps(meta), flush=True)

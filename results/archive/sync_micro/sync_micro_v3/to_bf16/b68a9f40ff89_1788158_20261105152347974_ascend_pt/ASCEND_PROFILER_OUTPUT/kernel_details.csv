@@ -1,0 +1,11 @@
+Device_id,Name,Type,Accelerator Core,Start Time(us),Duration(us),Wait Time(us),Block Num
+0,aclnnInplaceCopy_CastAiCore_Cast,N/A,N/A,1793892228044927.680	,5.860,0,
+0,aclnnInplaceCopy_CastAiCore_Cast,N/A,N/A,1793892228045068.420	,5.900,134.890000,
+0,aclnnInplaceCopy_CastAiCore_Cast,N/A,N/A,1793892228045153.360	,5.820,78.850000,
+0,aclnnInplaceCopy_CastAiCore_Cast,N/A,N/A,1793892228045251.100	,5.660,91.930000,
+0,aclnnInplaceCopy_CastAiCore_Cast,N/A,N/A,1793892228045356.920	,5.780,100.340000,
+0,aclnnInplaceCopy_CastAiCore_Cast,N/A,N/A,1793892228045444.820	,5.820,81.970000,
+0,aclnnInplaceCopy_CastAiCore_Cast,N/A,N/A,1793892228045533.660	,5.880,83.180000,
+0,aclnnInplaceCopy_CastAiCore_Cast,N/A,N/A,1793892228045618.320	,5.580,78.620000,
+0,aclnnInplaceCopy_CastAiCore_Cast,N/A,N/A,1793892228045722.040	,5.640,98.170000,
+0,aclnnInplaceCopy_CastAiCore_Cast,N/A,N/A,1793892228045808.680	,5.840,81.110000,

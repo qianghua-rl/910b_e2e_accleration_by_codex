@@ -1,0 +1,3 @@
+[2026-11-05-15:23:36.966] [INFO] [AscendProfiler_CANNExportParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_fresh/results/sync_micro_v3/exp_unsq/b68a9f40ff89_1788158_20261105152336480_ascend_pt/logs/profiler_20261105152336_1793216_CANNExportParser.log
+[2026-11-05-15:23:36.966] [INFO] [AscendProfiler_CANNExportParser:51] CANNExportParser start.
+[2026-11-05-15:23:46.005] [INFO] [AscendProfiler_CANNExportParser:79] CANNExportParser finish.

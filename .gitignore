@@ -22,3 +22,10 @@ torchinductor_*/
 *.pem
 *.key
 
+
+# Local folders excluded from uploads
+/logs/
+/rsi/
+/data/
+/results/profiling/
+/export_only_prof_dir/

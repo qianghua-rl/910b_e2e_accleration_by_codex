@@ -1,0 +1,3 @@
+[2026-11-05-15:25:12.048] [INFO] [AscendProfiler_IntegrateParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_fresh/results/sync_micro_v4/mul_pyfloat_f32/b68a9f40ff89_1794407_20261105152502478_ascend_pt/logs/profiler_20261105152512_1796562_IntegrateParser.log
+[2026-11-05-15:25:12.048] [INFO] [AscendProfiler_IntegrateParser:33] IntegrateParser start.
+[2026-11-05-15:25:12.050] [INFO] [AscendProfiler_IntegrateParser:40] IntegrateParser finish.

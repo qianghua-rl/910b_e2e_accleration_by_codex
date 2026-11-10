@@ -1,0 +1,3 @@
+[2026-11-05-15:21:24.313] [INFO] [AscendProfiler_MemoryViewParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_fresh/results/sync_micro_v2/to_bf16/b68a9f40ff89_1784174_20261105152114692_ascend_pt/logs/profiler_20261105152124_1788001_MemoryViewParser.log
+[2026-11-05-15:21:24.314] [INFO] [AscendProfiler_MemoryViewParser:78] MemoryViewParser start.
+[2026-11-05-15:21:24.318] [INFO] [AscendProfiler_MemoryViewParser:89] MemoryViewParser finish.

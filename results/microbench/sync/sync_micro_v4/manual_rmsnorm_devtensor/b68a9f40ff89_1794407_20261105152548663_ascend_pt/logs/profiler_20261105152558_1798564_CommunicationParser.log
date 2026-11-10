@@ -1,0 +1,4 @@
+[2026-11-05-15:25:58.927] [INFO] [AscendProfiler_CommunicationParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_fresh/results/sync_micro_v4/manual_rmsnorm_devtensor/b68a9f40ff89_1794407_20261105152548663_ascend_pt/logs/profiler_20261105152558_1798564_CommunicationParser.log
+[2026-11-05-15:25:58.927] [INFO] [AscendProfiler_CommunicationParser:66] CommunicationParser start.
+[2026-11-05-15:25:58.927] [WARNING] [AscendProfiler_CommunicationParser:69] Get step range failed, the step node list is empty.
+[2026-11-05-15:25:58.929] [INFO] [AscendProfiler_CommunicationParser:73] CommunicationParser finish.

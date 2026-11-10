@@ -1,0 +1,7 @@
+prompt tokens [353, 362, 350, 399]
+ref: per-prompt min prefill (s) = [0.806, 0.801, 0.814, 0.831] sum=3.251
+fast: per-prompt min prefill (s) = [0.46, 0.453, 0.476, 0.492] sum=1.881
+prompt 0: logits maxdiff=3.906e-01 ref_top=1206 fast_top=1206 same=True
+prompt 1: logits maxdiff=3.750e-01 ref_top=1206 fast_top=1206 same=True
+prompt 2: logits maxdiff=3.965e-01 ref_top=248058 fast_top=248058 same=True
+prompt 3: logits maxdiff=3.320e-01 ref_top=1206 fast_top=1206 same=True

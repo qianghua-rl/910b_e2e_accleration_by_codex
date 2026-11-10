@@ -1,0 +1,9 @@
+prompt tokens 353
+prefill wall (no instrumentation): [0.803, 0.807, 0.805]
+instrumented prefill: 0.911s
+gdn_chunk      0.689 s (75.7%)
+mlp            0.081 s ( 8.9%)
+attn           0.024 s ( 2.6%)
+gdn_conv       0.022 s ( 2.5%)
+gdn_norm       0.009 s ( 1.0%)
+rest           0.085 s

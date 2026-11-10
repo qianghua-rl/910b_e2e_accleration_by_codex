@@ -1,0 +1,11 @@
+{
+  "n": 128,
+  "correct": 116,
+  "makespan_s": 8365.044802427292,
+  "peak_allocated_bytes": 54259220992,
+  "peak_reserved_bytes": 54744055808,
+  "device": "npu:1",
+  "total_tokens": 42783,
+  "total_tool_s": 5.7232818603515625,
+  "total_gen_s": 8357.93089556694
+}

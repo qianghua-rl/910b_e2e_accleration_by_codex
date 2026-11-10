@@ -1,0 +1,5 @@
+[2026-11-05-15:20:15.283] [INFO] [AscendProfiler_KernelViewParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_fresh/results/sync_micro_v2/npu_rms_norm/b68a9f40ff89_1784174_20261105152005601_ascend_pt/logs/profiler_20261105152015_1784802_KernelViewParser.log
+[2026-11-05-15:20:15.284] [INFO] [AscendProfiler_KernelViewParser:38] KernelViewParser start.
+[2026-11-05-15:20:15.284] [WARNING] [AscendProfiler_KernelViewParser:69] Get step range failed, the step node list is empty.
+[2026-11-05-15:20:15.284] [WARNING] [AscendProfiler_KernelViewParser:82] Kernel view get step range failed, the step range is empty.
+[2026-11-05-15:20:15.287] [INFO] [AscendProfiler_KernelViewParser:46] KernelViewParser finish.

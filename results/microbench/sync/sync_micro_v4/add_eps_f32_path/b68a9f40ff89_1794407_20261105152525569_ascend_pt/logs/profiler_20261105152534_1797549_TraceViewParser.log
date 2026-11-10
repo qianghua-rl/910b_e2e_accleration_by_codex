@@ -1,0 +1,3 @@
+[2026-11-05-15:25:34.714] [INFO] [AscendProfiler_TraceViewParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_fresh/results/sync_micro_v4/add_eps_f32_path/b68a9f40ff89_1794407_20261105152525569_ascend_pt/logs/profiler_20261105152534_1797549_TraceViewParser.log
+[2026-11-05-15:25:34.715] [INFO] [AscendProfiler_TraceViewParser:53] TraceViewParser start.
+[2026-11-05-15:25:34.726] [INFO] [AscendProfiler_TraceViewParser:68] TraceViewParser finish.

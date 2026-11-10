@@ -1,0 +1,3 @@
+[2026-11-05-15:22:24.373] [INFO] [AscendProfiler_OperatorViewParser:97] Profiler logger initialized at: /remote-home/S45160/work/910b_fresh/results/sync_micro_v3/rsqrt_devtensor/b68a9f40ff89_1788158_20261105152215138_ascend_pt/logs/profiler_20261105152224_1789931_OperatorViewParser.log
+[2026-11-05-15:22:24.373] [INFO] [AscendProfiler_OperatorViewParser:30] OperatorViewParser start.
+[2026-11-05-15:22:24.376] [INFO] [AscendProfiler_OperatorViewParser:39] OperatorViewParser finish.

@@ -1,0 +1,11 @@
+{
+ "B": 1,
+ "config": "fast-gdn gdn-v2 elem-conv graph-decode, single 910B3, bf16",
+ "prefill_tok_s": 877.97781523729,
+ "prefill_mean_prompt_tokens": 369.75,
+ "decode_ms_step_mean": 61.69794999063015,
+ "decode_ms_step_median": 61.65979616343975,
+ "decode_tok_s_mean": 16.207993947154915,
+ "decode_tok_s_median": 16.218023124003366,
+ "steps_timed": 100
+}
