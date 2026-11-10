@@ -1,29 +1,4 @@
-# Model checkpoint shards exceed GitHub's regular Git file limit.
-model/**/*.safetensors
-
-# Large generated profiler trace; summarized findings remain in the logs.
-results/profile_baseline/
-
-# Generated GDN capture artifacts and run outputs.
-results/gdn_real_batch_artifact.pt
-results/gdn_real_batch_compare.json
-results/megagdn_*.log
-results/megagdn_*.json
-results/megagdn_*.jsonl
-
-# Local Python and compiler caches.
-**/__pycache__/
-*.py[cod]
-torchinductor_*/
-
-# Local secrets and credentials.
-.env
-.env.*
-*.pem
-*.key
-
-
-# Local folders excluded from uploads
+# Excluded local data and profiling outputs
 /logs/
 /rsi/
 /data/
