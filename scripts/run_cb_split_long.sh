@@ -1,6 +1,6 @@
 #!/bin/bash
 # Self-written CB engine across two cards (NPU 0 + NPU 1) via --split-devices (layer-wise pipeline split).
-# Matches the long-generation settings of the vLLM TP=2 run (results/bench_vllm_tp2) so the two are comparable:
+# Matches the long-generation settings of the vLLM TP=2 run (results/official/bench_vllm_tp2) so the two are comparable:
 #   t_max 8192, direct/first-turn cap 6144, final-turn cap 2048, tool output clipped to 2000 chars, 12 slots.
 # Caveats:
 #   - --split-devices is pipeline (layer) split, not tensor parallel: it frees memory per card but does not speed up.

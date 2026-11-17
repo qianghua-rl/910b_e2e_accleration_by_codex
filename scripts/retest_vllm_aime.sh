@@ -1,7 +1,7 @@
 #!/bin/bash
 # Re-run vLLM-Ascend AIME 2024/2025 with the same settings as our cb_run results:
 #   max_model_len 4096, first-turn cap 2048, final cap 512, tool output clipped to 2000 chars.
-# Earlier results in results/bench_vllm/aime* were produced with first-turn cap 512 and
+# Earlier results in results/official/bench_vllm/aime* were produced with first-turn cap 512 and
 # max_model_len 2048, so every task was truncated before its first tool call.
 # Output goes to a new directory; the old results are kept untouched.
 # Do NOT run with `python -I` (vLLM EngineCore subprocess needs acl).

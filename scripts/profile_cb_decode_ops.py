@@ -15,7 +15,7 @@ from cb_engine import CBEngine, patch_model  # noqa: E402
 
 MODEL = "/remote-home/S45160/work/910b_e2e_accleration_by_codex/model/qwen3.5-27b"
 DATA = "/remote-home/S45160/work/910b_e2e_accleration_by_codex/data/gsm8k_128.jsonl"
-OUT = sys.argv[1] if len(sys.argv) > 1 else "/remote-home/S45160/work/910b_fresh/results/profile_cb_decode_ops"
+OUT = sys.argv[1] if len(sys.argv) > 1 else "/remote-home/S45160/work/910b_fresh/results/profiling/decode/profile_cb_decode_ops"
 ELEM = os.environ.get("ELEM_CONV") == "1"
 DEV = "npu:0"
 N = 16

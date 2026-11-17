@@ -1,6 +1,10 @@
-# Excluded local data and profiling outputs
 /logs/
 /rsi/
 /data/
-/results/profiling/
+/results/
 /export_only_prof_dir/
+/gemma-4-26B-A4B-it/
+/.claude/
+__pycache__/
+*.pyc
+*.pyo

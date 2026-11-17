@@ -2,7 +2,7 @@
 # vLLM-Ascend, tensor parallel 2 over NPU 0 and 1, larger generation caps.
 # Purpose: test whether truncation (no \boxed{}) was the main cause of low GPQA/AIME scores.
 # Settings: max_model_len 8192, direct/first-turn cap 6144, final-turn cap 2048.
-# Output: results/bench_vllm_tp2/<name>/per_task.jsonl (new dir; earlier results untouched).
+# Output: results/official/bench_vllm_tp2/<name>/per_task.jsonl (new dir; earlier results untouched).
 # Usage: bash scripts/run_vllm_tp2_long.sh <smoke|full>
 # Do NOT run with `python -I` (vLLM EngineCore subprocess needs acl).
 cd /remote-home/S45160/work/910b_fresh
@@ -15,7 +15,7 @@ export VLLM_WORKER_MULTIPROC_METHOD=spawn
 export OMP_NUM_THREADS=1
 PY=/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/bin/python
 MODE=${1:-smoke}
-OUT=results/bench_vllm_tp2
+OUT=results/official/bench_vllm_tp2
 mkdir -p $OUT logs
 
 COMMON="--tensor-parallel-size 2 --max-num-seqs 12 --max-model-len 8192 --first-max-tokens 6144 --final-max-tokens 2048 --direct-max-tokens 6144 --tool-output-max-chars 2000"

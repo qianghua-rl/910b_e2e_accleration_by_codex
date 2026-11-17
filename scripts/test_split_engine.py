@@ -4,9 +4,9 @@ Runs CBEngine greedy decode on a few fixed prompts and dumps the generated token
 Run once in single-card mode (--device npu:0) and once in split mode (--split-devices npu:0,npu:1),
 then compare the two files with --compare. Both runs must be eager (no graph decode).
 
-  python -I scripts/test_split_engine.py --out results/split_test/single.json --device npu:0
-  python -I scripts/test_split_engine.py --out results/split_test/split.json --split-devices npu:0,npu:1
-  python -I scripts/test_split_engine.py --compare results/split_test/single.json results/split_test/split.json
+  python -I scripts/test_split_engine.py --out results/ablations/misc/split_test/single.json --device npu:0
+  python -I scripts/test_split_engine.py --out results/ablations/misc/split_test/split.json --split-devices npu:0,npu:1
+  python -I scripts/test_split_engine.py --compare results/ablations/misc/split_test/single.json results/ablations/misc/split_test/split.json
 """
 import argparse
 import json

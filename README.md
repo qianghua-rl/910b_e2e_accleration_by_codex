@@ -25,13 +25,13 @@
 | 系统 | makespan | 相对 baseline | 正确数 |
 |---|---|---|---|
 | baseline（HF，逐题串行，`results/baseline_serial`） | 8365.0 s | 1× | 116/128 |
-| HF batch16 + 优化（`results/b16_original_opt`） | 1180.0 s | 7.1× | 116/128 |
+| HF batch16 + 优化（`results/ablations/b16/b16_original_opt`） | 1180.0 s | 7.1× | 116/128 |
 | 连续批处理 CBEngine（`results/ablations/continuous_batching/repeat_base_r2`，prefill-group 4） | 755.2 s | 11.1× | 117/128 |
 | + fast-GDN prefill（`results/ablations/continuous_batching/repeat_fast_r2`） | 588.2 s | 14.2× | 118/128 |
 | + graph decode，prefill-group 1（`results/ablations/continuous_batching/full128_pg1_graph`） | 499.7 s | 16.7× | 118/128 |
 | + GDN v2 批量预计算（ABBA 均值，`results/ablations/continuous_batching/abba_full128_{A1,B1,B2,A2}`） | 469.5 s | 17.8× | 118/128 |
 | **+ elem-conv（ABBA 均值，`results/ablations/continuous_batching/abba_full128_elemconv_{A,B}*`）** | **410.0 s** | **20.4×** | **118/128** |
-| 参照：vLLM-Ascend batch16（`results/vllm_original_b16`，仅参考） | 576.75 s | — | 118/128 |
+| 参照：vLLM-Ascend batch16（`results/ablations/b16/vllm_original_b16`，仅参考） | 576.75 s | — | 118/128 |
 
 **当前最优配置**：`--fast-gdn --gdn-v2 --prefill-group 1 --graph-decode --elem-conv`，NPU 0，16 slot。410.0 s 为 ABBA 四次运行的均值（B1 409.9 s，B2 410.2 s；对照组 A1 478.8 s，A2 478.9 s）。四次运行都是 118/128。
 
@@ -205,7 +205,7 @@
 │   ├── cb/                            连续批处理各运行（per_task.jsonl，summary 行含 makespan）
 │   ├── prefill_split/, prefill_v2_ops/, profile_*/   profile 输出
 │   └── excluded_directions.md         已否决方向的记录
-└── logs/                              每次运行的 stdout/stderr
+└── logs/                              每次运行的 stdout/stderr，按实验族分子目录（见 logs/README.md）
 ```
 
 ---
@@ -260,8 +260,8 @@ grep '"kind": "summary"' results/ablations/continuous_batching/<name>/per_task.j
 | 想看什么 | 去哪里 |
 |---|---|
 | 完整实验记录、每一步的证据、所有失败尝试 | [`HANDOFF.md`](HANDOFF.md) |
-| 已否决方向 | [`results/excluded_directions.md`](results/excluded_directions.md) |
+| 已否决方向 | [`results/docs/excluded_directions.md`](results/docs/excluded_directions.md) |
 | 某个运行的原始数据 | `results/<name>/per_task.jsonl`（summary 行含 makespan、decode 步数、prefill 时间、峰值显存） |
 | 当前最优配置的 ABBA 原始结果 | `results/ablations/continuous_batching/abba_full128_elemconv_{A1,B1,B2,A2}/per_task.jsonl` |
-| prefill 算子 profile | `results/prefill_v2_ops/`（用 `scripts/summarise_kernel_csv.py` 汇总） |
+| prefill 算子 profile | `results/profiling/prefill/prefill_v2_ops/`（用 `scripts/summarise_kernel_csv.py` 汇总） |
 | 与参考项目的对比 | 参考项目 `/remote-home/S45160/work/910b_e2e_accleration_by_codex/`（只读，未修改） |

@@ -1,13 +1,13 @@
 #!/bin/bash
 # Self-written CB engine, tensor parallel over NPU 0 and 1 (src/cb_tp.py). Two processes, one card each.
-# Settings match the vLLM TP=2 run (results/bench_vllm_tp2): t_max 8192, direct/first-turn cap 6144,
+# Settings match the vLLM TP=2 run (results/official/bench_vllm_tp2): t_max 8192, direct/first-turn cap 6144,
 # final-turn cap 2048, tool output clipped to 2000 chars, 12 slots, prefill one request at a time.
-# Output: results/ablations/continuous_batching_tp2/<name>/per_task.jsonl (rank 0 writes; rank 1 computes too).
+# Output: results/official/continuous_batching_tp2/<name>/per_task.jsonl (rank 0 writes; rank 1 computes too).
 # Usage: bash scripts/run_cb_tp2.sh <smoke|full>
 cd /remote-home/S45160/work/910b_fresh
 PY=/remote-home/S45160/miniforge3/envs/ascend-e2e/bin/python
 MODE=${1:-smoke}
-OUT=results/ablations/continuous_batching_tp2
+OUT=results/official/continuous_batching_tp2
 mkdir -p $OUT logs
 
 COMMON="--tp 2 --fast-gdn --gdn-v2 --elem-conv --prefill-group 1 --slots 12 --t-max 8192 --direct-max-new-tokens 6144 --first-max-new-tokens 6144 --final-max-new-tokens 2048 --tool-output-max-chars 2000"

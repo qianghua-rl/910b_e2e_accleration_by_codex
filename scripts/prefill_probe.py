@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, Qwen3_5ForConditionalGeneration  # noqa:
 
 MODEL = "/remote-home/S45160/work/910b_e2e_accleration_by_codex/model/qwen3.5-27b"
 DATA = "/remote-home/S45160/work/910b_e2e_accleration_by_codex/data/gsm8k_128.jsonl"
-RES = "/remote-home/S45160/work/910b_fresh/results/b16_original_opt/per_task.jsonl"
+RES = "/remote-home/S45160/work/910b_fresh/results/ablations/b16/b16_original_opt/per_task.jsonl"
 DEV = "npu:0"
 
 questions = {str(json.loads(l)["id"]): json.loads(l)["question"] for l in open(DATA)}

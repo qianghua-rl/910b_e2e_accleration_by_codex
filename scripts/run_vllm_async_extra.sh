@@ -8,12 +8,12 @@ source /usr/local/Ascend/ascend-toolkit/set_env.sh
 export LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/driver:$LD_LIBRARY_PATH
 export ASCEND_RT_VISIBLE_DEVICES=1
 PY=/remote-home/S45160/miniforge3/envs/vllm-ascend-py310/bin/python
-mkdir -p results/bench_vllm logs
+mkdir -p results/official/bench_vllm logs
 
 run() { # $1 name, $2 jsonl, $3 max-model-len, extra flags...
   local name=$1 data=$2 mml=$3; shift 3
-  mkdir -p results/bench_vllm/$name
-  $PY src/vllm_async_bench.py --output results/bench_vllm/$name/per_task.jsonl \
+  mkdir -p results/official/bench_vllm/$name
+  $PY src/vllm_async_bench.py --output results/official/bench_vllm/$name/per_task.jsonl \
     --data "$data" --max-num-seqs 12 --max-model-len "$mml" --first-max-tokens 2048 --tool-output-max-chars 2000 "$@" \
     > logs/vllm_async_$name.log 2>&1
 }

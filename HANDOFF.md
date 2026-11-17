@@ -43,7 +43,7 @@
 - `src/run_agent.py`: serial B=1 baseline runner.
 - `src/upper_bound_gdn.py`, `src/split_upper_bound_gdn.py`: stub timing experiments (timing only).
 - `src/exact_gdn_candidates.py`, `src/model_exact_gdn.py`: exact GDN candidates, ~0.3% end-to-end.
-- `results/excluded_directions.md`: old-project rejected directions + new rejection (shift conv).
+- `results/docs/excluded_directions.md`: old-project rejected directions + new rejection (shift conv).
 - **Current-best components (added 2026-11-06)**:
   - `src/cb_engine.py`: `CBEngine` with `graph_decode` (`_capture_graphs`, `_graph_core`, `_decode_step_graph`, `GRAPH_BUCKET=512`), `patch_model(fast_gdn, gdn_v2)`, `elem_conv_update` (`--elem-conv`, default off).
   - `src/cb_run.py`: scheduler and CLI (`--fast-gdn --gdn-v2 --prefill-group N --graph-decode --elem-conv --slots N --limit N`).
@@ -57,11 +57,11 @@
 | Config | Makespan | Peak mem | Correct |
 |---|---|---|---|
 | Serial B=1 HF baseline (`results/baseline_serial`) | 8365.0 s | 54.26 GB | 116/128 |
-| HF batch16 + opts (`results/b16_original_opt`) | 1180.0 s | 62.06 GB | 116/128 |
-| HF batch16 no opts (`results/b16_original_noopt`) | 1450.97 s | 62.06 GB | 118/128 |
-| vLLM-Ascend batch16 (`results/vllm_original_b16`) | 576.75 s | not recorded | 118/128 |
+| HF batch16 + opts (`results/ablations/b16/b16_original_opt`) | 1180.0 s | 62.06 GB | 116/128 |
+| HF batch16 no opts (`results/ablations/b16/b16_original_noopt`) | 1450.97 s | 62.06 GB | 118/128 |
+| vLLM-Ascend batch16 (`results/ablations/b16/vllm_original_b16`) | 576.75 s | not recorded | 118/128 |
 
-## first16 A/B (batch16, fifo, `--limit 16`, NPU 0, results under `results/shift_conv/`)
+## first16 A/B (batch16, fifo, `--limit 16`, NPU 0, results under `results/ablations/shift_conv/`)
 | Run | Makespan | Correct | Final text identical to A |
 |---|---|---|---|
 | A: HF batch16 + opts (current best self-written) | 124.85 s | 16/16 | — |
@@ -73,7 +73,7 @@
 
 **ABBA result: sync-free is slower (mean 120.3 s vs 115.5 s). Rejected; full128 not run.** The C2 gain was noise.
 
-- **ABBA status**: finished (`logs/abba_status.txt` = `DONE`). Gate not met; sync-free rejected.
+- **ABBA status**: finished (`logs/status_and_drivers/abba_status.txt` = `DONE`). Gate not met; sync-free rejected.
 - Unit tests: `scripts/test_sync_free.py` shows l2norm, recurrent step, and RMSNorm are bit-identical to the originals (diff 0.0).
 
 ## Findings
@@ -114,7 +114,7 @@ Results (fresh-v1 scoring, 128 tasks; baseline `b16_original_opt` = 1180.0 s, 11
 - Batch16 with 16 simultaneous prefills OOMs (`results/ablations/continuous_batching/full128_batchprefill` exit 1); group 8 fits.
 - Grouping rarely happens: 252 prefills collapse to only 228 calls because slots free up one at a time. The expected gain from batched prefill is therefore small.
 - Prefill is a large share: ~290-350 s of makespan in the non-fast-GDN runs (`prefill_seconds` 336-340 s). Per single prefill ~0.82 s (353 tokens) without fast-GDN; 75% of it is the torch GDN fallback `torch_chunk_gated_delta_rule` (FLA not installed). **Update:** `--fast-gdn` cuts `prefill_seconds` to ~175 s (`repeat_fast_r2`); prefill is now ~30% of makespan. That function scales sub-linearly with batch (B=4 ~1.1x of B=1; B=16 ~3.1x).
-- Decode per step ~0.14 s with 16 slots (dense). Static batch16 steady-state is ~0.137 s/step (`results/slow_batch_steps/steps.json`, 482 steps). **Correction:** the earlier "~0.20 s" static figure was wrong; `results/profile_batch16_decode/profile_meta.json` (188 ms/step) is an 8-step profiled window including warmup and is not a steady-state figure. So per-step decode cost is about the same in static and CB; CB's gain comes from fewer total decode steps and better slot reuse.
+- Decode per step ~0.14 s with 16 slots (dense). Static batch16 steady-state is ~0.137 s/step (`results/ablations/misc/slow_batch_steps/steps.json`, 482 steps). **Correction:** the earlier "~0.20 s" static figure was wrong; `results/profile_batch16_decode/profile_meta.json` (188 ms/step) is an 8-step profiled window including warmup and is not a steady-state figure. So per-step decode cost is about the same in static and CB; CB's gain comes from fewer total decode steps and better slot reuse.
 - Correctness: 117/128 vs baseline 116/128. Only task id 1137 flips between runs (baseline vs CB); not investigated yet. Identical final text vs baseline: 85-87/128; the rest are greedy divergences from different numerical paths (batch shapes), not checked one by one.
 
 Clean unshared reruns (npu:0 only, run sequentially; `scripts/run_cb_clean_group.sh`, 2026-11-06):
@@ -133,13 +133,13 @@ Same-code fast-GDN A/B (`scripts/run_repeat_cb_npu1.sh`, NPU 1, sequential, pref
 
 Speed gain ~22% on the same code, card, and schedule. The earlier `full128` (687.8 s) and `full128_fastgdn` (570.6 s) pair is NOT a fair comparison: the baseline predates edits to `cb_engine.py` and the two ran on different cards. Use the `repeat_*` pair. Correctness flips between base and fast: task 640 and 1030 fixed, 1137 broken.
 
-Decode op profile (CB, 16 slots, 20 steps; `results/profile_cb_decode_ops`, `scripts/profile_cb_decode_ops.py`): ~119 ms/step device time. MatMul 57.4; conv path (Conv2D 13.9 + TransData 11.2 + format conversions ~2) ~27; Mul 12.9 (624 calls). Micro-benchmark (`scripts/bench_decode_conv.py`): HF conv1d fallback 34 ms/step vs mul+sum 8.4 ms/step (state identical, output diff 0.125 bf16).
+Decode op profile (CB, 16 slots, 20 steps; `results/profiling/decode/profile_cb_decode_ops`, `scripts/profile_cb_decode_ops.py`): ~119 ms/step device time. MatMul 57.4; conv path (Conv2D 13.9 + TransData 11.2 + format conversions ~2) ~27; Mul 12.9 (624 calls). Micro-benchmark (`scripts/bench_decode_conv.py`): HF conv1d fallback 34 ms/step vs mul+sum 8.4 ms/step (state identical, output diff 0.125 bf16).
 
 Elem-conv end-to-end A/B (`--elem-conv`, `scripts/run_ab_elemconv.sh`, first16, fast-gdn fixed, NPU 1 sequential): A 104.6 s, B 105.0 s, both 16/16. No measurable gain: the micro-benchmark saving did not show up end to end. Rejected for now; flag kept, default off. Not run on full128.
 
-Elem-conv device vs wall clock (`results/profile_decode_A/B`, `scripts/bench_decode_wall.py`): device time per step 118.5 ms (conv1d) vs 91.2 ms (elem), so the device saving is real. Wall-clock decode step with no profiler, ABBA (A,B,B,A): A 139.3 ms, B 140.4 ms. No wall-clock gain. The decode step is bounded by something other than device kernel time (likely host dispatch/sync at 16 slots). Implication: optimize against wall-clock step time, not profiler device sum. Earlier "device-bound" conclusion for batch16 (HANDOFF findings above) should be re-checked against this.
+Elem-conv device vs wall clock (`results/profiling/decode/profile_decode_A/B`, `scripts/bench_decode_wall.py`): device time per step 118.5 ms (conv1d) vs 91.2 ms (elem), so the device saving is real. Wall-clock decode step with no profiler, ABBA (A,B,B,A): A 139.3 ms, B 140.4 ms. No wall-clock gain. The decode step is bounded by something other than device kernel time (likely host dispatch/sync at 16 slots). Implication: optimize against wall-clock step time, not profiler device sum. Earlier "device-bound" conclusion for batch16 (HANDOFF findings above) should be re-checked against this.
 
-Flip diagnosis (`scripts/diag_flip.py`, log `logs/diag_flip.log`): the clean base run (`clean_group4`) matches `repeat_base_r2` on all three tasks, so the flips come from the fast-GDN prefill only. First-turn divergence token index: 1137 @164, 640 @19, 1030 @14. Full-forward logits at the divergence prefix, ref vs fast: top-2 margin under ref is 0.000 (1137, 640) and 0.125 (1030), i.e. exact ties at bf16 resolution. Max |logit diff| over vocab is 0.14–0.25, bf16-sized. The full forward does not reproduce the cache-decode choice exactly (for 1137 it picks 25 while the base run picked 279), so this is a proxy, not an exact replay. Conclusion: noise-level tie-breaking, not a logic error. Random-input unit test (`results/gdn_chunk_fast/test_output.txt`): output diff ~1e-5 and state diff ~3e-8 in fp32. The fast path is not bit-identical to the reference, so a few flips per 128 is expected. Task 1137 is not explained beyond this (the 1137 flip also appeared between baseline and CB earlier).
+Flip diagnosis (`scripts/diag_flip.py`, log `logs/profiling/diag_flip.log`): the clean base run (`clean_group4`) matches `repeat_base_r2` on all three tasks, so the flips come from the fast-GDN prefill only. First-turn divergence token index: 1137 @164, 640 @19, 1030 @14. Full-forward logits at the divergence prefix, ref vs fast: top-2 margin under ref is 0.000 (1137, 640) and 0.125 (1030), i.e. exact ties at bf16 resolution. Max |logit diff| over vocab is 0.14–0.25, bf16-sized. The full forward does not reproduce the cache-decode choice exactly (for 1137 it picks 25 while the base run picked 279), so this is a proxy, not an exact replay. Conclusion: noise-level tie-breaking, not a logic error. Random-input unit test (`results/gdn_chunk_fast/test_output.txt`): output diff ~1e-5 and state diff ~3e-8 in fp32. The fast path is not bit-identical to the reference, so a few flips per 128 is expected. Task 1137 is not explained beyond this (the 1137 flip also appeared between baseline and CB earlier).
 
 Decision (superseded 2026-11-06): the default was `--prefill-group 4` at the time. The current best uses `--prefill-group 1` with `--graph-decode` (see START HERE). Group 8 is slower when run alone; the earlier 729 s group-8 result came from a run that overlapped with group 4 and is not comparable. Makespan: the CB summary row does record `makespan_seconds` (verified for `repeat_*`, `full128*`, `clean_group*`), and it equals the max `completion_seconds` in `per_task` to within 0.01 s. Use `summary.makespan_seconds`.
 
@@ -147,13 +147,13 @@ Next steps (candidates):
 1. (Done) Clean unshared run of group 4 and group 8. Group 4 chosen.
 2. ~~Change admission so slots free together~~ Measured 2026-11-06 and dropped as the main lever: slot occupancy is 96.8% (`repeat_fast_r2`: 43,795 generated tokens / (2828 steps × 16 slots)), so idle slots are not the loss.
 3. ~~Reduce the prefill cost~~ Partly done: `--gdn-v2` (batched precompute in `src/gdn_chunk_fast2.py`) cut prefill ~19% (see "Prefill split and GDN v2"). Remaining prefill cost is not yet split after v2.
-3b. Slot count: decode step cost is nearly flat in batch (15 rows static 137 ms; 16 slots CB 146 ms), so more slots would cut total decode steps. **Result (2026-11-06): 24 slots + fast-GDN OOMs on NPU (60.5 GiB allocated, 9.6 MiB free); no output.** Log: `logs/cb_slots24_fast_r1.log`. Do not raise slots above 16 without freeing memory (e.g. weight/KV layout changes).
+3b. Slot count: decode step cost is nearly flat in batch (15 rows static 137 ms; 16 slots CB 146 ms), so more slots would cut total decode steps. **Result (2026-11-06): 24 slots + fast-GDN OOMs on NPU (60.5 GiB allocated, 9.6 MiB free); no output.** Log: `logs/single_card_cb/cb_slots24_fast_r1.log`. Do not raise slots above 16 without freeing memory (e.g. weight/KV layout changes).
 4. Investigate task 1137's correctness flip.
 
-Rejected this round: `--sync-free` (ABBA: C 120.3 s vs A 115.5 s, +4%); see `results/excluded_directions.md`.
+Rejected this round: `--sync-free` (ABBA: C 120.3 s vs A 115.5 s, +4%); see `results/docs/excluded_directions.md`.
 
 ### Decode wall-clock breakdown (2026-11-06, `scripts/profile_decode_wall_breakdown.py`, NPU 0, 16 slots, fast-GDN, 60 steps)
-Output: `results/decode_wall_breakdown/run1.json`, log `logs/decode_wall_breakdown_run1.log`.
+Output: `results/decode_wall_breakdown/run1.json`, log `logs/profiling/decode_wall_breakdown_run1.log`.
 - Mean step wall time: **135.6 ms**.
 - Host-side time inside `_attn` (all 16 full-attn layers, summed over calls): 46.8 ms.
 - Host-side time inside `_gdn` (all 48 GDN layers): 76.6 ms.
@@ -165,7 +165,7 @@ Output: `results/decode_wall_breakdown/run1.json`, log `logs/decode_wall_breakdo
 ### Graph decode in CBEngine (2026-11-06, `--graph-decode` flag, default off)
 Implemented in `src/cb_engine.py` (`_capture_graphs`, `_graph_core`, `_decode_step_graph`, `GRAPH_BUCKET=512`) and `src/cb_run.py`. Eager path unchanged when the flag is off.
 
-- **Memory constraint**: graph decode works only with `--prefill-group 1`. With `--prefill-group 4` the first prefill after capture OOMs (`results/ablations/continuous_batching/graph_first16_graph` failed, log `logs/cb_graph_first16_graph.log`).
+- **Memory constraint**: graph decode works only with `--prefill-group 1`. With `--prefill-group 4` the first prefill after capture OOMs (`results/ablations/continuous_batching/graph_first16_graph` failed, log `logs/single_card_cb/cb_graph_first16_graph.log`).
 - **first16** (`--prefill-group 1`, `results/ablations/continuous_batching/graph_first16_pg1_*`): 16/16 correct for both; final_text identical 14/16. Divergences are tie-break level (task 51: round 1 at token 117, eager 40003 vs graph 283; task 23: round 2 at token 42, eager 2984 vs graph 3202). Not investigated further; attributed to kernel-order numerical noise, not verified by logit margin.
 - **ABBA first16** (`scripts/run_abba_graph_pg1.sh`, `results/ablations/continuous_batching/abba_graph_pg1_{A1,B1,B2,A2}`): eager 101.9 / 111.9 s (mean 106.9), graph 95.3 / 94.8 s (mean 95.0), gain ~11%. Eager spread (10 s) is large.
 - **full128** (`--fast-gdn --prefill-group 1`, `scripts/run_full128_graph_pg1.sh`, `results/ablations/continuous_batching/full128_pg1_{eager,graph}`):
@@ -183,7 +183,7 @@ Implemented in `src/cb_engine.py` (`_capture_graphs`, `_graph_core`, `_decode_st
 - **first16, pg4 + graph + expandable segments** (`results/ablations/continuous_batching/graph_first16_pg4_expseg`): 16/16, 89.4 s.
 - **Open**: pg1 graph remains the fastest config. Per-step time is the same under pg1 and pg4 (~123–124 ms with graph vs ~144 ms eager, approximate, from makespan minus prefill divided by decode steps). Graph gives ~20 ms/step; prefill (~150 s) and decode (~350 s) are the remaining budget.
 
-### Prefill op profile after GDN v2 (2026-11-06, `scripts/profile_prefill_v2_ops.py`, `results/prefill_v2_ops`, summary `scripts/summarise_kernel_csv.py`)
+### Prefill op profile after GDN v2 (2026-11-06, `scripts/profile_prefill_v2_ops.py`, `results/profiling/prefill/prefill_v2_ops`, summary `scripts/summarise_kernel_csv.py`)
 - Config: batch-1 prefill, `fast_gdn=True, gdn_v2=True`, 8 real prompts (2958 tokens) after 2 warmup prompts.
 - Device kernel time total 2345 ms = ~293 ms/prompt (profiler on; wall 540 ms/prompt under profiler, so host/launch gap is large and unmeasured without profiler).
 - Top ops by device time: MatMul 37.5% (878 ms, ~110 ms/prompt, roughly 55% of bf16 peak by FLOP estimate, so limited headroom); Mul 8.9% (13968 calls); InplaceCopy Slice 5.7% (10896 calls); BatchMatMul 4.8%; ReduceSum 4.2%; Tril 4.0% (768 calls); Conv TransData 3.8%; ViewCopy 3.8%; Add 2.4%; Slice 1.9%; Transpose ~1.5%; RmsNorm 1.4%; ConstantPadNd ~2.5% total.
@@ -220,13 +220,13 @@ Implemented in `src/cb_engine.py` (`_capture_graphs`, `_graph_core`, `_decode_st
 ## Update 2026-11-07/08: benchmark comparison, long-generation runs, tensor parallel
 
 ### Results layout (reorganized 2026-11-07)
-- `results/` is now grouped by purpose. Full map and notes: `results/README.md`. Comparison report: `results/REPORT.md` (written before the TP=2 runs; needs the TP=2 and math500/bbh numbers added).
+- `results/` is now grouped by purpose. Full map and notes: `results/README.md`. Comparison report: `results/docs/REPORT.md` (written before the TP=2 runs; needs the TP=2 and math500/bbh numbers added).
 - `results/benchmarks/bench/` self-written CB results (bbh, gpqa_diamond, math500, aime2024, aime2025).
-- `results/bench_vllm/` vLLM single-card results (original 512/2048 caps; AIME rows are invalid, see below).
+- `results/official/bench_vllm/` vLLM single-card results (original 512/2048 caps; AIME rows are invalid, see below).
 - `results/bench_vllm_retest/` vLLM AIME re-run with first cap 2048, final 512, max_model_len 4096.
-- `results/bench_vllm_tp2/` vLLM TP=2 runs with caps 6144 / 2048, max_model_len 8192. `math500_aborted/` is a partial run that was stopped; not usable.
+- `results/official/bench_vllm_tp2/` vLLM TP=2 runs with caps 6144 / 2048, max_model_len 8192. `math500_aborted/` is a partial run that was stopped; not usable.
 - `results/ablations/continuous_batching/` (renamed from `cb/`). Old `results/cb/` paths in docs and scripts were rewritten to the new path.
-- `results/ablations/continuous_batching_tp2/` self-written TP=2 runs (`smoke`, `single_ref` are debug runs, not benchmark results).
+- `results/official/continuous_batching_tp2/` self-written TP=2 runs (`smoke`, `single_ref` are debug runs, not benchmark results).
 - `results/archive/` old configs and aborted runs. Nothing was deleted.
 
 ### Scoring fixes
@@ -238,7 +238,7 @@ Implemented in `src/cb_engine.py` (`_capture_graphs`, `_graph_core`, `_decode_st
 
 ### Truncation is the main accuracy limit
 - Single card, caps around 2048: about half of GPQA and most AIME answers have no `\boxed{}`. Median total generated tokens on GPQA (TP run) is 2113, so 2048 is too low.
-- Caps 6144 / 2048 with TP=2 (vLLM, `results/bench_vllm_tp2/`, scored offline):
+- Caps 6144 / 2048 with TP=2 (vLLM, `results/official/bench_vllm_tp2/`, scored offline):
   - gpqa_diamond 137/198 (69%), no boxed 33/198
   - aime2024 24/30 (80%), no boxed 5/30
   - aime2025 18/30 (60%), no boxed 11/30
@@ -266,12 +266,12 @@ Implemented in `src/cb_engine.py` (`_capture_graphs`, `_graph_core`, `_decode_st
   - Do not start a TP run while another job is on either card. A `pkill -f` pattern also killed its own shell (exit 144); kill by exact PID.
 
 ### Queue in progress (started 2026-11-08)
-- `bash scripts/run_cb_tp2.sh full` (self-written TP=2: gpqa_diamond, aime2024, aime2025, math500, bbh), then `bash scripts/run_vllm_tp2_long.sh rest` (vLLM TP=2: math500, bbh). Log: `logs/queue_all.out`. Runs one after another.
+- `bash scripts/run_cb_tp2.sh full` (self-written TP=2: gpqa_diamond, aime2024, aime2025, math500, bbh), then `bash scripts/run_vllm_tp2_long.sh rest` (vLLM TP=2: math500, bbh). Log: `logs/status_and_drivers/queue_all.out`. Runs one after another.
 - After it finishes:
   1. Score everything offline with `scorer_mc.py` / `scorer_math.py`.
   2. Compare the self-written TP=2 vs vLLM TP=2 with the same caps: accuracy, no-boxed count, tokens/s.
   3. Add a single-card 6144 control if the −10% per-token gap matters.
-  4. Update `results/REPORT.md`.
+  4. Update `results/docs/REPORT.md`.
 - Open risk: the self-written TP path is only checked on 2 tasks on NPU. Watch for divergence on the full set (compare to vLLM TP outputs per task, not only accuracy).
 
 ## Open items (older list, partly superseded)
@@ -292,7 +292,7 @@ Implemented in `src/cb_engine.py` (`_capture_graphs`, `_graph_core`, `_decode_st
 ## Update 2026-11-09: TP=2 is the main comparison; prefill experiments; next step graph
 
 ### Where things stand
-- `results/REPORT.md` is reorganized around TP=2 (single-card is an appendix). Section 4.1 and 4.1.1 record the chunked-prefill experiments.
+- `results/docs/REPORT.md` is reorganized around TP=2 (single-card is an appendix). Section 4.1 and 4.1.1 record the chunked-prefill experiments.
 - Scorer: `src/scorer_math.py` is now `fresh-math-v2`: `last_boxed` skips an unterminated `\boxed{` and takes the last complete one. Effect: AIME 2024 CB 19→20, MATH-500 CB 454→455; others unchanged. `scorer_mc.py` is unchanged (fresh-mc-v1). Re-score any file with `python3 -I src/scorer_math.py <per_task.jsonl>`.
 - Earlier statement that AIME 2024 CB vs vLLM differs by 5 tasks is now 4 (20 vs 24). The 4 differing tasks are all vLLM-correct: id 1 (CB rejected by context check, 6604+2048≥8192), id 7 and id 21/28 (CB generation diverged in length; 21 and 28 used all 6144 first-turn tokens). No reverse-direction task. Not yet re-run with fast-GDN/elem-conv off.
 
@@ -316,8 +316,8 @@ Implemented in `src/cb_engine.py` (`_capture_graphs`, `_graph_core`, `_decode_st
 ### Chunked prefill (`--prefill-chunk`, `--max-prefill`; both default off → behaviour unchanged)
 - Implemented: `TPEngine.prefill_chunk(slot, ids, start, last)` (KV rows [0,start) read back with causal mask; GDN conv window and recurrent state carried across chunks via `initial_state`); `decode_step(..., hold=)` saves and restores conv/rec of slots mid-prefill around the dense decode pass.
 - Correctness: `scripts/test_chunked_prefill_cpu.py` (2 gloo ranks, tiny model) matches the unchunked reference for chunk 5/8/16/37, held-slot state diff ~1e-9. Negative control (hold restore disabled) fails with state diff 0.06–0.69; tokens alone did NOT catch it, so keep the state check.
-- Full longctx, chunk 512, `results/ablations/continuous_batching_tp2/gsm8k_longctx_128_chunk512/`: makespan 2081 s (+34%), decode steps 5374 (+24%), prefill 1133 s at 1031 tok/s, 122/128 correct.
-- 36-task test, `results/ablations/continuous_batching_tp2/mp_small_*` (base / c2048_mp1 / c2048_mp2): base 620 s, 2411 decode steps; chunk 2048 with 1 in flight 702 s, 3128 steps; with 2 in flight 712 s, 3127 steps. Two in-flight prefills do NOT reduce decode steps. The "slot occupancy" hypothesis is not supported; the extra steps come from the chunking itself.
+- Full longctx, chunk 512, `results/official/continuous_batching_tp2/gsm8k_longctx_128_chunk512/`: makespan 2081 s (+34%), decode steps 5374 (+24%), prefill 1133 s at 1031 tok/s, 122/128 correct.
+- 36-task test, `results/official/continuous_batching_tp2/mp_small_*` (base / c2048_mp1 / c2048_mp2): base 620 s, 2411 decode steps; chunk 2048 with 1 in flight 702 s, 3128 steps; with 2 in flight 712 s, 3127 steps. Two in-flight prefills do NOT reduce decode steps. The "slot occupancy" hypothesis is not supported; the extra steps come from the chunking itself.
 - Conclusion: keep chunking off. Merging prefill chunks and decode rows into one forward (what vLLM does: one token-budget batch per step, varlen attention) is the only version of this idea left, and it is a large change.
 
 ### vLLM comparison
@@ -327,7 +327,7 @@ Implemented in `src/cb_engine.py` (`_capture_graphs`, `_graph_core`, `_decode_st
 Original plan, kept for reference:
 1. Minimal HCCL capture test (2 processes, one NPU each, `ASCEND_RT_VISIBLE_DEVICES=<rank>`): matmul → `dist.all_reduce` → matmul captured in an `torch.npu.NPUGraph`, replayed after `copy_` into static input; compare with eager. If capture of all_reduce fails, try computing collectives outside the graph between captured segments. Put the script in `scripts/`, not `src/`.
 2. Only after step 1 passes: remove `assert not graph_decode` in `TPEngine.__init__` (`src/cb_tp.py`), relax the `--tp` vs `--graph-decode` `SystemExit` in `cb_run.py`, and make graph path ignore/handle `hold` (graph only used when no slot is held; falls back to eager otherwise).
-3. Verify: 4–8 task NPU run graph vs eager tokens; then 128-task longctx: compare `decode_seconds`, `decode_steps`, `makespan_seconds` with `results/continuous_batching_tp2/gsm8k_longctx_128/` (1554 s, decode 765 s).
+3. Verify: 4–8 task NPU run graph vs eager tokens; then 128-task longctx: compare `decode_seconds`, `decode_steps`, `makespan_seconds` with `results/official/continuous_batching_tp2/gsm8k_longctx_128/` (1554 s, decode 765 s).
 Reference for single-card graph: `CBEngine._capture_graphs` / `_decode_step_graph` in `src/cb_engine.py`, `GRAPH_BUCKET` env `CB_GRAPH_BUCKET` (default 512), `scripts/test_acl_graph.py`.
 
 Rationale for graph before merged forward: graph reuses existing single-card code and has one clear blocker to test; merged forward needs varlen attention, GDN mixed-row kernels, and loses static shapes (no graph), and the chunk experiments suggest its gain is unproven.
@@ -342,21 +342,21 @@ Rationale for graph before merged forward: graph reuses existing single-card cod
 ### Result (GSM8K longctx, 128 tasks, TP=2, t_max 16384)
 | run | makespan | decode_seconds | decode_steps | prefill_seconds | correct |
 |---|---|---|---|---|---|
-| eager baseline `results/continuous_batching_tp2/gsm8k_longctx_128/` | 1554 s | 765 s | 4341 | 788 s | 122/128 |
-| graph `results/ablations/continuous_batching_tp2/gsm8k_longctx_128_graph_1109_1028/` | 1059 s | 303 s | 4387 | 744 s | 122/128 |
+| eager baseline `results/official/continuous_batching_tp2/gsm8k_longctx_128/` | 1554 s | 765 s | 4341 | 788 s | 122/128 |
+| graph `results/official/continuous_batching_tp2/gsm8k_longctx_128_graph_1109_1028/` | 1059 s | 303 s | 4387 | 744 s | 122/128 |
 
 - Makespan −32%, decode time −60%. vLLM-Ascend TP=2 on this set: 1403 s, so CB is now 1.32× faster (was 0.90×).
 - Only the 8-task subset was compared token-by-token (see below). The 128-task run was not compared token-by-token against eager.
 - Decode steps went up by 46 (4341 → 4387). Not investigated.
 
 ### What changed
-- Step 1 (HCCL capture): `scripts/test_hccl_graph.py` (2 ranks, `ASCEND_RT_VISIBLE_DEVICES=<rank>`). Captures `matmul → dist.all_reduce → matmul` in an NPUGraph. **PASS**: replay == eager (max diff 0.0), and after `copy_()` of new input the replay matches eager on the new input too (graph reads the static buffer, and the all-reduce really runs on replay). Logs: `logs/test_hccl_graph_r{0,1}.log`. So all_reduce is capturable on this stack; no need for the "all-reduce outside the graph" fallback.
+- Step 1 (HCCL capture): `scripts/test_hccl_graph.py` (2 ranks, `ASCEND_RT_VISIBLE_DEVICES=<rank>`). Captures `matmul → dist.all_reduce → matmul` in an NPUGraph. **PASS**: replay == eager (max diff 0.0), and after `copy_()` of new input the replay matches eager on the new input too (graph reads the static buffer, and the all-reduce really runs on replay). Logs: `logs/tests/test_hccl_graph_r{0,1}.log`. So all_reduce is capturable on this stack; no need for the "all-reduce outside the graph" fallback.
 - `src/cb_tp.py`: `TPEngine.__init__` no longer asserts `not graph_decode`; it passes `graph_decode` to `CBEngine`. `AllReduceLinear` untouched. `_graph_core`/`_attn`/`_gdn` needed no change: they use per-rank sizes (`self.kvh`, `self.nh`, `gd.num_v_heads`), and `split` is False under TP.
 - `src/cb_run.py`: `--tp` no longer rejects `--graph-decode` (still rejects `--split-devices`); `TPEngine(..., graph_decode=a.graph_decode)`.
 - `hold` (chunked prefill) works on the graph path unchanged: the graph writes the same state buffers, and `decode_step(hold=)` saves and restores them around the call. The fallback to eager was not needed. Chunking is still off by default.
 
 ### Correctness
-- 8-task subset (`--limit 8`, same flags, t_max 16384): eager `results/ablations/continuous_batching_tp2/graphcheck_eager_8_1109_1022/`, graph `graphcheck_graph_8_1109_1022/`.
+- 8-task subset (`--limit 8`, same flags, t_max 16384): eager `results/official/continuous_batching_tp2/graphcheck_eager_8_1109_1022/`, graph `graphcheck_graph_8_1109_1022/`.
   - 7/8 tasks identical token-for-token (ids 68, 23, 120, 51, 99, 108, 76). All 8 correct in both runs.
   - **Task 84 diverges**: first difference at round 0, token index 134. Eager emits `436`, graph emits `220, 22`. Both final answers are 15 (gold 15).
   - Cause not confirmed. Hypothesis: bf16 near-tie. Graph attends over a 512-multiple bucket with masking, eager over the exact length, so the sums round differently. Not checked with logits.
@@ -366,7 +366,7 @@ Rationale for graph before merged forward: graph reuses existing single-card cod
 - Both NPUs were idle before the run (`npu-smi info`). Runs were sequential, one group at a time.
 - `cb_run.py --graph-decode` sets `PYTORCH_NPU_ALLOC_CONF=expandable_segments:True` (setdefault) as before.
 - Graph capture is done in `CBEngine.__init__` before any prefill; all ranks run the same capture sequence, so the collectives line up.
-- Logs for this session: `logs/test_hccl_graph_r*.log`, `logs/tp2_graphcheck_*`, `logs/tp2_gsm8k_longctx_128_graph_1109_1028_rank*.log`.
+- Logs for this session: `logs/tests/test_hccl_graph_r*.log`, `logs/tp2/tp2_graphcheck_*`, `logs/tp2/tp2_gsm8k_longctx_128_graph_1109_1028_rank*.log`.
 
 ### Open items (in priority order)
 1. Explain task 84's divergence: top-2 logit gap at round 0, token 134 (eager vs graph path on the same prefix). If the gap is tiny, record it as a tie and move on; if large, look for a real bug in the bucketed path (mask / position handling).
@@ -375,11 +375,11 @@ Rationale for graph before merged forward: graph reuses existing single-card cod
 4. Explain why decode steps rose from 4341 to 4387 on the graph run.
 
 ### Report
-- `results/REPORT.md` updated: §1 (speed bullets), §4 (GSM8K now has eager and graph rows), §5 (decode-mode row and TP graph implementation note), §6 #1 (partly solved), §7 #1 (follow-ups).
+- `results/docs/REPORT.md` updated: §1 (speed bullets), §4 (GSM8K now has eager and graph rows), §5 (decode-mode row and TP graph implementation note), §6 #1 (partly solved), §7 #1 (follow-ups).
 
 ## Update 2026-11-10: TP=2 graph re-runs of the five datasets (done, offline-scored)
 
-Runs: `scripts/run_cb_tp2_graph.sh` (all five finished, no cb_run/vLLM job running at 2026-11-10 04:22 UTC). Output: `results/ablations/continuous_batching_tp2/graph_<name>/per_task.jsonl`. Same flags as the eager TP runs (`--elem-conv --gdn-v2 --fast-gdn --prefill-group 1 --slots 12 --t-max 8192`, caps 6144/6144/2048) plus `--graph-decode`.
+Runs: `scripts/run_cb_tp2_graph.sh` (all five finished, no cb_run/vLLM job running at 2026-11-10 04:22 UTC). Output: `results/official/continuous_batching_tp2/graph_<name>/per_task.jsonl`. Same flags as the eager TP runs (`--elem-conv --gdn-v2 --fast-gdn --prefill-group 1 --slots 12 --t-max 8192`, caps 6144/6144/2048) plus `--graph-decode`.
 
 | dataset | graph acc | eager acc | vLLM acc | graph makespan | eager makespan | vLLM makespan | graph decode steps (eager) |
 |---|---|---|---|---|---|---|---|
@@ -393,4 +393,71 @@ Runs: `scripts/run_cb_tp2_graph.sh` (all five finished, no cb_run/vLLM job runni
 - Decode cost per step is ~2.5× lower with graph (AIME 2024: ~166 ms eager vs ~66 ms graph, derived from makespan minus prefill). Step counts match eager within 2%, so the speedup is per-step, not from different schedules. This is consistent with the GSM8K longctx result (decode 765 s → 303 s).
 - The graph gain is now apples-to-apples with eager for every dataset in the table. The eager baselines' summaries do not record flags, so they are assumed to have used the same `run_cb_tp2.sh` settings; the scripts say so, but this is not re-verified from the logs.
 - Graph vs eager accuracy changes (+/- a few tasks) are within run-to-run noise for greedy decoding; per-task text comparison not done for these five datasets.
-- Open items (carry-over): token-level comparison graph vs eager on the 128-task GSM8K run; task 84 divergence logit check; explain the +46 decode steps on the GSM8K graph run; update `results/REPORT.md` with this table (not yet done).
+- Open items (carry-over): token-level comparison graph vs eager on the 128-task GSM8K run; task 84 divergence logit check; explain the +46 decode steps on the GSM8K graph run; update `results/docs/REPORT.md` with this table (not yet done).
+
+## Update (2026-11-12): 8-slot vLLM vs CB comparison, rescored, with configs
+
+Data (not in `results/`; copied from the user's local folders, read-only inspection only):
+- `/remote-home/S45160/work/910b_fresh/results/official/vllm_tp2_slot8/<bench>/per_task.jsonl` (vLLM-Ascend runner)
+- `/remote-home/S45160/work/910b_fresh/results/official/cb_tp2_slot8/<bench>/per_task.jsonl` (self-written CB runner)
+
+### Configuration of this run
+Shared by both: same data SHA-256 per benchmark, original protocol, system prompt "Solve the math problem. You must first call the python tool ... \boxed{N}", `enable_thinking=False`, `do_sample=False` (vLLM metadata; CB metadata does not record it), first-turn cap 6144, final-turn cap 2048, `tool_output_max_chars=2000`, 8 concurrent slots / `max_num_seqs=8`. The folder name says TP=2; the metadata does not state TP, so treat TP=2 as inferred from the folder name.
+
+| | vLLM (`vllm_tp2_slot8`) | CB (`cb_tp2_slot8`) |
+|---|---|---|
+| Engine | vllm-ascend, vLLM 0.18.0, AsyncLLM | `cb_engine`, `fifo-continuous` |
+| Slots | `max_num_seqs=8` | `slots=8`, `batch_size=8` |
+| max length | `max_model_len` 8192 (gsm8k 16384) | `t_max` 8192 (gsm8k 16384) |
+| Direct mode | bbh, gpqa (`direct=True`) | not recorded in metadata |
+| Flags | — | `--fast-gdn --gdn-v2 --elem-conv --graph-decode --prefill-group 1`, `graph_bucket=512`, `prefill_chunk=0`, `max_prefill=1`, `optimizations=true` |
+
+### Results (acc rescored with `scorer_math.py` / `scorer_mc.py` / `scorer.py`; makespan = max `completion_seconds` per benchmark, no summary field in these files)
+
+| benchmark (n) | vLLM makespan s | CB makespan s | makespan change | vLLM acc | CB acc |
+|---|---|---|---|---|---|
+| aime2024 (30) | 1262.1 | 940.2 | −25.5% | 20/30 (66.67%) | 19/30 (63.33%) |
+| aime2025 (30) | 1372.9 | 990.4 | −27.9% | 18/30 (60.00%) | 18/30 (60.00%) |
+| bbh (1350) | 11094.4 | 7853.8 | −29.2% | 1161 (86.00%) | 1166 (86.37%) |
+| gpqa_diamond (198) | 7083.9 | 5044.3 | −28.8% | 146 (73.74%) | 142 (71.72%) |
+| gsm8k_longctx_128 (128) | 1023.8 | 1190.7 | +16.3% | 122 (95.31%) | 122 (95.31%) |
+| math500 (500) | 6575.2 | 5172.5 | −21.3% | 457 (91.40%) | 455 (91.00%) |
+| total (2236) | — | — | — | 1924 (86.05%) | 1922 (85.96%) |
+
+Notes:
+- The inline `correct` field in these files is stale for bbh and math500 (bbh vLLM 389, CB 392; math500 333 both). Use the rescored numbers above. The direct-mode bug recorded earlier in this file is the likely cause, but the runner was not inspected.
+- Both gsm8k scorers need metadata rows removed first (`kind != task`); `scorer.py` raises KeyError on the metadata row.
+- Some errors are length-limit failures (`prompt + gen > max_model_len` in vLLM, `>= t_max` in CB), counted as wrong. Not split out per benchmark in this table.
+- Makespan under 8 slots is not comparable to the 12-slot tables below.
+
+### Previous results and their configs (for comparison)
+
+1. **2026-11-09 TP=2, 12 slots, eager CB** (caps 6144/6144/2048, `--slots 12 --t-max 8192`, `--prefill-group 1`, `--gdn-v2 --fast-gdn --elem-conv`):
+
+| dataset | CB eager acc | vLLM acc | CB eager makespan s | vLLM makespan s |
+|---|---|---|---|---|
+| AIME 2024 | 20/30 | 24/30 | 1845 | 2140 |
+| AIME 2025 | 18/30 | 18/30 | 2081 | 2525 |
+| BBH | 1158 | 1163 | 14461 | 20666 |
+| GPQA | 133 | 137 | 9542 | 13815 |
+| MATH-500 | 455 | 451 | 9063 | 11546 |
+| GSM8K longctx | 122 | 122 | 1554 | 1403 |
+
+2. **2026-11-10 TP=2, 12 slots, CB with `--graph-decode`** (same flags as 1 plus `--graph-decode`; `scripts/run_cb_tp2_graph.sh`):
+
+| dataset | CB graph acc | CB graph makespan s |
+|---|---|---|
+| AIME 2024 | 19/30 | 773 |
+| AIME 2025 | 19/30 | 835 |
+| BBH | 1166 | 5878 |
+| GPQA | 142 | 3760 |
+| MATH-500 | 455 | 4087 |
+
+   GSM8K longctx with graph: 122/128, 1059 s (TP=2, 12 slots; 2026-11-09 section).
+
+3. **Single-card, earlier caps 2048/512** (not comparable with the TP runs): bbh 1155/1350, gpqa 92/198, math500 389/500, aime2024 7/30, aime2025 9/30 (self-written); vLLM single-card AIME 0 (invalid truncation), vLLM AIME retest 9/30 and 8/30.
+
+### Takeaway
+- Same 8-slot, 6144/2048-cap configuration: accuracy is equal within a few tasks on every benchmark; CB is 21–29% faster on the five benchmarks where it wins, but 16% slower on gsm8k longctx.
+- Makespans here are lower than the 12-slot TP runs for vLLM too (e.g., vLLM AIME 2024 1262 s vs 2140 s earlier), so the slot count changes both systems. Do not mix these numbers with the earlier tables.
+- Open: why CB is slower on gsm8k longctx at 8 slots (before, graph CB was faster there, 1059 s vs 1403 s at 12 slots).

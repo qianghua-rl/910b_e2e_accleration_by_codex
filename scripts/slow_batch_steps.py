@@ -11,8 +11,8 @@ from transformers.models.qwen3_5.modeling_qwen3_5 import Qwen3_5GatedDeltaNet, Q
 
 MODEL = "/remote-home/S45160/work/910b_e2e_accleration_by_codex/model/qwen3.5-27b"
 DATA = "/remote-home/S45160/work/910b_e2e_accleration_by_codex/data/gsm8k_128.jsonl"
-RES = "/remote-home/S45160/work/910b_fresh/results/b16_original_opt/per_task.jsonl"
-OUT = "/remote-home/S45160/work/910b_fresh/results/slow_batch_steps/steps.json"
+RES = "/remote-home/S45160/work/910b_fresh/results/ablations/b16/b16_original_opt/per_task.jsonl"
+OUT = "/remote-home/S45160/work/910b_fresh/results/ablations/misc/slow_batch_steps/steps.json"
 DEV = "npu:0"
 BATCH_IDS = {247, 249, 259, 265, 272, 294, 319, 350, 375, 399, 411, 420, 423, 428, 444}
 CAP = 512
