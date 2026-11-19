@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Gemma · Qwen 优化路线</title>
+<style>
+/* Layout: one column of method, then two parallel tracks (Qwen, Gemma), then what failed. */
+:root {
+  --bg: #f7f5f0;
+  --panel: #ffffff;
+  --fg: #1d1c19;
+  --muted: #6b675e;
+  --line: #e4e0d6;
+  --qwen: #1f6f6a;
+  --qwen-soft: #dcefec;
+  --gemma: #a4581c;
+  --gemma-soft: #f6e6d8;
+  --ok: #2d7a46;
+  --no: #9a3b32;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171614;
+    --panel: #201f1c;
+    --fg: #ece9e1;
+    --muted: #a19c90;
+    --line: #34322d;
+    --qwen: #6cc3bb;
+    --qwen-soft: #1d3331;
+    --gemma: #e09a64;
+    --gemma-soft: #3a2a1d;
+    --ok: #7cc996;
+    --no: #e08a80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #171614;
+  --panel: #201f1c;
+  --fg: #ece9e1;
+  --muted: #a19c90;
+  --line: #34322d;
+  --qwen: #6cc3bb;
+  --qwen-soft: #1d3331;
+  --gemma: #e09a64;
+  --gemma-soft: #3a2a1d;
+  --ok: #7cc996;
+  --no: #e08a80;
+  color-scheme: dark;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Helvetica Neue", sans-serif;
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 48px;
+}
+main { max-width: 960px; margin: 0 auto; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+h1 { font-size: 28px; letter-spacing: .01em; }
+h2 { font-size: 20px; margin-bottom: 12px; }
+h3 { font-size: 16px; }
+p { margin: 0 0 12px; max-width: 65ch; }
+.muted { color: var(--muted); }
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+section { margin-top: 40px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
+
+header.top { display: grid; gap: 12px; }
+.lede { font-size: 16px; color: var(--muted); }
+
+/* Headline numbers */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 20px; }
+.kpi .v { font-size: 26px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.kpi .k { font-size: 13px; color: var(--muted); }
+.kpi.q { border-top: 3px solid var(--qwen); }
+.kpi.g { border-top: 3px solid var(--gemma); }
+
+/* Method loop */
+.loop { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0; counter-reset: s; }
+.loop li { list-style: none; padding: 14px 16px; border-left: 1px solid var(--line); }
+.loop ul { padding: 0; margin: 0; }
+.loop li:first-child { border-left: none; }
+.loop li b { display: block; margin-bottom: 4px; }
+.loop li span { font-size: 14px; color: var(--muted); }
+.gate { margin-top: 16px; font-size: 14px; }
+
+/* Tracks */
+.tracks { display: grid; grid-template-columns: 1fr; gap: 20px; }
+@media (min-width: 900px) { .tracks { grid-template-columns: 1fr 1fr; } }
+.track h2 { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.tag { font-size: 12px; padding: 2px 8px; border-radius: 999px; }
+.tag.q { background: var(--qwen-soft); color: var(--qwen); }
+.tag.g { background: var(--gemma-soft); color: var(--gemma); }
+.model { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+
+ol.steps { list-style: none; margin: 0; padding: 0; }
+ol.steps li { display: grid; grid-template-columns: 34px 1fr; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); min-width: 0; }
+ol.steps li:first-child { border-top: none; }
+.n { font-size: 13px; font-variant-numeric: tabular-nums; color: var(--muted); padding-top: 2px; }
+.step-title { font-weight: 600; }
+.ev { font-size: 14px; color: var(--muted); margin-top: 2px; }
+.res { font-size: 14px; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.res .gain { font-weight: 650; }
+.badge { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 4px; margin-left: 6px; vertical-align: 1px; }
+.badge.ok { color: var(--ok); border: 1px solid currentColor; }
+.badge.no { color: var(--no); border: 1px solid currentColor; }
+.badge.base { color: var(--muted); border: 1px solid var(--line); }
+
+/* Gain bars */
+.bars { margin-top: 8px; display: grid; gap: 6px; }
+.bar { display: grid; grid-template-columns: 92px 1fr 64px; gap: 8px; align-items: center; font-size: 13px; }
+.bar .track-bg { background: var(--line); border-radius: 3px; height: 10px; overflow: hidden; }
+.bar .fill { height: 100%; border-radius: 3px; }
+.bar.q .fill { background: var(--qwen); }
+.bar.g .fill { background: var(--gemma); }
+.bar .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Final config */
+.final { display: grid; gap: 10px; }
+code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; overflow-wrap: anywhere; }
+.cfg { display: block; overflow-x: auto; white-space: pre; padding: 10px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; font-size: 13px; }
+
+/* Rejected */
+.rej { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.rej ul { margin: 0; padding-left: 18px; font-size: 14px; }
+.rej li { margin-bottom: 6px; }
+
+/* Caveats */
+.caveats li { margin-bottom: 8px; font-size: 14px; }
+.caveats ul { padding-left: 18px; margin: 0; }
+
+/* Focus and motion */
+a:focus-visible, button:focus-visible { outline: 2px solid var(--qwen); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<main>
+
+<header class="top">
+  <div class="eyebrow">推理优化 · 单卡 910B · 128 题 agent 评测</div>
+  <h1>Gemma · Qwen 优化路线</h1>
+  <p class="lede">两个模型用同一套方法：先 profile 找瓶颈，每次只改一处，用 ABBA 交替测量来确认收益。Qwen3.5-27B 的主要收益来自连续批处理、GDN 的 chunk 化与 NPUGraph；Gemma-4-26B-A4B 没有 GDN，也无法稳定捕获图，主要收益来自减少 MoE 与 norm 的小算子派发。</p>
+  <div class="kpis">
+    <div class="kpi q panel"><div class="v">8365 → 410 s</div><div class="k">Qwen3.5-27B · 串行基线到当前最优（约 20×），正确数 116 → 118 / 128</div></div>
+    <div class="kpi g panel"><div class="v">10589 → 661 s</div><div class="k">Gemma-4-26B-A4B · 串行基线到当前最优（约 16×），正确数 108 → 110 / 128（fresh-v1）</div></div>
+  </div>
+</header>
+
+<section>
+  <h2>方法：每一步都是同一个循环</h2>
+  <div class="panel">
+    <ol class="loop" style="margin:0;padding:0">
+      <li><b>1 · Profile</b><span>分开测 wall 与 device，分解到 attention、experts、router、norm 等段。</span></li>
+      <li><b>2 · 提出可证伪假设</b><span>写明预期方向与幅度，例如“每步 device 时间降 23%，wall 应随之下降”。</span></li>
+      <li><b>3 · 单一改动</b><span>一次只加一个 flag，代码默认关闭，直到通过测量。</span></li>
+      <li><b>4 · ABBA 测量</b><span>交替运行 A、B、B、A。收益需 ≥2%，且两组区间不重叠。</span></li>
+      <li><b>5 · 正确性门控</b><span>正确数不降、无丢题；文本变化须单独解释（bf16 舍入 或 逻辑错误）。</span></li>
+    </ol>
+    <p class="gate muted">失败也记录：device 时间降了但 wall 不变（Qwen E05），或 wall 变快但正确数崩掉（Gemma E-G36），都会被否决。</p>
+  </div>
+</section>
+
+<section>
+  <h2>两条路线</h2>
+  <div class="tracks">
+
+    <article class="track panel">
+      <h2>Qwen3.5-27B <span class="tag q">GDN + 图</span></h2>
+      <div class="model">瓶颈随阶段转移：先 batch 浪费，再 prefill 里的 GDN，最后 decode 的 host 与卷积。</div>
+      <ol class="steps">
+        <li><span class="n">0</span><div><div class="step-title">串行 B=1 HF 基线</div><div class="res">8365 s · 116/128</div></div></li>
+        <li><span class="n">1</span><div><div class="step-title">batch16 + 融合算子<span class="badge ok">采纳</span></div><div class="ev">串行逐题浪费大量算力</div><div class="res">1180 s · 116/128</div></div></li>
+        <li><span class="n">2</span><div><div class="step-title">自写连续批处理 CBEngine（slot 制）<span class="badge ok">采纳</span></div><div class="ev">静态 batch 中已完成的行仍在算，约 53% 行·步浪费</div><div class="res">755 s · 117/128</div></div></li>
+        <li><span class="n">3</span><div><div class="step-title">chunk GDN prefill（<code>--fast-gdn</code>）<span class="badge ok">采纳</span></div><div class="ev">prefill 的 66% 时间在 torch 回退的 GDN chunk 函数上</div><div class="res"><span class="gain">588 s</span>，同代码 A/B 约 −22% · 118/128</div></div></li>
+        <li><span class="n">4</span><div><div class="step-title">NPUGraph 捕获 decode 步（<code>--graph-decode</code>）<span class="badge ok">采纳</span></div><div class="ev">decode 的 wall 约 90% 在 Python 与 launch 侧</div><div class="res"><span class="gain">570.8 → 499.7 s</span>，−12.5% · 118/128</div></div></li>
+        <li><span class="n">5</span><div><div class="step-title">GDN v2：状态无关部分批量预计算（<code>--gdn-v2</code>）<span class="badge ok">采纳</span></div><div class="ev">prefill 的 GDN chunk 占 66%，把与状态无关的计算合并成一次批量</div><div class="res">ABBA <span class="gain">498.4 → 469.5 s</span>，−5.8%；prefill 149 → 121 s · 118/128</div></div></li>
+        <li><span class="n">6</span><div><div class="step-title">elem-conv：深度卷积改为 mul + sum（<code>--elem-conv</code>）<span class="badge ok">采纳</span></div><div class="ev">卷积的 device 时间高；每步 device 时间约降 23%</div><div class="res">ABBA <span class="gain">478.9 → 410.0 s</span>，−14% · 118/128</div></div></li>
+      </ol>
+      <div class="bars" aria-label="Qwen 各步 ABBA 收益">
+        <div class="bar q"><span>GDN v2</span><div class="track-bg"><div class="fill" style="width:5.8%"></div></div><span class="num">−5.8%</span></div>
+        <div class="bar q"><span>elem-conv</span><div class="track-bg"><div class="fill" style="width:14%"></div></div><span class="num">−14%</span></div>
+      </div>
+    </article>
+
+    <article class="track panel">
+      <h2>Gemma-4-26B-A4B <span class="tag g">MoE + 派发</span></h2>
+      <div class="model">没有 GDN，也没有 conv。单步有 3442 个算子，99% 的时间在 enqueue，瓶颈是派发，不是 device 算力。</div>
+      <ol class="steps">
+        <li><span class="n">0</span><div><div class="step-title">串行 B=1 基线（<code>gemma_run.py</code>，无 flags）<span class="badge base">基线</span></div><div class="res">10589 s · 108/128（fresh-v1）</div></div></li>
+        <li><span class="n">1</span><div><div class="step-title">弃用手写 decode 循环<span class="badge no">否决</span></div><div class="ev">手写循环每步比 generate() 慢约 2×，原先“派发占 99.7%”的结论作废</div></div></li>
+        <li><span class="n">2</span><div><div class="step-title">融合 RMSNorm（<code>--fast-norm</code>）<span class="badge ok">采纳</span></div><div class="ev">逐层 profile：7 个 norm 合计约 32%，单次 norm 247 → 49 µs</div><div class="res">ABBA <span class="gain">1346 → 990 s</span>，−26%（first16）</div></div></li>
+        <li><span class="n">3</span><div><div class="step-title">连续批处理 CBEngine（<code>--cb --slots 16</code>）<span class="badge ok">采纳</span></div><div class="ev">自写 attention；MoE、norm、router 复用 HF。初次默认路径 770 s，比 Qwen 慢，暂停，之后继续优化</div><div class="res">770 s · 14/16（first16）</div></div></li>
+        <li><span class="n">4</span><div><div class="step-title">计数器探针：每步固定成本主导<span class="badge base">诊断</span></div><div class="ev">真实循环每步约 750–830 ms，几乎不随活跃 slot 数变化；每步 3442 个算子，enqueue 占 99%</div></div></li>
+        <li><span class="n">5</span><div><div class="step-title">只算活跃行（<code>--compact</code>）<span class="badge ok">采纳</span></div><div class="res">ABBA <span class="gain">793 → 672 s</span>，−15%（first16），13/16</div></div></li>
+        <li><span class="n">6</span><div><div class="step-title">分组 experts（<code>--grouped-experts</code>）<span class="badge ok">采纳</span></div><div class="ev">experts 占 decode 的 55%，每层约 22 个不同 expert 被激活</div><div class="res">ABBA <span class="gain">690 → 368 s</span>，−47%（first16），12/16 不变</div></div></li>
+        <li><span class="n">7</span><div><div class="step-title">noscale norm + 融合 RoPE（<code>--fast-norm-noscale --fused-rope</code>）<span class="badge ok">采纳</span></div><div class="ev">算子 3442 → 2722（−21%）；数值与 HF 差 0.0625，属舍入</div><div class="res">ABBA <span class="gain">243 → 197 s</span>，−19%（first16），13/16 不变；叠加 fast-norm 时为 −34%</div></div></li>
+        <li><span class="n">8</span><div><div class="step-title">prefill 分组 experts（<code>--prefill-grouped</code>）<span class="badge ok">采纳</span></div><div class="ev">prefill 的 MoE 层替换为分组实现；单层数值差 ≤0.001</div><div class="res">full128 ABBA <span class="gain">1176 → 662 s</span>，−44%；109 → 110/128，无丢题</div></div></li>
+      </ol>
+      <div class="bars" aria-label="Gemma 主要步骤 ABBA 收益">
+        <div class="bar g"><span>fast-norm</span><div class="track-bg"><div class="fill" style="width:26%"></div></div><span class="num">−26%</span></div>
+        <div class="bar g"><span>compact</span><div class="track-bg"><div class="fill" style="width:15.3%"></div></div><span class="num">−15%</span></div>
+        <div class="bar g"><span>grouped experts</span><div class="track-bg"><div class="fill" style="width:46.7%"></div></div><span class="num">−47%</span></div>
+        <div class="bar g"><span>noscale + RoPE</span><div class="track-bg"><div class="fill" style="width:19%"></div></div><span class="num">−19%</span></div>
+        <div class="bar g"><span>prefill grouped</span><div class="track-bg"><div class="fill" style="width:44%"></div></div><span class="num">−44%</span></div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section>
+  <h2>当前最优配置</h2>
+  <div class="final">
+    <div class="panel">
+      <h3 style="margin-bottom:8px">Qwen3.5-27B：410.0 s · 118/128</h3>
+      <p class="muted">CBEngine + fast-GDN v1 + GDN v2 + graph decode + elem-conv，prefill 分组 pg1，需要 <code>expandable_segments</code>。</p>
+    </div>
+    <div class="panel">
+      <h3 style="margin-bottom:8px">Gemma-4-26B-A4B：661.5 s · 110/128（full128，ABBA 的 B 组）</h3>
+      <code class="cfg">--cb --slots 16 --compact --grouped-experts --fast-norm --fast-norm-noscale --fused-rope --prefill-grouped</code>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>失败的分支（同样记录）</h2>
+  <div class="rej">
+    <div class="panel">
+      <h3 style="margin-bottom:8px">Qwen</h3>
+      <ul>
+        <li>shift-conv：被 elem-conv 取代</li>
+        <li>sync-free：ABBA 慢 4%，同步计数不能预测 wall 收益</li>
+        <li>24 slots：显存 OOM</li>
+        <li>graph bucket 128：增益 0.9%，低于门槛</li>
+        <li>E18 规则“replay ≈ device 和 ⇒ device-bound”：被 E04 推翻</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3 style="margin-bottom:8px">Gemma</h3>
+      <ul>
+        <li><b>NPUGraph 不可用</b>：回放是静默 no-op，输出与 eager 不一致（两套环境均复现）</li>
+        <li>fia + geglu：正确数 12 → 1/16，wall 降低是因为输出被破坏</li>
+        <li>router fused：慢 47%，且正确题集合变化</li>
+        <li>slice-kv：慢 6%；nocopy：−1%，在噪声内</li>
+        <li>host-tact：中位数降 3%，但区间重叠，暂不采纳</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>如何解读这些数字</h2>
+  <div class="panel caveats">
+    <ul>
+      <li>两个模型的评测协议不同（SYSTEM 与 USER_SUFFIX 不同），绝对秒数不能跨模型直接比较。</li>
+      <li>Gemma 的 10589 s 基线与最终 661 s 不在同一次 ABBA 里，倍数是跨会话估计。可直接引用的是 ABBA 内的配对收益。</li>
+      <li>Gemma 的正确数用 fresh-v1 评分；早期 agent_protocol 的 106/128 已弃用。</li>
+      <li>Gemma 的多数 ABBA 只在 first16 上做过；full128 上只验证了 prefill 分组。</li>
+      <li>“正确数持平”与“文本逐字一致”是两件事。bf16 舍入会改变生成路径，因此每次都要看正确题集合是否变化。</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+</body>
+</html>
